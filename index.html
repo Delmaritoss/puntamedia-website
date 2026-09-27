@@ -1,0 +1,2121 @@
+<title>Puntamedia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap">
+<style>
+  :root{
+    /* Drawn from the logo: deep navy headland over an Adriatic blue wave */
+    --ink:#08182B;          /* page ground */
+    --ink-2:#0C2038;        /* alternate section ground */
+    --surface:#112A46;      /* cards */
+    --surface-2:#173553;    /* raised */
+    --navy:#1C3A64;         /* the logo's dark mass */
+    --line:rgba(150,195,232,.14);
+    --line-strong:rgba(150,195,232,.26);
+    --text:#EDF3F9;
+    --muted:#9FB6CE;
+    --dim:#6E8AA8;
+    --acc:#5A93BC;          /* the logo's wave blue */
+    --acc-deep:#3F7CA8;
+    --acc-bright:#8CBCDE;
+    --acc-wash:rgba(90,147,188,.12);
+    --acc-soft:#7E9DBC;
+
+    --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+    --sans:"Jost",system-ui,-apple-system,"Segoe UI",sans-serif;
+
+    --maxw:1160px;
+    --r:4px;
+    --ease:cubic-bezier(.22,.61,.36,1);
+    --grade:.5;             /* photo grading strength — 0 natural, 1 full duotone */
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1100px 620px at 82% -10%, rgba(90,147,188,.10), transparent 62%),
+      var(--ink);
+    color:var(--text);
+    font-family:var(--sans);
+    font-size:16.5px;
+    font-weight:300;
+    line-height:1.72;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,h4{font-family:var(--serif);font-weight:600;line-height:1.08;margin:0;text-wrap:balance;letter-spacing:.002em}
+  p{margin:0}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%}
+  em{font-style:italic}
+  ::selection{background:rgba(90,147,188,.30);color:#fff}
+
+  .wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:24px}
+  .section{position:relative;padding-block:clamp(76px,10vw,132px)}
+
+  /* label / eyebrow — letterspaced small caps, no monospace */
+  .eyebrow{
+    font-family:var(--sans);font-size:11.5px;font-weight:400;letter-spacing:.26em;
+    text-transform:uppercase;color:var(--acc);display:inline-flex;align-items:center;gap:14px;
+  }
+  .eyebrow::before{content:"";width:28px;height:1px;background:var(--acc);opacity:.55}
+
+  /* ---------- buttons: restrained, letterspaced ---------- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    font-family:var(--sans);font-size:12.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+    padding:16px 30px;border-radius:var(--r);cursor:pointer;border:1px solid transparent;
+    transition:background .3s var(--ease),color .3s var(--ease),border-color .3s var(--ease),transform .3s var(--ease);
+  }
+  .btn-primary{background:var(--acc);color:#06172A;border-color:var(--acc)}
+  .btn-primary:hover{background:var(--acc-deep);border-color:var(--acc-deep);transform:translateY(-1px)}
+  .btn-ghost{background:transparent;border-color:var(--line-strong);color:var(--text)}
+  .btn-ghost:hover{border-color:var(--acc);color:var(--acc);transform:translateY(-1px)}
+  .btn:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px solid var(--acc);outline-offset:3px}
+
+  /* ---------- NAV ----------
+     Full width at rest; once you scroll past 10px it detaches into a centred
+     pill. Ported from the shadcn header: the behaviour is CSS transitions and
+     a scroll listener, so none of the React was needed. */
+  header.nav{
+    position:sticky;top:env(safe-area-inset-top,0px);z-index:50;
+    transition:top .4s var(--ease),padding .4s var(--ease);
+  }
+  .nav-shell{
+    width:100%;max-width:100%;margin-inline:auto;
+    border:1px solid transparent;border-bottom-color:var(--line);
+    background:linear-gradient(180deg,rgba(8,24,43,.9),rgba(8,24,43,.55));
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    transition:max-width .4s var(--ease),border-radius .4s var(--ease),
+               border-color .4s var(--ease),box-shadow .4s var(--ease),
+               background .4s var(--ease);
+  }
+  header.nav.is-scrolled{top:calc(env(safe-area-inset-top,0px) + 12px);padding-inline:16px}
+  header.nav.is-scrolled .nav-shell{
+    max-width:1040px;border-radius:12px;border-color:var(--line-strong);
+    background:rgba(8,24,43,.76);
+    box-shadow:0 20px 48px -26px rgba(0,0,0,.9);
+  }
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:76px;gap:20px;
+    transition:height .4s var(--ease)}
+  header.nav.is-scrolled .nav-in{height:62px}
+  .brand{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-weight:600;font-size:25px;letter-spacing:.01em}
+  .brand .mark{width:26px;height:26px;flex:none}
+  .brand .mark svg{width:100%;height:100%;display:block}
+  .nav-links{display:flex;align-items:center;gap:36px}
+  .nav-links .lnk{font-size:12.5px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:color .25s}
+  .nav-links .lnk:hover{color:var(--acc)}
+
+  /* hamburger that morphs into a cross */
+  .burger{display:none;position:relative;width:42px;height:42px;flex:none;cursor:pointer;
+    background:none;border:1px solid var(--line-strong);border-radius:6px;
+    transition:border-color .25s var(--ease)}
+  .burger:hover{border-color:var(--acc)}
+  .burger span{position:absolute;left:11px;right:11px;top:50%;height:1.5px;border-radius:2px;
+    background:var(--text);
+    transition:transform .3s var(--ease),opacity .2s var(--ease)}
+  .burger span:nth-child(1){transform:translateY(-6px)}
+  .burger span:nth-child(2){transform:translateY(0)}
+  .burger span:nth-child(3){transform:translateY(6px)}
+  .burger[aria-expanded="true"] span:nth-child(1){transform:rotate(45deg)}
+  .burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+  .burger[aria-expanded="true"] span:nth-child(3){transform:rotate(-45deg)}
+
+  /* full-screen menu */
+  .mobile-menu{
+    position:fixed;inset:0;z-index:49;display:flex;flex-direction:column;justify-content:space-between;
+    gap:28px;padding:calc(104px + env(safe-area-inset-top,0px)) 24px calc(32px + env(safe-area-inset-bottom,0px));
+    background:rgba(8,24,43,.97);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    opacity:0;transform:scale(.98);
+    transition:opacity .28s var(--ease),transform .28s var(--ease);
+  }
+  .mobile-menu.open{opacity:1;transform:none}
+  .mobile-menu a.mlnk{
+    display:block;padding:16px 0;border-bottom:1px solid var(--line);
+    font-family:var(--serif);font-weight:600;font-size:27px;color:var(--text);
+    transition:color .2s var(--ease),padding-left .25s var(--ease)}
+  .mobile-menu a.mlnk:hover{color:var(--acc);padding-left:8px}
+  .mobile-foot{display:flex;flex-direction:column;gap:16px}
+  .mobile-foot .btn{width:100%}
+  .mobile-foot .lang{align-self:flex-start}
+
+  @media(max-width:880px){
+    .nav-links .lnk{display:none}
+    .nav-links .nav-cta{display:none}
+    .nav-links .lang{display:none}
+    .nav-links{gap:14px}
+    .burger{display:block}
+    header.nav.is-scrolled .nav-in{height:58px}
+  }
+  @media(min-width:881px){ .mobile-menu{display:none} }
+  @media(prefers-reduced-motion:reduce){
+    header.nav,.nav-shell,.nav-in,.mobile-menu,.burger span{transition:none}
+  }
+
+
+  /* ---------- VIDEO HERO ----------
+     A real dolly shot, scrubbed by the scroll. The site itself is NOT in the
+     video: the screen is deliberately blank, and the real section is drawn in
+     HTML on top of it, tracked to the screen as it grows. That way the text you
+     land on is live DOM at full resolution, never magnified video pixels.
+     Off by default — activated only when the video is ready on a wide screen. */
+  .vhero-track{display:none}
+  .has-vhero .vhero-track{display:block;height:320vh;position:relative}
+  .has-vhero .hero{display:none}
+  /* delivered through the laptop screen instead, so it must not repeat below.
+     Scoped to the page's own strip — the clone inside the overlay shares the
+     class, and an unscoped rule blanks the overlay. */
+  .has-vhero main > .strip,
+  .has-vhero main > #services{display:none}
+  .vhero-pin{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--ink)}
+  .vhero-pin video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    will-change:opacity}
+  .vhero-veil{position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(100deg,rgba(8,24,43,.9) 0%,rgba(8,24,43,.66) 32%,rgba(8,24,43,.2) 62%,rgba(8,24,43,0) 100%);
+    will-change:opacity}
+  /* the page, painted onto the laptop screen */
+  .vhero-screen{position:absolute;left:0;top:0;overflow:hidden;opacity:0;
+    transform-origin:top left;background:#F6F9FC;will-change:transform,opacity}
+  /* Laid out once at a fixed width and scaled, so the text never re-wraps as
+     the screen grows — a real screen does not re-flow as you walk towards it. */
+  .vhero-screen .vh-inner{position:absolute;top:0;left:0;
+    transform-origin:top left;background:var(--ink)}
+  .vhero-screen .vh-inner > *{width:100%;flex:none}
+  .vhero-copy{position:absolute;inset:0;z-index:3;display:flex;align-items:center;
+    pointer-events:none;will-change:opacity}
+  .vhero-copy .wrap{width:100%;pointer-events:auto}
+  .vhero-copy .eyebrow,.vhero-copy h1,.vhero-copy .hero-sub,.vhero-copy .hero-cta{max-width:600px}
+  .vhero-copy h1{font-size:clamp(34px,4.4vw,58px);font-weight:600;line-height:1.08;margin-top:22px}
+  .vhero-copy h1 em{color:var(--acc);font-weight:600}
+  .vhero-copy .hero-sub{color:var(--muted);font-size:clamp(15.5px,1.7vw,17.5px);margin-top:20px;line-height:1.72}
+  .vhero-copy .hero-cta{margin-top:34px}
+  .vhero-hint{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);z-index:4;
+    font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);
+    display:flex;flex-direction:column;align-items:center;gap:9px;pointer-events:none}
+  .vhero-hint i{display:block;width:1px;height:26px;background:linear-gradient(180deg,var(--acc),transparent);
+    animation:hintdrop 1.9s var(--ease) infinite}
+  @keyframes hintdrop{0%{transform:scaleY(0);transform-origin:top}
+    55%{transform:scaleY(1);transform-origin:top}
+    56%{transform:scaleY(1);transform-origin:bottom}
+    100%{transform:scaleY(0);transform-origin:bottom}}
+  @media(prefers-reduced-motion:reduce){ .vhero-hint i{animation:none} }
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;padding-top:clamp(50px,7vw,88px);padding-bottom:clamp(64px,9vw,112px);overflow:hidden}
+  #bg-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+  .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:200px;background:linear-gradient(180deg,transparent,var(--ink));z-index:1;pointer-events:none}
+  .hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(100deg,rgba(8,24,43,.92) 0%,rgba(8,24,43,.74) 34%,rgba(8,24,43,.3) 62%,rgba(8,24,43,.05) 100%)}
+  .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.02fr .98fr;gap:60px;align-items:center}
+  .hero-copy{min-width:0}
+  .hero h1{font-size:clamp(33px,4.9vw,56px);font-weight:600;margin-top:22px}
+  .hero h1 em{color:var(--acc);font-weight:600}
+  .hero-sub{color:var(--muted);font-size:clamp(15.5px,1.7vw,17.5px);max-width:42ch;margin-top:20px;line-height:1.72}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:38px}
+  .hero-meta{display:flex;gap:0;flex-wrap:wrap;margin-top:44px;border-top:1px solid var(--line);padding-top:22px}
+  .hero-meta span{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);padding-right:26px;margin-right:26px;border-right:1px solid var(--line)}
+  .hero-meta span:last-child{border-right:none;margin-right:0;padding-right:0}
+  .hero-meta b{color:var(--text);font-weight:400}
+  @media(max-width:900px){
+    .hero-grid{grid-template-columns:1fr;gap:48px}
+    .hero-visual{order:-1}
+  }
+
+  /* ---------- 3D DEVICE MOCKUPS ---------- */
+  .stage{perspective:1500px;perspective-origin:58% 42%}
+  .device{transform-style:preserve-3d;transition:transform .6s var(--ease);will-change:transform;position:relative}
+  .browser{
+    border-radius:6px;overflow:hidden;border:1px solid var(--line-strong);
+    background:var(--surface);
+    box-shadow:0 50px 100px -40px rgba(0,0,0,.9),0 12px 30px -18px rgba(0,0,0,.7);
+    transform-style:preserve-3d;
+  }
+  .browser-bar{display:flex;align-items:center;gap:8px;padding:11px 14px;background:rgba(255,255,255,.028);border-bottom:1px solid var(--line)}
+  .dots{display:flex;gap:6px}
+  .dots i{width:9px;height:9px;border-radius:50%;display:block;background:rgba(160,200,235,.24)}
+  .url{flex:1;margin-left:8px;background:rgba(0,0,0,.22);border-radius:3px;padding:5px 12px;font-size:11px;letter-spacing:.06em;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .screen{aspect-ratio:16/10.4;overflow:hidden;position:relative}
+  .floaty{
+    position:absolute;border-radius:var(--r);padding:14px 18px;
+    background:rgba(17,42,70,.92);border:1px solid var(--line-strong);
+    backdrop-filter:blur(8px);transform:translateZ(58px);box-shadow:0 24px 46px -24px rgba(0,0,0,.85);
+  }
+  .floaty .k{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--acc)}
+  .floaty .v{font-family:var(--serif);font-weight:600;font-size:20px;line-height:1.2;margin-top:2px}
+  .floaty.tl{top:-52px;left:-30px}
+  .floaty.br{bottom:-28px;right:-24px}
+  @media(max-width:560px){.floaty.tl{left:-6px;top:-46px}.floaty.br{right:-4px;bottom:-22px}.floaty{padding:10px 14px}.floaty .v{font-size:16px}}
+
+  /* ---------- Hero laptop (pure CSS, aluminium unibody) ---------- */
+  .laptop{position:relative;transform-style:preserve-3d}
+  .laptop-lid{
+    position:relative;
+    background:linear-gradient(168deg,#34383E 0%,#25282D 44%,#191B1F 100%);
+    border-radius:15px 15px 5px 5px;
+    padding:14px 14px 21px;
+    border:1px solid rgba(255,255,255,.11);
+    box-shadow:0 46px 92px -42px rgba(0,0,0,.95),0 12px 28px -16px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .laptop-cam{position:absolute;top:1.2%;left:50%;transform:translateX(-50%);width:1.1%;aspect-ratio:1;border-radius:50%;background:#0B0C0E;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09)}
+  .laptop-brand{position:absolute;bottom:1.5%;left:50%;transform:translateX(-50%);width:8%;height:4px;border-radius:3px;background:rgba(255,255,255,.09)}
+  .laptop-screen{
+    aspect-ratio:16/10;border-radius:4px;overflow:hidden;position:relative;background:var(--ink);
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.55);
+    container-type:inline-size;
+  }
+
+  /* base: a real 3D plane, so the keyboard foreshortens and tilts with the lid */
+  .laptop-base{
+    width:100%;aspect-ratio:100/60;margin-bottom:-38%;
+    transform-origin:top center;transform:rotateX(72deg);
+    background:linear-gradient(180deg,#3C4047 0%,#2E3238 26%,#282C31 100%);
+    border-radius:2px 2px 10px 10px;
+    padding:2.6% 5.5% 3%;
+    display:flex;flex-direction:column;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 0 0 1px rgba(0,0,0,.4);
+  }
+  .base-hinge{flex:none;height:5%;border-radius:2px;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,0))}
+  .kb{flex:none;height:50%;margin-top:3%;display:flex;flex-direction:column;gap:1.6%;
+    background:rgba(0,0,0,.46);border-radius:3px;padding:1.3%}
+  .kb-row{flex:1;border-radius:1.5px}
+  .kb-row.fn{flex:.68}
+  .kb-row.n14{background:repeating-linear-gradient(90deg,#1E2126 0 6.1%,transparent 6.1% 7.143%)}
+  .kb-row.n13{background:repeating-linear-gradient(90deg,#1E2126 0 6.6%,transparent 6.6% 7.692%)}
+  .kb-row.n12{background:repeating-linear-gradient(90deg,#1E2126 0 7.2%,transparent 7.2% 8.333%)}
+  .kb-row.space{display:flex;gap:1.1%}
+  .kb-row.space i{display:block;background:#1E2126;border-radius:1.5px}
+  .kb-row.space .k1{flex:1}
+  .kb-row.space .k2{flex:1.35}
+  .kb-row.space .sp{flex:6.5}
+  .trackpad{flex:none;width:31%;height:25%;margin:3.5% auto 0;border-radius:3px;
+    background:linear-gradient(180deg,#34383F,#2B2F35);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.06),inset 0 1px 3px rgba(0,0,0,.45)}
+  .laptop-shadow{position:absolute;left:1%;right:1%;bottom:1%;height:13%;
+    background:radial-gradient(ellipse at center,rgba(0,0,0,.6),transparent 72%);filter:blur(13px)}
+
+  /* the laptop screen shows a true-to-size replica of the Start a project page.
+     It is laid out at a fixed 1280x800 and scaled down, so zooming it back up
+     lands on exactly the real page's proportions. */
+  .mini-frame{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+  .mini-page{width:1280px;height:800px;transform-origin:top left;display:flex;align-items:center}
+  .replica{background:var(--ink)}
+  .replica .section{padding-block:66px}
+  .replica .wrap{max-width:1160px;padding-inline:44px}
+  .replica .contact h2{font-size:50px}
+  .replica .contact-grid{grid-template-columns:1fr 1fr;gap:56px}
+  .replica .two{grid-template-columns:1fr 1fr}
+  .replica .reveal{opacity:1;transform:none}
+
+  /* "Open" control sitting on the screen */
+  .screen-scrim{position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(180deg,rgba(8,24,43,.34),rgba(8,24,43,.66));
+    transition:background .4s var(--ease)}
+  .laptop-screen:hover .screen-scrim{background:linear-gradient(180deg,rgba(8,24,43,.18),rgba(8,24,43,.5))}
+  .screen-open{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    display:inline-flex;align-items:center;gap:.8em;
+    font-family:var(--sans);font-weight:500;font-size:clamp(8.5px,1.02vw,11.5px);
+    letter-spacing:.2em;text-transform:uppercase;line-height:1;
+    background:var(--acc);color:#06172A;border:none;border-radius:3px;
+    padding:1.25em 2.4em;cursor:pointer;
+    box-shadow:0 16px 38px -14px rgba(0,0,0,.85);
+    transition:background .25s var(--ease),transform .25s var(--ease)}
+  .screen-open svg{width:1.05em;height:1.05em}
+  .screen-open:hover{background:var(--acc-bright);transform:translate(-50%,-50%) scale(1.04)}
+  .screen-open:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+
+  /* camera push-in: a real dolly through 3D space toward the screen */
+  #zoomVeil{position:fixed;inset:0;z-index:89;background:var(--ink);opacity:0;
+    transition:opacity 1.1s var(--ease);pointer-events:none}
+  #cam{position:fixed;inset:0;z-index:90;overflow:hidden;pointer-events:none;
+    perspective:1200px;perspective-origin:50% 50%}
+  #cam::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(ellipse at center,transparent 42%,rgba(0,0,0,.6) 100%);
+    opacity:0;transition:opacity 1.3s var(--ease)}
+  #cam.go::after{opacity:1}
+  /* no will-change / backface-visibility here: both pin the layer to a single
+     low-res raster that then gets stretched, which is what caused the mush. */
+  #camRig{position:absolute;transform-style:preserve-3d}
+  #camRig.go{transition:transform 1.5s cubic-bezier(.42,0,.38,1)}
+  #contact{transform-origin:center center}
+
+  /* ---------- mini site previews (pure CSS, no external images) ---------- */
+  .mk{position:absolute;inset:0;font-family:var(--sans)}
+  /* Konoba Makara */
+  .mk-makara{background:linear-gradient(180deg,#123037 0%,#174343 45%,#1d5450 100%)}
+  .mk-makara .sky{position:absolute;inset:0;background:radial-gradient(120% 82% at 78% -12%,rgba(224,168,104,.5),transparent 56%)}
+  .mk-makara .sun{position:absolute;top:17%;right:17%;width:50px;height:50px;border-radius:50%;background:radial-gradient(circle,#f5dcb4,#dd9a58);opacity:.92}
+  .mk-makara .sea{position:absolute;left:0;right:0;bottom:0;height:37%;background:linear-gradient(180deg,rgba(4,20,22,.15),#061a1c);border-top:1px solid rgba(255,255,255,.07)}
+  .mk-nav{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:13px 18px;color:#fff;font-family:var(--serif);font-weight:600;letter-spacing:.14em;font-size:13px;z-index:3}
+  .mk-nav .r{display:flex;gap:13px;font-family:var(--sans);font-weight:300;font-size:8.5px;letter-spacing:.18em;color:rgba(255,255,255,.72)}
+  .mk-center{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;color:#fff;z-index:3;padding:0 20px}
+  .mk-center .tag{font-size:8.5px;letter-spacing:.3em;color:#e8bd85;text-transform:uppercase}
+  .mk-center .big{font-family:var(--serif);font-weight:600;font-size:clamp(28px,7.4vw,48px);letter-spacing:.01em;margin-top:6px}
+  .mk-center .sub{font-size:10.5px;font-weight:300;color:rgba(255,255,255,.82);margin-top:6px;letter-spacing:.04em}
+  .mk-center .pill{margin-top:16px;font-size:8.5px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:#12302f;background:#e8bd85;padding:8px 18px;border-radius:2px}
+
+  /* Juicy Patty — retro diner */
+  .mk-jp{background:#f2e7d5}
+  .mk-jp .band{position:absolute;top:0;left:0;right:0;height:33%;background:repeating-linear-gradient(45deg,#d8433a 0 18px,#bd332c 18px 36px)}
+  .mk-jp-nav{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:13px 18px;z-index:4;color:#fff;font-family:var(--sans);font-weight:600;letter-spacing:.12em;font-size:13px}
+  .mk-jp-nav .r{font-weight:300;font-size:8.5px;letter-spacing:.2em;color:rgba(255,255,255,.88)}
+  /* CSS-drawn burger, no emoji */
+  .mk-jp .burger{position:absolute;top:25%;left:50%;transform:translateX(-50%);width:92px;height:92px;border-radius:50%;background:#f8f2e6;border:5px solid #fff;box-shadow:0 14px 28px -10px rgba(0,0,0,.35),0 0 0 4px #d8433a;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2.5px;z-index:5}
+  .mk-jp .burger i{display:block;border-radius:6px}
+  .mk-jp .burger .top{width:46px;height:15px;background:linear-gradient(180deg,#e0a555,#c9873c);border-radius:23px 23px 5px 5px}
+  .mk-jp .burger .let{width:50px;height:6px;background:#5f9a4a;border-radius:4px}
+  .mk-jp .burger .pat{width:48px;height:11px;background:#7d4a2c;border-radius:4px}
+  .mk-jp .burger .bot{width:46px;height:9px;background:#d09a4d;border-radius:4px 4px 8px 8px}
+  .mk-jp .plate{position:absolute;bottom:13%;left:0;right:0;text-align:center;z-index:4}
+  .mk-jp .plate .t{font-family:var(--serif);font-weight:700;color:#bd332c;font-size:clamp(23px,6.2vw,38px);letter-spacing:.01em}
+  .mk-jp .plate .s{font-size:8.5px;letter-spacing:.26em;color:#8a6636;text-transform:uppercase;margin-top:3px}
+  .mk-jp .star{position:absolute;bottom:12%;right:13%;width:50px;height:50px;border-radius:50%;background:#2f7048;color:#fff;display:grid;place-items:center;text-align:center;font-size:8px;font-weight:500;letter-spacing:.1em;line-height:1.25;transform:rotate(-10deg);z-index:6}
+
+  /* reserved slot */
+  .mk-soon{background:linear-gradient(160deg,var(--surface-2),var(--surface));display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px}
+  .mk-soon .plus{width:44px;height:44px;border:1px solid var(--line-strong);display:grid;place-items:center;color:var(--acc);font-family:var(--serif);font-size:26px;line-height:1}
+  .mk-soon .t{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim)}
+
+  /* ---------- VALUE STRIP ---------- */
+  .strip{border-block:1px solid var(--line);background:var(--ink-2)}
+  .strip-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+  .val{padding:38px 28px;border-left:1px solid var(--line)}
+  .val:first-child{border-left:none}
+  .val .n{font-family:var(--serif);font-weight:600;font-size:clamp(21px,2.5vw,28px);line-height:1.2}
+  .val .l{color:var(--muted);font-size:14px;margin-top:8px;line-height:1.6}
+  @media(max-width:760px){
+    .strip-grid{grid-template-columns:1fr 1fr}
+    .val{border-top:1px solid var(--line);padding:30px 22px}
+    .val:nth-child(1),.val:nth-child(2){border-top:none}
+    .val:nth-child(odd){border-left:none}
+  }
+
+  /* ---------- section heading ---------- */
+  .head{max-width:62ch}
+  .head h2{font-size:clamp(32px,4.8vw,52px);font-weight:600;margin-top:20px}
+  .head p{color:var(--muted);margin-top:18px;font-size:17px;max-width:54ch}
+
+  /* ---------- SERVICES ---------- */
+  .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:58px;background:var(--line);border:1px solid var(--line)}
+  @media(max-width:900px){.svc-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.svc-grid{grid-template-columns:1fr}}
+  .card{background:var(--ink);padding:36px 30px;position:relative;transition:background .4s var(--ease)}
+  .card:hover{background:var(--surface)}
+  .card .ic{width:34px;height:34px;display:grid;place-items:center;color:var(--acc);margin-bottom:22px}
+  .card .ic svg{width:26px;height:26px}
+  .card h3{font-size:23px;font-weight:600}
+  .card p{color:var(--muted);font-size:14.5px;margin-top:10px;line-height:1.7}
+
+  /* ---------- WORK ---------- */
+  .work-item{display:grid;grid-template-columns:.9fr 1.1fr;gap:58px;align-items:center;margin-top:76px}
+  .work-item:nth-child(even){grid-template-columns:1.1fr .9fr}
+  .work-item:nth-child(even) .work-copy{order:2}
+  .work-tag{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--acc)}
+  .work-copy h3{font-size:clamp(30px,3.8vw,44px);font-weight:600;margin-top:14px}
+  .work-copy .loc{color:var(--acc-soft);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;margin-top:10px}
+  .work-copy p{color:var(--muted);margin-top:20px;font-size:15.5px;max-width:46ch;line-height:1.75}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+  .chip{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line-strong);padding:7px 14px;border-radius:2px}
+  .work-link{display:inline-flex;align-items:center;gap:9px;margin-top:28px;color:var(--acc);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid transparent;padding-bottom:3px;transition:border-color .3s}
+  .work-link:hover{border-color:var(--acc)}
+  .work-link svg{transition:transform .3s var(--ease)}
+  .work-link:hover svg{transform:translate(3px,-3px)}
+  @media(max-width:840px){
+    .work-item,.work-item:nth-child(even){grid-template-columns:1fr;gap:38px;margin-top:64px}
+    .work-item .work-copy,.work-item:nth-child(even) .work-copy{order:2}
+  }
+
+  /* ---------- PROCESS ---------- */
+  .proc{display:grid;grid-template-columns:repeat(4,1fr);gap:36px;margin-top:58px}
+  @media(max-width:820px){.proc{grid-template-columns:1fr 1fr;gap:34px}}
+  @media(max-width:480px){.proc{grid-template-columns:1fr}}
+  .step{position:relative;padding-top:30px}
+  .step::before{content:"";position:absolute;top:0;left:36px;right:0;height:1px;background:var(--line)}
+  .step .s{font-family:var(--serif);font-style:italic;font-size:26px;color:var(--acc);line-height:1;position:absolute;top:-14px}
+  .step h4{font-size:22px;font-weight:600;margin-top:6px}
+  .step p{color:var(--muted);font-size:14.5px;margin-top:10px;line-height:1.7}
+
+  /* ---------- ABOUT ---------- */
+  .about{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+  @media(max-width:840px){.about{grid-template-columns:1fr;gap:40px}}
+  .about h2{font-size:clamp(30px,4.2vw,46px);font-weight:600;margin-top:20px}
+  .about p{color:var(--muted);font-size:16.5px;margin-top:20px;line-height:1.78}
+  .about-card{background:var(--ink-2);border:1px solid var(--line);padding:44px 40px;position:relative}
+  .quote{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(23px,2.9vw,30px);line-height:1.42;color:var(--text)}
+  .sig{margin-top:24px;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+  .promise{display:flex;flex-direction:column;gap:16px;margin-top:30px}
+  .promise .row{display:flex;gap:14px;align-items:flex-start;color:var(--muted);font-size:15px;line-height:1.6}
+  .promise .row svg{flex:none;margin-top:5px;color:var(--acc)}
+
+  /* ---------- CONTACT ---------- */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:58px;align-items:start}
+  @media(max-width:840px){.contact-grid{grid-template-columns:1fr;gap:42px}}
+  .contact h2{font-size:clamp(32px,4.8vw,54px);font-weight:600;margin-top:20px}
+  .contact .lead{color:var(--muted);font-size:17px;margin-top:18px;max-width:40ch;line-height:1.7}
+  .reach{display:flex;flex-direction:column;margin-top:34px;border-top:1px solid var(--line)}
+  .reach a{display:flex;align-items:center;gap:16px;padding:19px 4px;border-bottom:1px solid var(--line);transition:padding-left .3s var(--ease),color .3s}
+  .reach a:hover{padding-left:12px}
+  .reach a:hover .t{color:var(--acc)}
+  .reach .ic{width:22px;flex:none;color:var(--acc);display:flex}
+  .reach .tx{display:flex;flex-direction:column;gap:2px}
+  .reach .t{font-size:16px;transition:color .3s;line-height:1.3}
+  .reach .d{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);line-height:1.3}
+
+  form{background:var(--ink-2);border:1px solid var(--line);padding:34px;display:flex;flex-direction:column;gap:18px}
+  .field{display:flex;flex-direction:column;gap:8px}
+  .field label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+  .field input,.field textarea{
+    background:transparent;border:none;border-bottom:1px solid var(--line-strong);border-radius:0;
+    padding:10px 2px;color:var(--text);font-family:var(--sans);font-weight:300;font-size:16px;
+    transition:border-color .3s;
+  }
+  .field input::placeholder,.field textarea::placeholder{color:#5d584f}
+  .field input:focus,.field textarea:focus{border-bottom-color:var(--acc);outline:none}
+  .field textarea{resize:vertical;min-height:96px;line-height:1.6}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:460px){.two{grid-template-columns:1fr}}
+  form .btn-primary{margin-top:8px}
+  .form-note{font-size:11px;letter-spacing:.14em;text-transform:uppercase;text-align:center;color:var(--dim)}
+
+  /* ---------- FOOTER ---------- */
+  footer{border-top:1px solid var(--line);padding-block:48px;background:var(--ink-2)}
+  .foot{display:flex;justify-content:space-between;align-items:flex-start;gap:28px;flex-wrap:wrap}
+  .foot .muted{color:var(--dim);font-size:12px;letter-spacing:.1em}
+  .foot .socials{display:flex;gap:10px}
+  .foot .socials a{width:40px;height:40px;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted);border-radius:var(--r);transition:color .3s,border-color .3s}
+  .foot .socials a:hover{color:var(--acc);border-color:var(--acc)}
+
+  /* ---------- PHOTO GRADING (done in the browser, no Photoshop) ----------
+     --grade: 0 = untouched colours, 1 = full navy duotone. One number, all photos. */
+  .ph{position:relative;overflow:hidden;isolation:isolate}
+  .ph img{display:block;width:100%;height:100%;object-fit:cover;
+    filter:saturate(calc(1 - var(--grade) * .5)) contrast(1.06) brightness(.94)}
+  .ph::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:var(--navy);mix-blend-mode:color;opacity:var(--grade)}
+
+  /* ---------- WHO I BUILD FOR ---------- */
+  .who{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:54px}
+  @media(max-width:860px){.who{grid-template-columns:1fr;max-width:420px;margin-inline:auto}}
+  .who-card{border-radius:6px;border:1px solid var(--line);aspect-ratio:4/3;
+    display:flex;align-items:flex-end;transition:transform .5s var(--ease)}
+  .who-card img{position:absolute;inset:0;transition:transform .9s var(--ease)}
+  .who-card::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:linear-gradient(180deg,rgba(8,24,43,.12) 0%,rgba(8,24,43,.55) 48%,rgba(8,24,43,.93) 100%)}
+  .who-card:hover{transform:translateY(-4px)}
+  .who-card:hover img{transform:scale(1.06)}
+  .who-card .txt{position:relative;z-index:3;padding:26px 24px;color:#EDF3F9}
+  .who-card h3{font-size:22px;font-weight:600;color:#fff}
+  .who-card p{font-size:14px;line-height:1.6;margin-top:7px;color:rgba(237,243,249,.78)}
+
+  /* ---------- SECTION PHOTO BACKGROUND ---------- */
+  .sec-bg{position:absolute;inset:0;z-index:0;pointer-events:none}
+  .sec-bg img{opacity:.62}
+  .sec-bg::after{content:"";position:absolute;inset:0;z-index:2;
+    background:linear-gradient(180deg,var(--ink-2) 0%,rgba(12,32,56,.58) 36%,rgba(12,32,56,.74) 72%,var(--ink-2) 100%)}
+  .has-bg{position:relative;overflow:hidden}
+  .has-bg > .wrap{position:relative;z-index:1}
+  /* contact sits on the page ground, not --ink-2, so its veil fades to that;
+     and a lighter grade keeps the harbour lights warm against the navy */
+  .contact .sec-bg{--grade:.3}
+  .contact .sec-bg img{opacity:.7}
+  .contact .sec-bg::after{background:linear-gradient(180deg,var(--ink) 0%,rgba(8,24,43,.5) 30%,rgba(8,24,43,.66) 74%,var(--ink) 100%)}
+  /* on a light section the photo becomes a faint surface texture, not a picture */
+  .light .sec-bg{--grade:.16;--veil-edge:var(--ink)}
+  .light .sec-bg img{opacity:.68;filter:saturate(.6) brightness(1) contrast(.98)}
+  .light .sec-bg::after{background:linear-gradient(180deg,var(--veil-edge) 0%,rgba(246,249,252,.3) 22%,rgba(246,249,252,.44) 78%,var(--veil-edge) 100%)}
+  /* water is the palest and closest to brand hue, so it can carry more */
+  #services .sec-bg img{opacity:.8;filter:saturate(.72) brightness(1) contrast(.98)}
+  /* light on plaster is almost pure gradient — barely any information to lose */
+  #rebuild .sec-bg{--grade:.4}
+  #rebuild .sec-bg img{opacity:1;filter:saturate(.7) brightness(.84) contrast(1.12)}
+  #rebuild .sec-bg::after{background:linear-gradient(180deg,var(--veil-edge) 0%,rgba(246,249,252,.1) 20%,rgba(246,249,252,.18) 80%,var(--veil-edge) 100%)}
+  /* olive shadows carry the most pattern, so pull them back furthest */
+  #pricing .sec-bg{--grade:.2;--veil-edge:var(--ink-2)}
+  #pricing .sec-bg img{opacity:.58;filter:saturate(.55) brightness(1.02) contrast(.95)}
+
+  /* ---------- AXIS-BLEND BACKDROP ----------
+     Same structure as the mounir gradient (90deg, stops at 0/33/67/100), but
+     in our own deep blues. The two soft radials stand in for the softness and
+     wave parameters, which the flat CSS version can't reproduce. */
+  .grad-bg{
+    background-color:#08182B;
+    background-image:
+      radial-gradient(1300px 640px at 10% -10%, rgba(28,58,100,.5), transparent 62%),
+      radial-gradient(1100px 560px at 92% 108%, rgba(23,53,83,.55), transparent 60%),
+      linear-gradient(90deg,#08182B 0%,#0F2843 33%,#16355A 67%,#1C3A64 100%);
+  }
+
+  /* ---------- LIGHT SECTIONS ----------
+     The page alternates: dark for the cinematic moments (hero, work, contact),
+     light for the ones people read. Same tokens, re-pointed. */
+  .light{
+    --ink:#F6F9FC;
+    --ink-2:#EAF0F6;
+    --surface:#FFFFFF;
+    --surface-2:#F1F5FA;
+    --line:rgba(28,58,100,.15);
+    --line-strong:rgba(28,58,100,.26);
+    --text:#0F2942;
+    --muted:#4C6483;
+    --dim:#5A7489;
+    --acc:#2F6E9E;
+    --acc-deep:#23587F;
+    --acc-bright:#1C3A64;
+    --acc-wash:rgba(47,110,158,.10);
+    --acc-soft:#5C7C9D;
+    background:var(--ink);
+    color:var(--text);
+  }
+  .light .btn-primary{color:#fff}
+  .light .tier .badge{color:#fff}
+  .light .ba-knob{color:#fff}
+  .light .ba{box-shadow:0 32px 72px -42px rgba(15,41,66,.5)}
+  .light .card:hover{background:var(--surface)}
+
+  /* ---------- LANGUAGE TOGGLE ---------- */
+  .lang{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:3px;padding:4px}
+  .lang button{background:none;border:none;color:var(--dim);font-family:var(--sans);font-size:11.5px;
+    font-weight:500;letter-spacing:.14em;padding:4px 9px;cursor:pointer;border-radius:2px;
+    transition:color .25s,background .25s}
+  .lang button[aria-pressed="true"]{color:var(--text);background:var(--acc-wash)}
+  .lang button:hover{color:var(--acc-bright)}
+
+  /* ---------- BEFORE / AFTER ---------- */
+  .ba{position:relative;margin-top:54px;max-width:900px;margin-inline:auto;
+    border:1px solid var(--line-strong);border-radius:6px;overflow:hidden;
+    box-shadow:0 44px 96px -48px rgba(0,0,0,.9)}
+  .ba-stack{position:relative;aspect-ratio:16/10;--pos:50}
+  .ba-pane{position:absolute;inset:0;overflow:hidden;container-type:inline-size}
+  .ba-pane.after{clip-path:inset(0 0 0 calc(var(--pos) * 1%))}
+  .ba-line{position:absolute;top:0;bottom:0;left:calc(var(--pos) * 1%);width:2px;
+    background:var(--acc);z-index:6;pointer-events:none}
+  .ba-knob{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:38px;height:38px;border-radius:50%;background:var(--acc);color:#06172A;
+    display:grid;place-items:center;box-shadow:0 10px 26px -8px rgba(0,0,0,.85)}
+  .ba-range{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:ew-resize;z-index:7}
+  .ba-range:focus-visible + .ba-line{outline:2px solid var(--acc-bright);outline-offset:4px}
+  .ba-tag{position:absolute;bottom:12px;z-index:5;pointer-events:none;font-size:10px;
+    letter-spacing:.2em;text-transform:uppercase;padding:6px 12px;border-radius:2px;
+    background:rgba(8,24,43,.82);color:var(--text)}
+  .ba-tag.l{left:12px}
+  .ba-tag.r{right:12px}
+
+  /* the dated site, drawn in CSS */
+  .os{position:absolute;inset:0;background:#D6DBE0;color:#10243C;
+    font-family:"Times New Roman",Times,serif;font-size:2.1cqi;line-height:1.45}
+  .os-top{background:linear-gradient(180deg,#3272AC,#17416B);color:#fff;text-align:center;
+    padding:1.1em 0;border-bottom:3px solid #AFBAC4}
+  .os-top b{display:block;font-size:2.3em;letter-spacing:.05em;line-height:1.1}
+  .os-top i{font-size:.95em;color:#CADDEE}
+  .os-nav{background:#AFBAC4;text-align:center;padding:.5em;font-size:.95em;color:#123D6B}
+  .os-nav span{margin:0 .7em;text-decoration:underline}
+  .os-body{display:grid;grid-template-columns:1.35fr .65fr;gap:1.1em;padding:1.3em 1.4em}
+  .os-body h4{font-size:1.6em;margin:0 0 .5em;color:#8A1A1A;font-weight:700}
+  .os-bar{height:.42em;background:#A9B4BE;margin-bottom:.45em}
+  .os-bar.s{width:72%}
+  .os-photo{background:#98A4AF;border:2px solid #fff;outline:1px solid #7C8A96;
+    display:grid;place-items:center;font-size:.85em;color:#3A4A5A;aspect-ratio:4/3}
+  .os-foot{position:absolute;bottom:0;left:0;right:0;background:#AFBAC4;text-align:center;
+    font-size:.8em;padding:.5em;color:#3A4A5A}
+
+  /* ---------- PRICING ---------- */
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:56px;align-items:stretch}
+  @media(max-width:880px){.tiers{grid-template-columns:1fr;max-width:440px;margin-inline:auto}}
+  .tier{position:relative;display:flex;flex-direction:column;gap:20px;
+    background:var(--ink-2);border:1px solid var(--line);border-radius:6px;padding:34px 28px}
+  .tier.feat{border-color:var(--acc);background:var(--surface)}
+  .tier .badge{position:absolute;top:-10px;left:28px;background:var(--acc);color:#06172A;
+    font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:4px 12px;border-radius:2px}
+  .tier h3{font-size:25px;font-weight:600}
+  .tier .price{font-family:var(--serif);font-size:42px;font-weight:600;line-height:1;color:var(--acc-bright)}
+  .tier .price small{display:block;font-family:var(--sans);font-size:10.5px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--dim);margin-bottom:9px}
+  .tier ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
+  .tier li{display:flex;gap:11px;align-items:flex-start;color:var(--muted);font-size:14.5px;line-height:1.55}
+  .tier li svg{flex:none;margin-top:4px;color:var(--acc)}
+  .tier .btn{margin-top:auto;justify-content:center}
+  .price-note{margin-top:30px;font-size:13px;color:var(--dim);text-align:center}
+
+  /* ---------- FAQ ---------- */
+  .faq{margin-top:52px;max-width:780px;border-top:1px solid var(--line)}
+  .faq details{border-bottom:1px solid var(--line)}
+  .faq summary{list-style:none;cursor:pointer;position:relative;padding:22px 46px 22px 0;
+    font-family:var(--serif);font-size:21px;font-weight:600;color:var(--text);transition:color .25s}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary:hover{color:var(--acc-bright)}
+  .faq summary::after{content:"";position:absolute;right:10px;top:50%;width:10px;height:10px;
+    border-right:1.5px solid var(--acc);border-bottom:1.5px solid var(--acc);
+    transform:translateY(-70%) rotate(45deg);transition:transform .3s var(--ease)}
+  .faq details[open] summary::after{transform:translateY(-25%) rotate(-135deg)}
+  .faq summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+  .faq .a{padding:0 46px 26px 0;color:var(--muted);font-size:15.5px;line-height:1.75}
+
+  /* reveal — progressive enhancement, visible without JS */
+  .js .reveal{opacity:0;transform:translateY(22px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+  .js .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){
+    .js .reveal{opacity:1;transform:none;transition:none}
+    *{scroll-behavior:auto!important}
+  }
+</style>
+
+<header class="nav" id="siteNav">
+  <div class="nav-shell">
+    <div class="wrap nav-in">
+      <a class="brand" href="#top" aria-label="Puntamedia home">
+        <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M8.4 3.6 25.8 12.9c1.7.9 1.7 3.3 0 4.2l-3.6 1.9c-4.2-2.3-8.9-3.4-13.8-3.4z" fill="#1C3A64"/><path d="M8.4 19.3c4.9 0 9.6 1.1 13.8 3.4l-10.7 5.7c-1.6.9-3.1-.4-3.1-2.1z" fill="#5A93BC"/></svg></span>
+        Puntamedia
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+      <a class="lnk" href="#work">Work</a>
+      <a class="lnk" href="#services">Services</a>
+      <a class="lnk" href="#pricing">Pricing</a>
+      <a class="lnk" href="#faq">FAQ</a>
+      <a class="lnk" href="#about">About</a>
+      <span class="lang">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="hr" aria-pressed="false">HR</button>
+      </span>
+        <a class="btn btn-primary nav-cta" href="#contact">Start a project</a>
+        <button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu">
+          <span></span><span></span><span></span>
+        </button>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu" hidden>
+  <nav aria-label="Menu">
+      <a class="mlnk" href="#work">Work</a>
+      <a class="mlnk" href="#services">Services</a>
+      <a class="mlnk" href="#pricing">Pricing</a>
+      <a class="mlnk" href="#faq">FAQ</a>
+      <a class="mlnk" href="#about">About</a>
+  </nav>
+  <div class="mobile-foot">
+    <span class="lang">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="hr" aria-pressed="false">HR</button>
+      </span>
+    <a class="btn btn-primary" href="#contact">Start a project</a>
+  </div>
+</div>
+
+<main id="top">
+
+  <!-- VIDEO HERO (activated by JS only when the clip is ready on a wide screen) -->
+  <div class="vhero-track" id="vheroTrack">
+    <div class="vhero-pin" id="vheroPin">
+      <video id="heroVideo" muted playsinline preload="auto" poster="video/hero-poster.webp" aria-hidden="true">
+        <source src="video/hero.mp4" type="video/mp4">
+      </video>
+      <span class="vhero-veil" id="vheroVeil" aria-hidden="true"></span>
+      <div class="vhero-screen" id="vheroScreen" aria-hidden="true"><div class="vh-inner"></div></div>
+      <div class="vhero-copy" id="vheroCopy">
+        <div class="wrap">
+          <span class="eyebrow">Web Design Studio</span>
+          <h1>Websites your business deserves &mdash; <em>designed around you, built to perform.</em></h1>
+          <p class="hero-sub">Puntamedia designs and builds custom, multilingual websites for restaurants, shops and small businesses &mdash; in whatever style suits your brand, and built to bring you customers.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#work">See the work</a>
+            <a class="btn btn-ghost" href="#contact">Start your project</a>
+          </div>
+        </div>
+      </div>
+      <span class="vhero-hint" aria-hidden="true">Scroll<i></i></span>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <canvas id="bg-canvas" aria-hidden="true"></canvas>
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Web Design Studio</span>
+        <h1>Websites your business deserves &mdash; <em>designed around you, built to perform.</em></h1>
+        <p class="hero-sub">Puntamedia designs and builds custom, multilingual websites for restaurants, shops and small businesses &mdash; in whatever style suits your brand, and built to bring you customers.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#work">See the work</a>
+          <a class="btn btn-ghost" href="#contact">Start your project</a>
+        </div>
+        <div class="hero-meta">
+          <span><b>Four languages</b></span>
+          <span><b>Never templated</b></span>
+          <span><b>Live in days</b></span>
+        </div>
+      </div>
+
+      <div class="hero-visual stage">
+        <div class="device" id="heroDevice">
+          <div class="laptop">
+            <div class="laptop-shadow" aria-hidden="true"></div>
+            <div class="laptop-lid">
+              <span class="laptop-cam" aria-hidden="true"></span>
+              <div class="laptop-screen">
+                <div class="mini-frame" inert aria-hidden="true">
+                  <div class="mini-page replica" id="miniPage"></div>
+                </div>
+                <span class="screen-scrim" aria-hidden="true"></span>
+                <button type="button" class="screen-open" id="diveBtn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  Open
+                </button>
+              </div>
+              <span class="laptop-brand" aria-hidden="true"></span>
+            </div>
+            <div class="laptop-base" aria-hidden="true">
+              <div class="base-hinge"></div>
+              <div class="kb">
+                <div class="kb-row fn n13"></div>
+                <div class="kb-row n14"></div>
+                <div class="kb-row n14"></div>
+                <div class="kb-row n13"></div>
+                <div class="kb-row n12"></div>
+                <div class="kb-row space">
+                  <i class="k1"></i><i class="k1"></i><i class="k2"></i>
+                  <i class="sp"></i>
+                  <i class="k2"></i><i class="k1"></i><i class="k1"></i>
+                </div>
+              </div>
+              <div class="trackpad"></div>
+            </div>
+          </div>
+          <div class="floaty tl"><div class="k">Loads in</div><div class="v">0.9 seconds</div></div>
+          <div class="floaty br"><div class="k">Built for</div><div class="v">Every screen</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUE STRIP -->
+  <section class="strip light">
+    <div class="wrap" style="padding-inline:0">
+      <div class="strip-grid">
+        <div class="val"><div class="n">Entirely custom</div><div class="l">Designed around your brand &mdash; never a drag-and-drop template.</div></div>
+        <div class="val"><div class="n">Four languages</div><div class="l">Croatian, English, German and Italian, so every guest feels at home.</div></div>
+        <div class="val"><div class="n">Days, not months</div><div class="l">A considered process that still gets you online quickly.</div></div>
+        <div class="val"><div class="n">Made on Ugljan</div><div class="l">Rooted on the Adriatic, building for businesses everywhere.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section light has-bg" id="services">
+    <div class="sec-bg ph" aria-hidden="true">
+      <img src="img/water.webp" alt="" loading="lazy" decoding="async">
+    </div>
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="eyebrow">What I do</span>
+        <h2>Everything your business needs to look its best online.</h2>
+        <p>One partner, from the first conversation to a living site that keeps working for you &mdash; in every language your customers speak.</p>
+      </div>
+      <div class="svc-grid">
+        <div class="card reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="4" width="18" height="14" rx="1"/><path d="M3 8.5h18M8 21h8"/></svg></div>
+          <h3>Custom website design</h3>
+          <p>A site built around your story, your colours and your customers &mdash; not a layout everyone else is already using.</p>
+        </div>
+        <div class="card reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></div>
+          <h3>Multilingual &amp; local</h3>
+          <p>Croatian, English, German, Italian. Speak to your neighbours and to the travellers finding you for the first time.</p>
+        </div>
+        <div class="card reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M5 3v18M5 3c2 0 3 1.5 3 4s-1 4-3 4M15 3c-1 3-1 6 0 8h4c1-2 1-5 0-8M17 11v10"/></svg></div>
+          <h3>Restaurants &amp; hospitality</h3>
+          <p>Menus, opening hours, directions and reservations &mdash; the things guests actually look for, presented beautifully.</p>
+        </div>
+        <div class="card reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+          <h3>Quick, careful delivery</h3>
+          <p>Modern tools let me move faster than a traditional agency &mdash; so you launch sooner, without anything feeling rushed.</p>
+        </div>
+        <div class="card reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
+          <h3>Found on Google</h3>
+          <p>Fast-loading, mobile-first and built to be discovered &mdash; so new customers land on your page, not a competitor's.</p>
+        </div>
+        <div class="card reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.2"/></svg></div>
+          <h3>Care &amp; updates</h3>
+          <p>Menus change, prices change, seasons change. I keep your site current so it never feels forgotten.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO I BUILD FOR -->
+  <section class="section light" id="who">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="eyebrow">Who I build for</span>
+        <h2>Places people choose with their eyes.</h2>
+        <p>Hospitality lives or dies on first impressions. If someone is deciding between you and the place next door, your website is doing that work before they ever walk in.</p>
+      </div>
+      <div class="who">
+        <article class="who-card ph reveal">
+          <img src="img/restaurant.webp" alt="The lamp-lit stone entrance of an Adriatic restaurant at dusk" loading="lazy" decoding="async">
+          <div class="txt">
+            <h3>Restaurants &amp; konobas</h3>
+            <p>Menus, the terrace, the story &mdash; and a table booked before they arrive.</p>
+          </div>
+        </article>
+        <article class="who-card ph reveal">
+          <img src="img/nightclub.webp" alt="A warmly lit bar interior with guests in conversation" loading="lazy" decoding="async">
+          <div class="txt">
+            <h3>Bars &amp; night life</h3>
+            <p>Atmosphere you can feel from a phone screen, plus tonight's programme.</p>
+          </div>
+        </article>
+        <article class="who-card ph reveal">
+          <img src="img/seaside-desk.webp" alt="A laptop on a wooden table overlooking the Adriatic at golden hour" loading="lazy" decoding="async">
+          <div class="txt">
+            <h3>Hotels &amp; apartments</h3>
+            <p>Rooms, availability and the view &mdash; in every language your guests speak.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section class="section grad-bg" id="work" style="border-block:1px solid var(--line)">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="eyebrow">Selected work</span>
+        <h2>Real businesses, real websites.</h2>
+        <p>A few of the places I've helped get online &mdash; each one custom-built, multilingual, and made to win customers.</p>
+      </div>
+
+      <article class="work-item">
+        <div class="work-visual stage reveal">
+          <div class="device">
+            <div class="browser">
+              <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">konoba-makara.hr</span></div>
+              <div class="screen">
+                <div class="mk mk-makara">
+                  <div class="sky"></div><div class="sun"></div>
+                  <div class="mk-nav">MAKARA<span class="r"><span>MENI</span><span>GALERIJA</span><span>KONTAKT</span></span></div>
+                  <div class="mk-center">
+                    <span class="tag">Lukoran &middot; Otok Ugljan</span>
+                    <span class="big">Okus mora</span>
+                    <span class="sub">Fresh Adriatic plates &middot; wood-fired &middot; sunset terrace</span>
+                    <span class="pill">Rezerviraj stol</span>
+                  </div>
+                  <div class="sea"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="work-copy reveal">
+          <span class="work-tag">Restaurant &middot; Hospitality</span>
+          <h3>Konoba Makara</h3>
+          <div class="loc">Lukoran, Island of Ugljan &middot; Croatia</div>
+          <p>A warm, seaside identity for a family tavern on Ugljan. Bilingual from the first click, with the menu, the story and the sunset terrace front and centre &mdash; so locals and travellers alike know exactly why to book a table.</p>
+          <div class="chips"><span class="chip">Bilingual HR / EN</span><span class="chip">Menu &amp; gallery</span><span class="chip">Mobile-first</span><span class="chip">Reservations</span></div>
+          <a class="work-link" href="#contact">Something like this? Let's talk
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="work-item">
+        <div class="work-visual stage reveal">
+          <div class="device">
+            <div class="browser">
+              <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">juicypatty.hr</span></div>
+              <div class="screen">
+                <div class="mk mk-jp">
+                  <div class="band"></div>
+                  <div class="mk-jp-nav">JUICY PATTY <span class="r">MENU &middot; LOCATION</span></div>
+                  <div class="burger"><i class="top"></i><i class="let"></i><i class="pat"></i><i class="bot"></i></div>
+                  <div class="plate"><div class="t">Big. Bold. Juicy.</div><div class="s">Preko &middot; Ugljan</div></div>
+                  <div class="star">FRESH<br>DAILY</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="work-copy reveal">
+          <span class="work-tag">Fast food &middot; Diner</span>
+          <h3>Juicy Patty</h3>
+          <div class="loc">Preko, Island of Ugljan &middot; Croatia</div>
+          <p>A playful, retro-diner look for a fast-food spot that wanted personality. Appetite-first visuals, an easy-to-scan menu and clear directions &mdash; the kind of page that turns a hungry scroll into a walk-in order.</p>
+          <div class="chips"><span class="chip">Retro branding</span><span class="chip">Digital menu</span><span class="chip">Bilingual</span><span class="chip">Maps &amp; hours</span></div>
+          <a class="work-link" href="#contact">Something like this? Let's talk
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="work-item">
+        <div class="work-visual stage reveal">
+          <div class="device">
+            <div class="browser">
+              <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">your-business.com</span></div>
+              <div class="screen"><div class="mk mk-soon"><div class="plus">+</div><div class="t">Project in progress</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="work-copy reveal">
+          <span class="work-tag">New &middot; 2026</span>
+          <h3>Your project here</h3>
+          <div class="loc">Two more launches on the way</div>
+          <p>The next case studies are being built now. Would you like yours to be one of them? There is room for a few more businesses this season &mdash; let's make something people remember.</p>
+          <div class="chips"><span class="chip">Now booking</span><span class="chip">Limited slots</span></div>
+          <a class="work-link" href="#contact">Enquire about a slot
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- BEFORE / AFTER -->
+  <section class="section light has-bg" id="rebuild">
+    <div class="sec-bg ph" aria-hidden="true">
+      <img src="img/wall-light.webp" alt="" loading="lazy" decoding="async">
+    </div>
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="eyebrow">Before &amp; after</span>
+        <h2>Most sites aren't broken. They're just old.</h2>
+        <p>Drag the handle to see what a rebuild does for a business that already has a website &mdash; same konoba, same menu, twenty years of difference.</p>
+      </div>
+      <div class="ba reveal">
+        <div class="ba-stack" id="baStack">
+          <div class="ba-pane">
+            <div class="os">
+              <div class="os-top"><b>KONOBA</b><i>~ Dobro doshli na nashe stranice ~</i></div>
+              <div class="os-nav"><span>Naslovnica</span><span>Jelovnik</span><span>Galerija</span><span>Kontakt</span></div>
+              <div class="os-body">
+                <div>
+                  <h4>Dobrodo&scaron;li!</h4>
+                  <div class="os-bar"></div><div class="os-bar"></div>
+                  <div class="os-bar s"></div><div class="os-bar"></div>
+                  <div class="os-bar s"></div>
+                </div>
+                <div class="os-photo">slika1.jpg</div>
+              </div>
+              <div class="os-foot">Broj posjeta: 004173 &nbsp;|&nbsp; Optimizirano za Internet Explorer 6</div>
+            </div>
+          </div>
+          <div class="ba-pane after" id="baAfter">
+            <div class="mk mk-makara">
+              <div class="sky"></div><div class="sun"></div>
+              <div class="mk-nav">KONOBA<span class="r"><span>MENI</span><span>GALERIJA</span><span>KONTAKT</span></span></div>
+              <div class="mk-center">
+                <span class="tag">Otok Ugljan</span>
+                <span class="big">Okus mora</span>
+                <span class="sub">Fresh Adriatic plates &middot; wood-fired &middot; sunset terrace</span>
+                <span class="pill">Rezerviraj stol</span>
+              </div>
+              <div class="sea"></div>
+            </div>
+          </div>
+          <span class="ba-tag l">Before</span>
+          <span class="ba-tag r">After</span>
+          <input class="ba-range" id="baRange" type="range" min="0" max="100" value="50" aria-label="Drag to compare the old and new design">
+          <div class="ba-line"><span class="ba-knob">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 6 4 12l5 6M15 6l5 6-5 6"/></svg>
+          </span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="section grad-bg" id="process">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="eyebrow">How it works</span>
+        <h2>From first hello to live site &mdash; simple and clear.</h2>
+        <p>No jargon and no endless meetings. A calm, four-step process that keeps you in the loop the whole way.</p>
+      </div>
+      <div class="proc">
+        <div class="step reveal"><div class="s">I</div><h4>Discover</h4><p>We talk about your business, your guests, and what a great site would actually do for you.</p></div>
+        <div class="step reveal"><div class="s">II</div><h4>Design</h4><p>I craft a look that fits your brand and show you a real, working preview &mdash; not a rough sketch.</p></div>
+        <div class="step reveal"><div class="s">III</div><h4>Build</h4><p>The full site comes together in every language you need, fast-loading and mobile-first.</p></div>
+        <div class="step reveal"><div class="s">IV</div><h4>Launch &amp; care</h4><p>We go live on your own domain, and I stay on to keep everything fresh and running.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section light has-bg" id="pricing" style="background:var(--ink-2)">
+    <div class="sec-bg ph" aria-hidden="true">
+      <img src="img/olive-shadows.webp" alt="" loading="lazy" decoding="async">
+    </div>
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="eyebrow">Pricing</span>
+        <h2>Clear prices, no surprises.</h2>
+        <p>You'll get a fixed quote before anything starts. No hourly billing, no invoice at the end you didn't expect.</p>
+      </div>
+      <div class="tiers">
+        <div class="tier reveal">
+          <h3>Essential</h3>
+          <div class="price"><small>From</small>&euro;490</div>
+          <ul>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>One-page site, beautifully done</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Two languages</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Menu, hours, photos, map</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Contact form &amp; mobile-first</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Live on your domain</li>
+          </ul>
+          <a class="btn btn-ghost" href="#contact">Enquire</a>
+        </div>
+        <div class="tier feat reveal">
+          <span class="badge">Most chosen</span>
+          <h3>Complete</h3>
+          <div class="price"><small>From</small>&euro;890</div>
+          <ul>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Up to six pages</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>All four languages</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Full menu &amp; photo gallery</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Google setup so you're found</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Reservations or ordering link</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Three months of updates included</li>
+          </ul>
+          <a class="btn btn-primary" href="#contact">Start this</a>
+        </div>
+        <div class="tier reveal">
+          <h3>Bespoke</h3>
+          <div class="price"><small>Let's</small>Talk</div>
+          <ul>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Online shop or ordering</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Booking &amp; availability system</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Several locations or brands</li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Ongoing care plan</li>
+          </ul>
+          <a class="btn btn-ghost" href="#contact">Enquire</a>
+        </div>
+      </div>
+      <p class="price-note">Hosting and domain are billed separately, at cost &mdash; usually around &euro;60 a year, and it stays in your name.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section light" id="faq">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="eyebrow">Questions</span>
+        <h2>The things people ask before they email.</h2>
+      </div>
+      <div class="faq reveal">
+        <details open>
+          <summary>How long does it take?</summary>
+          <div class="a">A one-page site is usually ready in three to five days. A larger site takes one to two weeks. The slowest part is almost always waiting on photos and menu text, so the sooner you send those, the sooner you're live.</div>
+        </details>
+        <details>
+          <summary>What do I need to give you?</summary>
+          <div class="a">Your menu or product list, opening hours, a phone number and address, and any photos you already have. If you don't have good photos, tell me &mdash; I'll show you what to shoot on a phone, or we sort out a photographer.</div>
+        </details>
+        <details>
+          <summary>Who owns the site and the domain?</summary>
+          <div class="a">You do, completely. The domain is registered in your name and the site is yours to keep. If you ever want to move to someone else, you take everything with you &mdash; no lock-in, no hostage situation.</div>
+        </details>
+        <details>
+          <summary>What happens when my menu or prices change?</summary>
+          <div class="a">Send me the change and it's live the same day. Small updates are included for the first three months on the Complete package; after that they're a small fixed fee, or you can take a care plan and stop thinking about it.</div>
+        </details>
+        <details>
+          <summary>Can I edit it myself?</summary>
+          <div class="a">If you want to, yes &mdash; I can set the site up so you can change text, prices and photos yourself, and I'll walk you through it. Most owners would rather just message me, which is why updates are part of what I offer.</div>
+        </details>
+        <details>
+          <summary>Will people actually find it on Google?</summary>
+          <div class="a">Every site is built to load fast and be read properly by Google, and I set up your Google Business listing so you appear on Maps. That's what gets a hungry tourist standing 200 metres away to walk through your door.</div>
+        </details>
+        <details>
+          <summary>Do you work with businesses outside Croatia?</summary>
+          <div class="a">Yes. I've built for a business in Vienna and work remotely without any trouble. Everything happens over email, phone or video, in Croatian, English, German or Italian.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section has-bg" id="about" style="background:var(--ink-2);border-block:1px solid var(--line)">
+    <div class="sec-bg ph" aria-hidden="true">
+      <img src="img/dusk.webp" alt="" loading="lazy" decoding="async">
+    </div>
+    <div class="wrap about">
+      <div class="reveal">
+        <span class="eyebrow">Why Puntamedia</span>
+        <h2>Big-studio websites, without the big-studio distance.</h2>
+        <p>I'm a web designer working from the island of Ugljan, building sites for the kind of businesses I grew up around &mdash; restaurants, shops, studios and family-run places. I use modern tools to move quickly, but every site is finished by hand, with real care for how it looks and how it works.</p>
+        <p>You talk to the person building your site, not a call centre. That means it gets done properly, quickly, and it actually sounds like you.</p>
+        <div class="promise">
+          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span>One person, start to finish &mdash; clear communication, no runaround.</span></div>
+          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span>Honest pricing and a genuinely fast turnaround.</span></div>
+          <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span>Multilingual by default, so you never lose a customer to language.</span></div>
+        </div>
+      </div>
+      <div class="about-card reveal">
+        <span class="eyebrow">The promise</span>
+        <p class="quote" style="margin-top:22px">&ldquo;Your website should feel like the best version of your business &mdash; welcoming, quick, and impossible to forget.&rdquo;</p>
+        <div class="sig">Puntamedia &middot; Otok Ugljan, Croatia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section contact has-bg" id="contact">
+    <div class="sec-bg ph" aria-hidden="true">
+      <img src="img/harbour.webp" alt="" loading="lazy" decoding="async">
+    </div>
+    <div class="wrap contact-grid">
+      <div class="reveal">
+        <span class="eyebrow">Let's begin</span>
+        <h2>Tell me about your business.</h2>
+        <p class="lead">Whether you need a brand-new site or a refresh of an old one, I'd love to hear about it. Send a message and I'll reply within a day.</p>
+        <div class="reach">
+          <a href="mailto:hello@puntamedia.com">
+            <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m4 7 8 6 8-6"/></svg></span>
+            <span class="tx"><span class="t">hello@puntamedia.com</span><span class="d">Email me directly</span></span>
+          </a>
+          <a href="https://wa.me/385000000000" target="_blank" rel="noopener">
+            <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/></svg></span>
+            <span class="tx"><span class="t">WhatsApp</span><span class="d">Quick questions welcome</span></span>
+          </a>
+          <a href="https://instagram.com/puntamedia" target="_blank" rel="noopener">
+            <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></span>
+            <span class="tx"><span class="t">@puntamedia</span><span class="d">Work in progress</span></span>
+          </a>
+        </div>
+      </div>
+
+      <form id="contactForm" novalidate>
+        <div class="two">
+          <div class="field"><label for="name">Your name</label><input id="name" name="name" type="text" placeholder="Ana Horvat" required></div>
+          <div class="field"><label for="business">Business</label><input id="business" name="business" type="text" placeholder="Konoba, shop, studio"></div>
+        </div>
+        <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" placeholder="you@business.com" required></div>
+        <div class="field"><label for="message">What do you need?</label><textarea id="message" name="message" placeholder="A new website for my restaurant, in Croatian and English"></textarea></div>
+        <button class="btn btn-primary" type="submit">Send message</button>
+        <p class="form-note" id="formNote">Opens your email app, ready to send</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<div id="zoomVeil" hidden aria-hidden="true"></div>
+<div id="cam" hidden aria-hidden="true"><div id="camRig"></div></div>
+
+<footer class="grad-bg">
+  <div class="wrap foot">
+    <div>
+      <div class="brand" style="font-size:21px"><span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M8.4 3.6 25.8 12.9c1.7.9 1.7 3.3 0 4.2l-3.6 1.9c-4.2-2.3-8.9-3.4-13.8-3.4z" fill="#1C3A64"/><path d="M8.4 19.3c4.9 0 9.6 1.1 13.8 3.4l-10.7 5.7c-1.6.9-3.1-.4-3.1-2.1z" fill="#5A93BC"/></svg></span>Puntamedia</div>
+      <div class="muted" style="margin-top:12px">Custom multilingual websites &middot; Otok Ugljan, Croatia</div>
+    </div>
+    <div class="socials">
+      <a href="https://instagram.com/puntamedia" target="_blank" rel="noopener" aria-label="Instagram"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+      <a href="https://linkedin.com/in/puntamedia" target="_blank" rel="noopener" aria-label="LinkedIn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 10v7M7 7v.01M11 17v-4a2 2 0 0 1 4 0v4M11 17v-7" stroke-linecap="round"/></svg></a>
+      <a href="mailto:hello@puntamedia.com" aria-label="Email"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m4 7 8 6 8-6"/></svg></a>
+    </div>
+  </div>
+  <div class="wrap muted" style="margin-top:26px;font-size:11.5px;color:var(--dim);letter-spacing:.1em">&copy; <span id="year"></span> Puntamedia. Built with care on the Adriatic.</div>
+</footer>
+
+<script>
+  document.documentElement.classList.add('js');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ---------- Scroll reveal ---------- */
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(reduce || !('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return;}
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} });
+    },{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+    els.forEach(function(e){io.observe(e)});
+  })();
+
+  /* ---------- Gentle 3D tilt on the browser mockups ---------- */
+  (function(){
+    if(reduce) return;
+    document.querySelectorAll('.stage').forEach(function(stage){
+      var device = stage.querySelector('.device');
+      if(!device) return;
+      var raf, base = stage.querySelector('#heroDevice') ? -7 : 0;
+      stage.addEventListener('pointermove',function(e){
+        var r = stage.getBoundingClientRect();
+        var px = (e.clientX - r.left)/r.width - .5;
+        var py = (e.clientY - r.top)/r.height - .5;
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(function(){
+          device.style.transform = 'rotateY('+(base + px*8)+'deg) rotateX('+(-py*6)+'deg)';
+        });
+      });
+      stage.addEventListener('pointerleave',function(){
+        cancelAnimationFrame(raf);
+        device.style.transform = 'rotateY('+base+'deg) rotateX(0deg)';
+      });
+    });
+    var hero = document.getElementById('heroDevice');
+    if(hero) hero.style.transform = 'rotateY(-7deg) rotateX(4deg)';
+  })();
+
+  /* ---------- Laptop screen = live replica of the Start a project page ---------- */
+  (function(){
+    var PAGE_W = 1280;
+    var screenEl = document.querySelector('.laptop-screen');
+    var mini   = document.getElementById('miniPage');
+    var target = document.getElementById('contact');
+    var btn    = document.getElementById('diveBtn');
+    var veil   = document.getElementById('zoomVeil');
+    var device = document.getElementById('heroDevice');
+    if(!screenEl || !mini || !target || !btn || !veil || !device) return;
+
+    // A decorative, non-interactive copy of the real section — so the zoom
+    // lands on content that is already pixel-identical to the destination.
+    function replica(){
+      var c = target.cloneNode(true);
+      c.removeAttribute('id');
+      c.querySelectorAll('[id]').forEach(function(n){ n.removeAttribute('id'); });
+      c.querySelectorAll('label[for]').forEach(function(n){ n.removeAttribute('for'); });
+      c.querySelectorAll('.reveal').forEach(function(n){ n.classList.add('in'); });
+      c.querySelectorAll('input,textarea,button').forEach(function(n){ n.disabled = true; });
+      c.querySelectorAll('a').forEach(function(n){ n.removeAttribute('href'); });
+      return c;
+    }
+    mini.appendChild(replica());
+
+    function fit(){ mini.style.transform = 'scale(' + (screenEl.clientWidth / PAGE_W) + ')'; }
+    if('ResizeObserver' in window) new ResizeObserver(fit).observe(screenEl);
+    window.addEventListener('resize', fit);
+    fit();
+
+    /* A genuine dolly-in: the camera travels along Z toward the screen, so the
+       laptop grows with real perspective flare and its body sweeps past the
+       viewer, instead of a flat 2D scale. */
+    var PERSP = 1200, REST = 'rotateY(-7deg) rotateX(4deg)';
+    var laptop = document.querySelector('.laptop');
+    var cam = document.getElementById('cam');
+    var rig = document.getElementById('camRig');
+    var busy = false;
+
+    btn.addEventListener('click', function(){
+      if(reduce){ target.scrollIntoView({behavior:'smooth',block:'start'}); return; }
+      if(busy || !laptop || !cam || !rig) return;
+      busy = true;
+
+      // Measure the laptop's untransformed box, so the stand-in lines up exactly.
+      var pt = device.style.transform, pn = device.style.transition;
+      device.style.transition = 'none'; device.style.transform = 'none';
+      var lr = laptop.getBoundingClientRect();
+      var sr = screenEl.getBoundingClientRect();
+      device.style.transform = pt; device.style.transition = pn;
+      if(!sr.width || !lr.width){ busy = false; target.scrollIntoView({behavior:'smooth',block:'start'}); return; }
+
+      // Fill the frame's WIDTH only. Filling the height too would demand far more
+      // magnification for no visible gain — the letterboxing is ink on ink.
+      var S  = (window.innerWidth / sr.width) * 1.02;
+      var z  = PERSP * (1 - 1 / S);
+      var dx = window.innerWidth  / 2 - (sr.left + sr.width  / 2);
+      var dy = window.innerHeight / 2 - (sr.top  + sr.height / 2);
+
+      var clone = laptop.cloneNode(true);
+      clone.querySelectorAll('[id]').forEach(function(n){ n.removeAttribute('id'); });
+      var ob = clone.querySelector('.screen-open');
+      var sc = clone.querySelector('.screen-scrim');
+      if(ob) ob.style.transition = 'opacity .4s ease';
+      if(sc) sc.style.transition = 'background .7s ease';
+
+      // Draw the page at the resolution it will END at, then counter-scale the
+      // frame. The stand-in looks identical at rest, but the texture behind it is
+      // dense enough to be magnified without turning to mush.
+      var mp = clone.querySelector('.mini-page');
+      var mf = clone.querySelector('.mini-frame');
+      if(mp && mf){
+        mf.style.inset = 'auto'; mf.style.top = '0'; mf.style.left = '0';
+        mf.style.width  = (sr.width  * S) + 'px';
+        mf.style.height = (sr.height * S) + 'px';
+        mf.style.transformOrigin = 'top left';
+        mf.style.transform = 'scale(' + (1 / S) + ')';
+        mp.style.transform = 'scale(' + ((sr.width / PAGE_W) * S) + ')';
+      }
+
+      rig.innerHTML = '';
+      rig.appendChild(clone);
+      rig.classList.remove('go');
+      rig.style.left = lr.left + 'px';
+      rig.style.top  = lr.top  + 'px';
+      rig.style.width = lr.width + 'px';
+      rig.style.transform = 'translate3d(0px,0px,0px) ' + REST;
+      cam.hidden = false;
+      veil.hidden = false;
+      void rig.offsetWidth;                       // flush: the move starts from rest
+      device.style.visibility = 'hidden';         // hand off to the stand-in
+
+      cam.classList.add('go');
+      rig.classList.add('go');
+      rig.style.transform = 'translate3d('+dx+'px,'+dy+'px,'+z+'px) rotateY(0deg) rotateX(0deg)';
+      veil.style.opacity = '1';
+      if(ob) ob.style.opacity = '0';
+      if(sc) sc.style.background = 'transparent';
+
+      // Hand over to the REAL section partway through, while the stand-in is only
+      // lightly magnified. The last stretch of the push-in is then rendered by the
+      // live DOM — re-drawn at full resolution instead of stretched from a texture.
+      window.setTimeout(function(){
+        target.scrollIntoView({behavior:'instant', block:'start'});
+        target.style.transition = 'none';
+        target.style.transform  = 'scale(1.05)';
+        target.style.opacity    = '0';
+        void target.offsetWidth;
+        target.style.transition = 'transform .85s cubic-bezier(.26,0,.22,1),opacity .48s var(--ease)';
+        target.style.transform  = 'scale(1)';
+        target.style.opacity    = '1';
+
+        cam.style.transition = 'opacity .5s var(--ease)';
+        cam.style.opacity = '0';
+        veil.style.opacity = '0';
+
+        window.setTimeout(function(){
+          cam.hidden = true; veil.hidden = true;
+          cam.classList.remove('go');
+          cam.style.opacity = ''; cam.style.transition = '';
+          rig.classList.remove('go'); rig.innerHTML = '';
+          target.style.transition = ''; target.style.transform = ''; target.style.opacity = '';
+          device.style.visibility = '';
+          device.style.transform = REST;
+          busy = false;
+        }, 900);
+      }, 880);
+    });
+  })();
+
+  /* ---------- Nav: shrink to a pill on scroll, full-screen menu on mobile ---------- */
+  (function(){
+    var nav = document.getElementById('siteNav');
+    var burger = document.getElementById('burger');
+    var menu = document.getElementById('mobileMenu');
+    if(!nav || !burger || !menu) return;
+
+    var onScroll = function(){ nav.classList.toggle('is-scrolled', window.scrollY > 10); };
+    window.addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
+
+    var closeTimer;
+    function open(){
+      clearTimeout(closeTimer);
+      menu.hidden = false;
+      void menu.offsetWidth;                 // flush, so the transition runs
+      menu.classList.add('open');
+      burger.setAttribute('aria-expanded','true');
+      document.body.style.overflow = 'hidden';
+    }
+    function close(){
+      menu.classList.remove('open');
+      burger.setAttribute('aria-expanded','false');
+      document.body.style.overflow = '';
+      closeTimer = setTimeout(function(){ menu.hidden = true; }, 300);
+    }
+    function isOpen(){ return burger.getAttribute('aria-expanded') === 'true'; }
+
+    burger.addEventListener('click', function(){ isOpen() ? close() : open(); });
+    menu.addEventListener('click', function(e){ if(e.target.closest('a')) close(); });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && isOpen()) close(); });
+    window.addEventListener('resize', function(){ if(window.innerWidth > 880 && isOpen()) close(); });
+  })();
+
+
+  /* ---------- Video hero: scroll scrubs the dolly, HTML tracks the screen ---------- */
+  (function(){
+    var track  = document.getElementById('vheroTrack');
+    var vid    = document.getElementById('heroVideo');
+    var ov     = document.getElementById('vheroScreen');
+    var copy   = document.getElementById('vheroCopy');
+    var veil   = document.getElementById('vheroVeil');
+    var page   = ov.querySelector('.vh-inner');
+    if(!track || !vid || !ov) return;
+
+    // Stay on the existing hero for reduced motion, narrow screens, or if the
+    // clip never becomes seekable. Scrubbing is the fragile part on phones.
+    if(reduce || window.innerWidth <= 880) return;
+
+    // Screen width in the frame, normalised, sampled every 8 frames. Measured
+    // off the encoded file; the horizontal edges are clean, the vertical ones
+    // are washed out by the blue spill on the desk, so width drives everything.
+    // Measured off the encoded clip with a run-length detector, every 8 frames:
+    // screen width, and its centre. The screen's real aspect is 1.47, not the
+    // 1.65 I had assumed — that single wrong number was the vertical error.
+    // Centre Y is derived from the measured TOP edge, which stays clean long
+    // after the bottom edge is lost in the blue spill on the desk.
+    // Measured on every one of the 121 frames. TX came out constant at .4995
+    // across the whole clip, so it is a number rather than a table.
+    var TW = [.2875,.2875,.2875,.2875,.2875,.2896,.2896,.2896,.2917,.2917,.2917,.2917,.2938,.2938,.2938,.2958,.2979,.2979,.3,.3,.3021,.3021,.3063,.3063,.3083,.3083,.3104,.3125,.3146,.3167,.3167,.3187,.3229,.325,.325,.3271,.3312,.3333,.3354,.3375,.3396,.3438,.3458,.3479,.3521,.3542,.3563,.3604,.3646,.3667,.3688,.3729,.375,.3771,.3812,.3854,.3875,.3917,.3937,.3979,.4021,.4062,.4104,.4146,.4188,.425,.4271,.4333,.4375,.4417,.4479,.4521,.4583,.4667,.4729,.4792,.4833,.4917,.5,.5083,.5167,.525,.5333,.5417,.55,.5583,.5708,.5833,.5917,.6042,.6167,.625,.6396,.65,.6667,.6833,.6979,.7125,.7271,.7438,.7604,.7812,.8,.8167,.8375,.8583,.875,.9,.9229,.9437,.9678,.9931,1.0198,1.048,1.0777,1.1093,1.1427,1.1781,1.2159,1.2562,1.2992];
+    var TY = [.5481,.5481,.5481,.5481,.5463,.5463,.5463,.5463,.5481,.55,.5481,.5481,.5481,.5481,.5481,.55,.55,.55,.55,.5519,.5519,.55,.55,.5519,.5519,.5537,.5537,.5537,.5537,.5537,.5537,.5556,.5556,.5574,.5574,.5593,.5574,.5574,.5593,.5611,.5611,.563,.5611,.563,.5611,.563,.563,.5648,.5667,.5667,.5667,.5648,.5667,.5648,.5667,.5685,.5704,.5722,.5704,.5722,.5704,.5722,.5741,.5741,.5759,.5778,.5759,.5778,.5778,.5778,.5796,.5796,.5833,.5852,.5852,.5852,.5852,.5852,.587,.5907,.5907,.5926,.5926,.5926,.5944,.5944,.5944,.5963,.6019,.6019,.6037,.6037,.6037,.6037,.6074,.6111,.613,.613,.6093,.6056,.6059,.6062,.6066,.6069,.6072,.6075,.6078,.6081,.6085,.6088,.6091,.6094,.6097,.61,.6104,.6107,.611,.6113,.6116,.6119,.6123];
+    var CX = 0.4995;
+    var H_PER_W = 1.0634;             // aspect 1.67, measured column by column
+    var FRAMES = 121, FPS = 24, BLEED = 1.010;
+    var VIDEO_A = 16/9;
+
+    // No interpolation: the video snaps to a whole frame, so the overlay uses
+    // that same frame's geometry. Interpolating between samples put the panel
+    // half a frame ahead of the picture during the fast final stretch.
+    var lastFrame = -1;
+    function lerp(a,b,t){ return a + (b - a) * t; }
+    function clamp(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
+    function ramp(v,a,b){ return clamp((v - a) / (b - a)); }
+
+    // A page, not a single band floating in white. The strip plus the top of
+    // the next section, so the screen shows something that reads as a website.
+    function replica(){
+      var frag = document.createDocumentFragment();
+      ['.strip', '#services'].forEach(function(sel){
+        var src = document.querySelector(sel);
+        if(!src) return;
+        var c = src.cloneNode(true);
+        c.removeAttribute('id');
+        c.querySelectorAll('[id]').forEach(function(n){ n.removeAttribute('id'); });
+        c.querySelectorAll('.reveal').forEach(function(n){ n.classList.add('in'); });
+        c.querySelectorAll('a,button,input,textarea').forEach(function(n){ n.setAttribute('tabindex','-1'); });
+        frag.appendChild(c);
+      });
+      return frag;
+    }
+
+    var ready = false, dur = 0;
+    function activate(){
+      if(ready) return;
+      dur = vid.duration;
+      if(!dur || !isFinite(dur)) return;
+      ready = true;
+      vid.pause();
+      page.appendChild(replica());
+      document.documentElement.classList.add('has-vhero');
+      onScroll();
+    }
+    vid.addEventListener('loadedmetadata', activate);
+    vid.addEventListener('canplaythrough', activate);
+    vid.addEventListener('error', function(){ /* leave the CSS hero in place */ });
+
+    var vw = 0, vh = 0, pending = false;
+    function measure(){
+      var de = document.documentElement;
+      vw = de.clientWidth  || window.innerWidth;
+      vh = de.clientHeight || window.innerHeight;
+    }
+    measure();
+
+    function draw(){
+      pending = false;
+      var r = track.getBoundingClientRect();
+      var span = track.offsetHeight - vh;
+      var p = clamp(span > 0 ? (-r.top) / span : 0);
+
+      var fi = Math.round(p * (FRAMES - 1));
+      if(fi !== lastFrame){
+        lastFrame = fi;
+        vid.currentTime = Math.min(dur - 0.001, fi / FPS);
+      }
+
+      // the headline clears out early, before the move gets fast
+      copy.style.opacity = String(1 - ramp(p, 0, .20));
+
+      // the page resolves on the screen only once we are close, where the
+      // tracking error is smallest and it reads as the screen coming into view
+      ov.style.opacity = String(ramp(p, .38, .72));
+
+      // object-fit:cover crops the clip, so video coordinates are NOT viewport
+      // coordinates. Work out the displayed rect before placing anything on it.
+      var A = vw / vh, dW, dH;
+      if(A > VIDEO_A){ dW = vw; dH = vw / VIDEO_A; }
+      else           { dH = vh; dW = vh * VIDEO_A; }
+      var oX = (vw - dW) / 2, oY = (vh - dH) / 2;
+
+      var wN = TW[fi] * BLEED;         // slight bleed over the bezel
+      var w  = wN * dW;
+      var h  = wN * H_PER_W * dH;
+      var x  = oX + CX * dW - w / 2;
+      var y  = oY + TY[fi] * dH - h / 2;
+
+      // The screen only truly fills the frame on the very last frame, so tracking
+      // it exactly leaves a sliver of laptop showing at the top. Ease out to a
+      // full bleed over the final stretch, where the clip is featureless blue
+      // and the mismatch cannot be seen.
+      // Settle onto exactly the viewport: the page inside is laid out at vw, so
+      // landing the panel on the viewport lands the content at the real site's
+      // scale — 1:1 with everything below it.
+      var full = ramp(p, .90, 1);
+      if(full > 0){
+        x = lerp(x, 0,  full);
+        y = lerp(y, 0,  full);
+        w = lerp(w, vw, full);
+        h = lerp(h, vh, full);
+      }
+      ov.style.width  = w + 'px';
+      ov.style.height = h + 'px';
+      ov.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
+      // the screen has rounded corners; square ones poke over the bezel
+      ov.style.borderRadius = (w * 0.013 * (1 - full)) + 'px';
+      page.style.width = vw + 'px';
+      page.style.transform = 'scale(' + (w / vw) + ')';
+
+      veil.style.opacity = String(1 - ramp(p, 0, .35));
+    }
+    function onScroll(){
+      if(!ready || pending) return;
+      pending = true;
+      requestAnimationFrame(draw);
+    }
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('resize', function(){ measure(); onScroll(); });
+    if(vid.readyState >= 1) activate();
+  })();
+
+  /* ---------- Before / after comparison ---------- */
+  (function(){
+    var range = document.getElementById('baRange'), stack = document.getElementById('baStack');
+    if(!range || !stack) return;
+    function set(){ stack.style.setProperty('--pos', range.value); }
+    range.addEventListener('input', set);
+    set();
+  })();
+
+  /* ---------- Croatian / English ---------- */
+  (function(){
+    // Keyed on the English already in the markup, so the page is correct with JS off.
+    var HR = {
+      "Work":"Radovi","Services":"Usluge","Pricing":"Cijene","About":"O meni","Start a project":"Započni projekt",
+      "Web Design Studio":"Studio za web dizajn",
+      "Websites your business deserves —":"Web stranice kakve vaš posao zaslužuje —",
+      "designed around you, built to perform.":"osmišljene za vas, stvorene da donose goste.",
+      "Puntamedia designs and builds custom, multilingual websites for restaurants, shops and small businesses — in whatever style suits your brand, and built to bring you customers.":"Puntamedia izrađuje prilagođene, višejezične web stranice za restorane, trgovine i male tvrtke — u stilu koji odgovara vašem brendu i s ciljem da vam dovedu goste.",
+      "See the work":"Pogledajte radove","Start your project":"Započnite projekt","Open":"Otvori",
+      "Four languages":"Četiri jezika","Never templated":"Bez predložaka","Live in days":"Online za nekoliko dana",
+      "Loads in":"Učitava se za","0.9 seconds":"0,9 sekundi","Built for":"Prilagođeno za","Every screen":"Svakom ekranu",
+      "Entirely custom":"Potpuno prilagođeno",
+      "Designed around your brand — never a drag-and-drop template.":"Osmišljeno prema vašem brendu — nikad gotov predložak.",
+      "Croatian, English, German and Italian, so every guest feels at home.":"Hrvatski, engleski, njemački i talijanski — da se svaki gost osjeća dobrodošlo.",
+      "Days, not months":"Dani, ne mjeseci",
+      "A considered process that still gets you online quickly.":"Promišljen proces koji vas brzo dovodi online.",
+      "Made on Ugljan":"Nastalo na Ugljanu",
+      "Rooted on the Adriatic, building for businesses everywhere.":"S korijenima na Jadranu, gradimo za tvrtke svugdje.",
+      "What I do":"Čime se bavim",
+      "Everything your business needs to look its best online.":"Sve što vaš posao treba da izgleda najbolje na internetu.",
+      "One partner, from the first conversation to a living site that keeps working for you — in every language your customers speak.":"Jedan partner, od prvog razgovora do žive stranice koja radi za vas — na svakom jeziku kojim govore vaši gosti.",
+      "Custom website design":"Prilagođeni web dizajn",
+      "A site built around your story, your colours and your customers — not a layout everyone else is already using.":"Stranica izgrađena oko vaše priče, vaših boja i vaših gostiju — ne predložak koji već svi koriste.",
+      "Multilingual & local":"Višejezično i lokalno",
+      "Croatian, English, German, Italian. Speak to your neighbours and to the travellers finding you for the first time.":"Hrvatski, engleski, njemački, talijanski. Obratite se susjedima i putnicima koji vas tek otkrivaju.",
+      "Restaurants & hospitality":"Restorani i ugostiteljstvo",
+      "Menus, opening hours, directions and reservations — the things guests actually look for, presented beautifully.":"Jelovnici, radno vrijeme, upute i rezervacije — ono što gosti zaista traže, lijepo predstavljeno.",
+      "Quick, careful delivery":"Brza i pažljiva izrada",
+      "Modern tools let me move faster than a traditional agency — so you launch sooner, without anything feeling rushed.":"Moderni alati omogućuju mi da radim brže od klasične agencije — pa krećete ranije, bez osjećaja žurbe.",
+      "Found on Google":"Vidljivi na Googleu",
+      "Fast-loading, mobile-first and built to be discovered — so new customers land on your page, not a competitor's.":"Brzo učitavanje, prilagođeno mobitelu i izgrađeno da vas pronađu — da novi gosti dođu na vašu stranicu, a ne konkurentovu.",
+      "Care & updates":"Održavanje i izmjene",
+      "Menus change, prices change, seasons change. I keep your site current so it never feels forgotten.":"Jelovnici se mijenjaju, cijene se mijenjaju, sezone se mijenjaju. Održavam stranicu aktualnom.",
+      "Selected work":"Odabrani radovi","Real businesses, real websites.":"Stvarni poslovi, stvarne stranice.",
+      "A few of the places I've helped get online — each one custom-built, multilingual, and made to win customers.":"Nekoliko mjesta kojima sam pomogao da izađu online — svako prilagođeno, višejezično i stvoreno da privuče goste.",
+      "Restaurant · Hospitality":"Restoran · Ugostiteljstvo",
+      "Lukoran, Island of Ugljan · Croatia":"Lukoran, otok Ugljan · Hrvatska",
+      "A warm, seaside identity for a family tavern on Ugljan. Bilingual from the first click, with the menu, the story and the sunset terrace front and centre — so locals and travellers alike know exactly why to book a table.":"Topao, primorski identitet za obiteljsku konobu na Ugljanu. Dvojezična od prvog klika, s jelovnikom, pričom i terasom za zalazak sunca u prvom planu — da i mještani i putnici znaju zašto rezervirati stol.",
+      "Bilingual HR / EN":"Dvojezično HR / EN","Menu & gallery":"Jelovnik i galerija",
+      "Mobile-first":"Prilagođeno mobitelu","Reservations":"Rezervacije",
+      "Something like this? Let's talk":"Želite nešto slično? Javite se",
+      "Fast food · Diner":"Brza hrana · Zalogajnica",
+      "Preko, Island of Ugljan · Croatia":"Preko, otok Ugljan · Hrvatska",
+      "A playful, retro-diner look for a fast-food spot that wanted personality. Appetite-first visuals, an easy-to-scan menu and clear directions — the kind of page that turns a hungry scroll into a walk-in order.":"Razigran, retro izgled za zalogajnicu koja je htjela karakter. Vizuali koji bude apetit, pregledan jelovnik i jasne upute — stranica koja gladno pregledavanje pretvara u narudžbu.",
+      "Retro branding":"Retro brending","Digital menu":"Digitalni jelovnik","Bilingual":"Dvojezično","Maps & hours":"Karta i radno vrijeme",
+      "New · 2026":"Novo · 2026.","Your project here":"Ovdje vaš projekt","Two more launches on the way":"Još dva projekta u izradi",
+      "The next case studies are being built now. Would you like yours to be one of them? There is room for a few more businesses this season — let's make something people remember.":"Sljedeći projekti su u izradi. Želite da vaš bude jedan od njih? Ima mjesta za još nekoliko tvrtki ove sezone — napravimo nešto pamtljivo.",
+      "Now booking":"Upisujem projekte","Limited slots":"Ograničen broj mjesta","Enquire about a slot":"Pitajte za termin",
+      "Before & after":"Prije i poslije","Most sites aren't broken. They're just old.":"Stranice najčešće nisu pokvarene. Samo su stare.",
+      "Drag the handle to see what a rebuild does for a business that already has a website — same konoba, same menu, twenty years of difference.":"Povucite ručicu i vidite što obnova znači za posao koji već ima stranicu — ista konoba, isti jelovnik, dvadeset godina razlike.",
+      "Before":"Prije","After":"Poslije",
+      "How it works":"Kako to ide","From first hello to live site — simple and clear.":"Od prvog javljanja do žive stranice — jednostavno i jasno.",
+      "No jargon and no endless meetings. A calm, four-step process that keeps you in the loop the whole way.":"Bez žargona i beskrajnih sastanaka. Smiren proces u četiri koraka u kojem ste stalno u toku.",
+      "Discover":"Upoznavanje","We talk about your business, your guests, and what a great site would actually do for you.":"Razgovaramo o vašem poslu, vašim gostima i o tome što bi vam dobra stranica zaista donijela.",
+      "Design":"Dizajn","I craft a look that fits your brand and show you a real, working preview — not a rough sketch.":"Oblikujem izgled koji odgovara vašem brendu i pokazujem pravi, živi pregled — ne grubu skicu.",
+      "Build":"Izrada","The full site comes together in every language you need, fast-loading and mobile-first.":"Cijela stranica nastaje na svim jezicima koje trebate, brza i prilagođena mobitelu.",
+      "Launch & care":"Objava i održavanje","We go live on your own domain, and I stay on to keep everything fresh and running.":"Objavljujemo na vašoj domeni, a ja ostajem da sve ostane svježe i ispravno.",
+      "Clear prices, no surprises.":"Jasne cijene, bez iznenađenja.",
+      "You'll get a fixed quote before anything starts. No hourly billing, no invoice at the end you didn't expect.":"Dobivate fiksnu ponudu prije početka. Bez naplaćivanja po satu i bez računa koji iznenadi na kraju.",
+      "Essential":"Osnovno","From":"Od","Complete":"Potpuno","Most chosen":"Najčešći izbor","Bespoke":"Po mjeri","Let's":"Dogovorimo","Talk":"se",
+      "One-page site, beautifully done":"Jednostranična stranica, lijepo napravljena",
+      "Two languages":"Dva jezika","Menu, hours, photos, map":"Jelovnik, radno vrijeme, slike, karta",
+      "Contact form & mobile-first":"Kontakt obrazac i mobilni prikaz","Live on your domain":"Objava na vašoj domeni",
+      "Up to six pages":"Do šest stranica","All four languages":"Sva četiri jezika",
+      "Full menu & photo gallery":"Cijeli jelovnik i galerija","Google setup so you're found":"Postavljanje Googlea da vas pronađu",
+      "Reservations or ordering link":"Rezervacije ili naručivanje","Three months of updates included":"Tri mjeseca izmjena uključeno",
+      "Online shop or ordering":"Webshop ili naručivanje","Booking & availability system":"Sustav rezervacija i dostupnosti",
+      "Several locations or brands":"Više lokacija ili brendova","Ongoing care plan":"Trajno održavanje",
+      "Enquire":"Upit","Start this":"Krećem s ovim",
+      "Hosting and domain are billed separately, at cost — usually around €60 a year, and it stays in your name.":"Hosting i domena naplaćuju se zasebno, po trošku — obično oko 60 € godišnje, i ostaju na vaše ime.",
+      "Questions":"Pitanja","The things people ask before they email.":"Ono što ljudi pitaju prije nego se jave.",
+      "How long does it take?":"Koliko traje izrada?",
+      "A one-page site is usually ready in three to five days. A larger site takes one to two weeks. The slowest part is almost always waiting on photos and menu text, so the sooner you send those, the sooner you're live.":"Jednostranična stranica obično je gotova za tri do pet dana. Veća stranica traje jedan do dva tjedna. Najčešće se čeka na slike i tekst jelovnika — što ih prije pošaljete, to ste prije online.",
+      "What do I need to give you?":"Što trebam pripremiti?",
+      "Your menu or product list, opening hours, a phone number and address, and any photos you already have. If you don't have good photos, tell me — I'll show you what to shoot on a phone, or we sort out a photographer.":"Jelovnik ili popis proizvoda, radno vrijeme, broj telefona i adresu te slike koje već imate. Ako nemate dobre slike, recite — pokazat ću vam što snimiti mobitelom ili dogovorimo fotografa.",
+      "Who owns the site and the domain?":"Tko je vlasnik stranice i domene?",
+      "You do, completely. The domain is registered in your name and the site is yours to keep. If you ever want to move to someone else, you take everything with you — no lock-in, no hostage situation.":"Vi, u potpunosti. Domena je registrirana na vaše ime, a stranica je vaša. Ako ikad želite preći drugome, nosite sve sa sobom — bez zaključavanja i uvjeta.",
+      "What happens when my menu or prices change?":"Što ako se promijeni jelovnik ili cijene?",
+      "Send me the change and it's live the same day. Small updates are included for the first three months on the Complete package; after that they're a small fixed fee, or you can take a care plan and stop thinking about it.":"Pošaljete izmjenu i isti dan je objavljena. Male izmjene uključene su prva tri mjeseca u paketu Potpuno; nakon toga su mala fiksna naknada ili uzmete trajno održavanje i ne razmišljate o tome.",
+      "Can I edit it myself?":"Mogu li sam uređivati stranicu?",
+      "If you want to, yes — I can set the site up so you can change text, prices and photos yourself, and I'll walk you through it. Most owners would rather just message me, which is why updates are part of what I offer.":"Ako želite, da — mogu postaviti stranicu tako da sami mijenjate tekst, cijene i slike, i provest ću vas kroz to. Većina vlasnika radije mi samo javi, zato su izmjene dio onoga što nudim.",
+      "Will people actually find it on Google?":"Hoće li me ljudi zaista pronaći na Googleu?",
+      "Every site is built to load fast and be read properly by Google, and I set up your Google Business listing so you appear on Maps. That's what gets a hungry tourist standing 200 metres away to walk through your door.":"Svaka stranica građena je da se brzo učitava i da je Google ispravno čita, a postavljam i vaš Google Business profil da se pojavite na Kartama. To je ono što gladnog turista 200 metara dalje dovede na vaša vrata.",
+      "Do you work with businesses outside Croatia?":"Radite li s tvrtkama izvan Hrvatske?",
+      "Yes. I've built for a business in Vienna and work remotely without any trouble. Everything happens over email, phone or video, in Croatian, English, German or Italian.":"Da. Radio sam za tvrtku u Beču i bez problema radim na daljinu. Sve ide e-mailom, telefonom ili videopozivom, na hrvatskom, engleskom, njemačkom ili talijanskom.",
+      "Why Puntamedia":"Zašto Puntamedia",
+      "Big-studio websites, without the big-studio distance.":"Stranice kakve rade veliki studiji, bez njihove distance.",
+      "I'm a web designer working from the island of Ugljan, building sites for the kind of businesses I grew up around — restaurants, shops, studios and family-run places. I use modern tools to move quickly, but every site is finished by hand, with real care for how it looks and how it works.":"Web dizajner sam s otoka Ugljana i radim stranice za poslove uz kakve sam odrastao — restorane, trgovine, studije i obiteljska mjesta. Koristim moderne alate da radim brzo, ali svaku stranicu dovršavam sam, s pažnjom prema izgledu i funkcionalnosti.",
+      "You talk to the person building your site, not a call centre. That means it gets done properly, quickly, and it actually sounds like you.":"Razgovarate s osobom koja gradi vašu stranicu, a ne s pozivnim centrom. To znači da je posao napravljen kako treba, brzo, i da stranica zvuči kao vi.",
+      "One person, start to finish — clear communication, no runaround.":"Jedna osoba, od početka do kraja — jasna komunikacija, bez prebacivanja.",
+      "Honest pricing and a genuinely fast turnaround.":"Poštene cijene i stvarno brza izrada.",
+      "Multilingual by default, so you never lose a customer to language.":"Višejezično po zadanom, da nikad ne izgubite gosta zbog jezika.",
+      "The promise":"Obećanje",
+      "“Your website should feel like the best version of your business — welcoming, quick, and impossible to forget.”":"„Vaša stranica treba biti najbolja verzija vašeg posla — gostoljubiva, brza i nezaboravna.”",
+      "Puntamedia · Otok Ugljan, Croatia":"Puntamedia · Otok Ugljan, Hrvatska",
+      "Let's begin":"Krenimo","Tell me about your business.":"Recite mi nešto o svom poslu.",
+      "Whether you need a brand-new site or a refresh of an old one, I'd love to hear about it. Send a message and I'll reply within a day.":"Trebate li potpuno novu stranicu ili osvježenje postojeće, rado bih čuo o tome. Pošaljite poruku i javljam se u roku od jednog dana.",
+      "Email me directly":"Pišite mi izravno","WhatsApp":"WhatsApp","Quick questions welcome":"Slobodno za kratka pitanja","Work in progress":"Radovi u tijeku",
+      "Your name":"Vaše ime","Business":"Tvrtka","Email":"E-mail","What do you need?":"Što trebate?",
+      "Send message":"Pošaljite poruku","Opens your email app, ready to send":"Otvara vašu e-mail aplikaciju, spremno za slanje",
+      "Custom multilingual websites · Otok Ugljan, Croatia":"Prilagođene višejezične stranice · Otok Ugljan, Hrvatska",
+      "Built with care on the Adriatic.":"Izrađeno s pažnjom na Jadranu."
+    };
+    var PH = {
+      "Ana Horvat":"Ana Horvat","Konoba, shop, studio":"Konoba, trgovina, studio",
+      "you@business.com":"vi@tvrtka.com",
+      "A new website for my restaurant, in Croatian and English":"Nova stranica za moj restoran, na hrvatskom i engleskom"
+    };
+
+    var boxes = [].slice.call(document.querySelectorAll('.lang'));
+    if(!boxes.length) return;
+    var nodes = null;
+
+    function collect(){
+      nodes = [];
+      var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+        acceptNode:function(n){
+          if(!n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+          var p = n.parentNode.nodeName;
+          if(p === 'SCRIPT' || p === 'STYLE') return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      var n; while((n = w.nextNode())) nodes.push({node:n, en:n.nodeValue});
+    }
+
+    function apply(l){
+      if(!nodes) collect();
+      nodes.forEach(function(it){
+        var k = it.en.trim();
+        it.node.nodeValue = (l === 'hr' && HR[k]) ? it.en.replace(k, HR[k]) : it.en;
+      });
+      document.querySelectorAll('[placeholder]').forEach(function(el){
+        if(!el.dataset.phEn) el.dataset.phEn = el.getAttribute('placeholder');
+        var k = el.dataset.phEn;
+        el.setAttribute('placeholder', (l === 'hr' && PH[k]) ? PH[k] : k);
+      });
+      document.documentElement.lang = l;
+      boxes.forEach(function(box){
+        box.querySelectorAll('button').forEach(function(b){
+          b.setAttribute('aria-pressed', String(b.dataset.lang === l));
+        });
+      });
+      try{ localStorage.setItem('pm-lang', l); }catch(e){}
+    }
+
+    boxes.forEach(function(box){
+      box.addEventListener('click', function(e){
+        var b = e.target.closest('button[data-lang]');
+        if(b) apply(b.dataset.lang);
+      });
+    });
+
+    var saved = null;
+    try{ saved = localStorage.getItem('pm-lang'); }catch(e){}
+    if(!saved && /^hr\b/i.test(navigator.language || '')) saved = 'hr';
+    if(saved === 'hr') apply('hr');
+  })();
+
+  /* ---------- Contact form -> mailto ---------- */
+  (function(){
+    var form = document.getElementById('contactForm');
+    var note = document.getElementById('formNote');
+    if(!form) return;
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      var name = (document.getElementById('name').value||'').trim();
+      var email = (document.getElementById('email').value||'').trim();
+      var biz = (document.getElementById('business').value||'').trim();
+      var msg = (document.getElementById('message').value||'').trim();
+      if(!name || !email){ note.textContent = 'Please add your name and email first'; note.style.color='#5A93BC'; return; }
+      var subject = 'New project enquiry'+(biz?' — '+biz:'');
+      var body = 'Name: '+name+'\nEmail: '+email+(biz?'\nBusiness: '+biz:'')+'\n\n'+(msg||'(no message)');
+      note.style.color=''; note.textContent = 'Opening your email app';
+      window.location.href = 'mailto:hello@puntamedia.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+    });
+  })();
+
+  /* ---------- Hero: animated gradient wave (WebGL) ----------
+     Ported from the React component to plain JS. The useEffect wrapper and the
+     TypeScript annotations were the only framework-specific parts; the MiniGl
+     and Gradient logic below is the original, unchanged in behaviour. */
+  (function(){
+    var canvas = document.getElementById('bg-canvas');
+    if(!canvas || !canvas.getContext('webgl',{antialias:true})) return;
+
+    function normalizeColor(hex){
+      return [((hex>>16)&255)/255, ((hex>>8)&255)/255, (255&hex)/255];
+    }
+
+    function MiniGl(cv){
+      var _miniGl = this, context = cv.getContext('webgl',{antialias:true});
+      this.canvas = cv; this.gl = context; this.meshes = [];
+
+      this.Uniform = class {
+        constructor(e){
+          this.type = 'float';
+          Object.assign(this, e);
+          var map = {float:'1f',int:'1i',vec2:'2fv',vec3:'3fv',vec4:'4fv',mat4:'Matrix4fv'};
+          this.typeFn = map[this.type] || '1f';
+        }
+        update(loc){
+          if(this.value === undefined || loc === null) return;
+          if(this.typeFn.indexOf('Matrix') === 0) context['uniform'+this.typeFn](loc, this.transpose||false, this.value);
+          else context['uniform'+this.typeFn](loc, this.value);
+        }
+        getDeclaration(name, type, length){
+          if(this.excludeFrom === type) return '';
+          if(this.type === 'array'){
+            return this.value[0].getDeclaration(name, type, this.value.length) +
+                   '\nconst int ' + name + '_length = ' + this.value.length + ';';
+          }
+          if(this.type === 'struct'){
+            var nn = name.replace('u_','');
+            nn = nn.charAt(0).toUpperCase() + nn.slice(1);
+            var self = this;
+            var fields = Object.keys(this.value).map(function(k){
+              return self.value[k].getDeclaration(k, type).replace(/^uniform/,'');
+            }).join('');
+            return 'uniform struct ' + nn + ' {\n' + fields + '} ' + name + (length?'['+length+']':'') + ';';
+          }
+          return 'uniform ' + this.type + ' ' + name + (length?'['+length+']':'') + ';';
+        }
+      };
+
+      this.Attribute = class {
+        constructor(e){
+          this.type = context.FLOAT; this.normalized = false;
+          this.buffer = context.createBuffer();
+          Object.assign(this, e);
+        }
+        update(){
+          if(this.values){
+            context.bindBuffer(this.target, this.buffer);
+            context.bufferData(this.target, this.values, context.STATIC_DRAW);
+          }
+        }
+        attach(name, program){
+          var loc = context.getAttribLocation(program, name);
+          if(this.target === context.ARRAY_BUFFER){
+            context.bindBuffer(this.target, this.buffer);
+            context.enableVertexAttribArray(loc);
+            context.vertexAttribPointer(loc, this.size, this.type, this.normalized, 0, 0);
+          }
+          return loc;
+        }
+        use(loc){
+          context.bindBuffer(this.target, this.buffer);
+          if(this.target === context.ARRAY_BUFFER){
+            context.enableVertexAttribArray(loc);
+            context.vertexAttribPointer(loc, this.size, this.type, this.normalized, 0, 0);
+          }
+        }
+      };
+
+      this.Material = class {
+        constructor(vertexShader, fragmentShader, uniforms){
+          uniforms = uniforms || {};
+          this.uniforms = uniforms; this.uniformInstances = [];
+          function getShader(type, source){
+            var sh = context.createShader(type);
+            context.shaderSource(sh, source); context.compileShader(sh);
+            if(!context.getShaderParameter(sh, context.COMPILE_STATUS)){
+              console.error(context.getShaderInfoLog(sh));
+              throw new Error('Shader compilation error');
+            }
+            return sh;
+          }
+          function decls(u, type){
+            return Object.keys(u).map(function(k){ return u[k].getDeclaration(k, type); }).join('\n');
+          }
+          var prefix = 'precision highp float;';
+          var vs = prefix + '\nattribute vec4 position;\nattribute vec2 uv;\nattribute vec2 uvNorm;\n' +
+                   decls(_miniGl.commonUniforms,'vertex') + '\n' + decls(uniforms,'vertex') + '\n' + vertexShader;
+          var fs = prefix + '\n' + decls(_miniGl.commonUniforms,'fragment') + '\n' +
+                   decls(uniforms,'fragment') + '\n' + fragmentShader;
+
+          this.program = context.createProgram();
+          context.attachShader(this.program, getShader(context.VERTEX_SHADER, vs));
+          context.attachShader(this.program, getShader(context.FRAGMENT_SHADER, fs));
+          context.linkProgram(this.program);
+          if(!context.getProgramParameter(this.program, context.LINK_STATUS)){
+            console.error(context.getProgramInfoLog(this.program));
+            throw new Error('Program linking error');
+          }
+          context.useProgram(this.program);
+          this.attachUniforms(undefined, _miniGl.commonUniforms);
+          this.attachUniforms(undefined, this.uniforms);
+        }
+        attachUniforms(name, uniforms){
+          var self = this;
+          if(name === undefined){
+            Object.keys(uniforms).forEach(function(k){ self.attachUniforms(k, uniforms[k]); });
+          } else if(uniforms.type === 'array'){
+            uniforms.value.forEach(function(u,i){ self.attachUniforms(name+'['+i+']', u); });
+          } else if(uniforms.type === 'struct'){
+            Object.keys(uniforms.value).forEach(function(k){ self.attachUniforms(name+'.'+k, uniforms.value[k]); });
+          } else {
+            this.uniformInstances.push({uniform:uniforms, location:context.getUniformLocation(this.program, name)});
+          }
+        }
+      };
+
+      this.PlaneGeometry = class {
+        constructor(){
+          this.width = 1; this.height = 1; this.vertexCount = 0;
+          this.xSegCount = 0; this.ySegCount = 0;
+          this.attributes = {
+            position: new _miniGl.Attribute({target:context.ARRAY_BUFFER, size:3}),
+            uv:       new _miniGl.Attribute({target:context.ARRAY_BUFFER, size:2}),
+            uvNorm:   new _miniGl.Attribute({target:context.ARRAY_BUFFER, size:2}),
+            index:    new _miniGl.Attribute({target:context.ELEMENT_ARRAY_BUFFER, size:3, type:context.UNSIGNED_SHORT})
+          };
+        }
+        setTopology(x,y){
+          x = x||1; y = y||1;
+          this.xSegCount = x; this.ySegCount = y;
+          this.vertexCount = (x+1)*(y+1);
+          var quads = x*y*2;
+          this.attributes.uv.values     = new Float32Array(2*this.vertexCount);
+          this.attributes.uvNorm.values = new Float32Array(2*this.vertexCount);
+          this.attributes.index.values  = new Uint16Array(3*quads);
+          for(var j=0;j<=y;j++){
+            for(var i=0;i<=x;i++){
+              var k = j*(x+1)+i;
+              this.attributes.uv.values[2*k]       = i/x;
+              this.attributes.uv.values[2*k+1]     = 1 - j/y;
+              this.attributes.uvNorm.values[2*k]   = (i/x)*2 - 1;
+              this.attributes.uvNorm.values[2*k+1] = 1 - (j/y)*2;
+              if(i<x && j<y){
+                var q = j*x+i;
+                this.attributes.index.values[6*q]   = k;
+                this.attributes.index.values[6*q+1] = k+1+x;
+                this.attributes.index.values[6*q+2] = k+1;
+                this.attributes.index.values[6*q+3] = k+1;
+                this.attributes.index.values[6*q+4] = k+1+x;
+                this.attributes.index.values[6*q+5] = k+2+x;
+              }
+            }
+          }
+          this.attributes.uv.update(); this.attributes.uvNorm.update(); this.attributes.index.update();
+        }
+        setSize(w,h){
+          w = w||1; h = h||1;
+          this.width = w; this.height = h;
+          this.attributes.position.values = new Float32Array(3*this.vertexCount);
+          var ox = w/-2, oy = h/-2, sw = w/this.xSegCount, sh = h/this.ySegCount;
+          for(var j=0;j<=this.ySegCount;j++){
+            var py = oy + j*sh;
+            for(var i=0;i<=this.xSegCount;i++){
+              var px = ox + i*sw, k = j*(this.xSegCount+1)+i;
+              this.attributes.position.values[3*k]   = px;
+              this.attributes.position.values[3*k+1] = -py;
+              this.attributes.position.values[3*k+2] = 0;
+            }
+          }
+          this.attributes.position.update();
+        }
+      };
+
+      this.Mesh = class {
+        constructor(geometry, material){
+          this.geometry = geometry; this.material = material; this.attributeInstances = [];
+          var self = this;
+          Object.keys(geometry.attributes).forEach(function(k){
+            self.attributeInstances.push({
+              attribute: geometry.attributes[k],
+              location:  geometry.attributes[k].attach(k, material.program)
+            });
+          });
+          _miniGl.meshes.push(this);
+        }
+        draw(){
+          context.useProgram(this.material.program);
+          this.material.uniformInstances.forEach(function(o){ o.uniform.update(o.location); });
+          this.attributeInstances.forEach(function(o){ o.attribute.use(o.location); });
+          context.drawElements(context.TRIANGLES, this.geometry.attributes.index.values.length, context.UNSIGNED_SHORT, 0);
+        }
+      };
+
+      var I = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
+      this.commonUniforms = {
+        projectionMatrix: new this.Uniform({type:'mat4', value:I}),
+        modelViewMatrix:  new this.Uniform({type:'mat4', value:I}),
+        resolution:       new this.Uniform({type:'vec2', value:[1,1]}),
+        aspectRatio:      new this.Uniform({type:'float', value:1})
+      };
+
+      this.setSize = function(w,h){
+        this.width = w; this.height = h;
+        cv.width = w; cv.height = h;
+        context.viewport(0,0,w,h);
+        this.commonUniforms.resolution.value = [w,h];
+        this.commonUniforms.aspectRatio.value = w/h;
+      };
+      this.setOrthographicCamera = function(){
+        this.commonUniforms.projectionMatrix.value =
+          [2/this.width,0,0,0, 0,2/this.height,0,0, 0,0,-0.001,0, 0,0,0,1];
+      };
+      this.render = function(){
+        context.clearColor(0,0,0,0); context.clearDepth(1);
+        this.meshes.forEach(function(m){ m.draw(); });
+      };
+    }
+
+    var VERT = [
+      'vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}',
+      'vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}',
+      'vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}',
+      'vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}',
+      'float snoise(vec3 v){',
+      '  const vec2 C=vec2(1.0/6.0,1.0/3.0); const vec4 D=vec4(0.0,0.5,1.0,2.0);',
+      '  vec3 i=floor(v+dot(v,C.yyy)); vec3 x0=v-i+dot(i,C.xxx);',
+      '  vec3 g=step(x0.yzx,x0.xyz); vec3 l=1.0-g;',
+      '  vec3 i1=min(g.xyz,l.zxy); vec3 i2=max(g.xyz,l.zxy);',
+      '  vec3 x1=x0-i1+C.xxx; vec3 x2=x0-i2+C.yyy; vec3 x3=x0-D.yyy;',
+      '  i=mod289(i);',
+      '  vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));',
+      '  float n_=0.142857142857; vec3 ns=n_*D.wyz-D.xzx;',
+      '  vec4 j=p-49.0*floor(p*ns.z*ns.z);',
+      '  vec4 x_=floor(j*ns.z); vec4 y_=floor(j-7.0*x_);',
+      '  vec4 x=x_*ns.x+ns.yyyy; vec4 y=y_*ns.x+ns.yyyy; vec4 h=1.0-abs(x)-abs(y);',
+      '  vec4 b0=vec4(x.xy,y.xy); vec4 b1=vec4(x.zw,y.zw);',
+      '  vec4 s0=floor(b0)*2.0+1.0; vec4 s1=floor(b1)*2.0+1.0; vec4 sh=-step(h,vec4(0.0));',
+      '  vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy; vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;',
+      '  vec3 p0=vec3(a0.xy,h.x); vec3 p1=vec3(a0.zw,h.y); vec3 p2=vec3(a1.xy,h.z); vec3 p3=vec3(a1.zw,h.w);',
+      '  vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));',
+      '  p0*=norm.x; p1*=norm.y; p2*=norm.z; p3*=norm.w;',
+      '  vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0); m=m*m;',
+      '  return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));',
+      '}',
+      'vec3 blendNormal(vec3 base, vec3 blend, float opacity){return (blend*opacity+base*(1.0-opacity));}',
+      'varying vec3 v_color;',
+      'void main(){',
+      '  float time=u_time*u_global.noiseSpeed;',
+      '  vec2 noiseCoord=resolution*uvNorm*u_global.noiseFreq;',
+      '  float tilt=resolution.y/2.0*uvNorm.y;',
+      '  float incline=resolution.x*uvNorm.x/2.0*u_vertDeform.incline;',
+      '  float offset=resolution.x/2.0*u_vertDeform.incline*mix(u_vertDeform.offsetBottom,u_vertDeform.offsetTop,uv.y);',
+      '  float noise=snoise(vec3(noiseCoord.x*u_vertDeform.noiseFreq.x+time*u_vertDeform.noiseFlow, noiseCoord.y*u_vertDeform.noiseFreq.y, time*u_vertDeform.noiseSpeed+u_vertDeform.noiseSeed))*u_vertDeform.noiseAmp;',
+      '  noise*=1.0-pow(abs(uvNorm.y),2.0); noise=max(0.0,noise);',
+      '  vec3 pos=vec3(position.x, position.y+tilt+incline+noise-offset, position.z);',
+      '  v_color=u_baseColor;',
+      '  for(int i=0;i<u_waveLayers_length;i++){',
+      '    if(u_active_colors[i+1]==1.){',
+      '      WaveLayers layer=u_waveLayers[i];',
+      '      float layerNoise=smoothstep(layer.noiseFloor, layer.noiseCeil, snoise(vec3(noiseCoord.x*layer.noiseFreq.x+time*layer.noiseFlow, noiseCoord.y*layer.noiseFreq.y, time*layer.noiseSpeed+layer.noiseSeed))/2.0+0.5);',
+      '      v_color=blendNormal(v_color, layer.color, pow(layerNoise,4.));',
+      '    }',
+      '  }',
+      '  gl_Position=projectionMatrix*modelViewMatrix*vec4(pos,1.0);',
+      '}'
+    ].join('\n');
+
+    var FRAG = 'varying vec3 v_color;\nvoid main(){ gl_FragColor = vec4(v_color, 1.0); }';
+
+    /* Deep navy ground through to the logo blue */
+    var COLORS = ['#08182B','#14325C','#2C5C8F','#4A85B4','#5A93BC'];
+
+    var minigl, mesh, time = 0, last = 0, playing = false, raf;
+    try{
+      minigl = new MiniGl(canvas);
+      var sc = COLORS.map(function(h){ return normalizeColor(parseInt(h.replace('#','0x'),16)); });
+      var U = {
+        u_time:          new minigl.Uniform({value:0}),
+        u_shadow_power:  new minigl.Uniform({value:5}),
+        u_darken_top:    new minigl.Uniform({value:0}),
+        u_active_colors: new minigl.Uniform({value:[1,1,1,1], type:'vec4'}),
+        u_global: new minigl.Uniform({type:'struct', value:{
+          noiseFreq:  new minigl.Uniform({value:[0.0001,0.0009], type:'vec2'}),
+          noiseSpeed: new minigl.Uniform({value:0.00001})
+        }}),
+        u_vertDeform: new minigl.Uniform({type:'struct', excludeFrom:'fragment', value:{
+          incline:      new minigl.Uniform({value:0.5}),
+          offsetTop:    new minigl.Uniform({value:-0.5}),
+          offsetBottom: new minigl.Uniform({value:-0.5}),
+          noiseFreq:    new minigl.Uniform({value:[3,4], type:'vec2'}),
+          noiseAmp:     new minigl.Uniform({value:250}),
+          noiseSpeed:   new minigl.Uniform({value:10}),
+          noiseFlow:    new minigl.Uniform({value:5}),
+          noiseSeed:    new minigl.Uniform({value:5})
+        }}),
+        u_baseColor:  new minigl.Uniform({value:sc[0], type:'vec3', excludeFrom:'fragment'}),
+        u_waveLayers: new minigl.Uniform({value:[], excludeFrom:'fragment', type:'array'})
+      };
+      for(var i=1;i<sc.length;i++){
+        U.u_waveLayers.value.push(new minigl.Uniform({type:'struct', value:{
+          color:      new minigl.Uniform({value:sc[i], type:'vec3'}),
+          noiseFreq:  new minigl.Uniform({value:[2+i/sc.length, 3+i/sc.length], type:'vec2'}),
+          noiseSpeed: new minigl.Uniform({value:11+0.3*i}),
+          noiseFlow:  new minigl.Uniform({value:6.5+0.3*i}),
+          noiseSeed:  new minigl.Uniform({value:5+10*i}),
+          noiseFloor: new minigl.Uniform({value:0.1}),
+          noiseCeil:  new minigl.Uniform({value:0.63+0.07*i})
+        }}));
+      }
+      mesh = new minigl.Mesh(new minigl.PlaneGeometry(), new minigl.Material(VERT, FRAG, U));
+    }catch(err){
+      console.error('gradient wave failed to start', err);
+      return;
+    }
+
+    function resize(){
+      var w = canvas.clientWidth || window.innerWidth;
+      var h = canvas.clientHeight || window.innerHeight;
+      if(!w || !h) return;
+      minigl.setSize(w,h); minigl.setOrthographicCamera();
+      mesh.geometry.setTopology(Math.ceil(w*0.02), Math.ceil(h*0.05));
+      mesh.geometry.setSize(w,h);
+      mesh.material.uniforms.u_shadow_power.value = w < 600 ? 5 : 6;
+      minigl.render();
+    }
+    function frame(ts){
+      if(!playing) return;
+      time += Math.min(ts - last, 1000/15); last = ts;
+      mesh.material.uniforms.u_time.value = time;
+      minigl.render();
+      raf = requestAnimationFrame(frame);
+    }
+    function play(){
+      if(playing || reduce) return;
+      playing = true; last = performance.now(); raf = requestAnimationFrame(frame);
+    }
+    function pause(){ playing = false; cancelAnimationFrame(raf); }
+
+    if('ResizeObserver' in window) new ResizeObserver(resize).observe(canvas);
+    window.addEventListener('resize', resize);
+    resize();
+
+    /* only burn frames while the hero is actually on screen */
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){ es[0].isIntersecting ? play() : pause(); }, {threshold:0}).observe(canvas);
+    } else { play(); }
+    document.addEventListener('visibilitychange', function(){ document.hidden ? pause() : play(); });
+  })();
+</script>
