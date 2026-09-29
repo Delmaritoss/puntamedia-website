@@ -215,6 +215,40 @@
     100%{transform:scaleY(0);transform-origin:bottom}}
   @media(prefers-reduced-motion:reduce){ .vhero-hint i{animation:none} }
 
+
+  /* ---------- HERO PER TELEFONO ----------
+     Non l'hero desktop rimpicciolita e nemmeno il ripiego di prima: una
+     composizione verticale, una foto sola a tutta pagina, il testo in basso
+     dove arriva il pollice. Sotto gli 880px questa sostituisce le altre due. */
+  .mhero{display:none}
+  @media(max-width:880px){
+    .hero{display:none}
+    .mhero{
+      display:flex;flex-direction:column;justify-content:flex-end;
+      position:relative;min-height:86vh;min-height:86svh;overflow:hidden;
+      padding:0 0 calc(34px + env(safe-area-inset-bottom,0px));
+    }
+    .mhero .bg{position:absolute;inset:0;z-index:0}
+    .mhero .bg img{width:100%;height:100%;object-fit:cover;object-position:52% 38%}
+    .mhero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+      background:linear-gradient(180deg,
+        rgba(8,24,43,.55) 0%,
+        rgba(8,24,43,.30) 26%,
+        rgba(8,24,43,.82) 62%,
+        var(--ink) 100%)}
+    .mhero .wrap{position:relative;z-index:2}
+    .mhero h1{font-size:clamp(31px,8.6vw,42px);line-height:1.08;margin-top:16px}
+    .mhero h1 em{color:var(--acc);font-weight:600}
+    .mhero p{color:var(--muted);font-size:15.5px;line-height:1.66;margin-top:14px;max-width:34ch}
+    .mhero .cta{display:flex;flex-direction:column;gap:10px;margin-top:26px}
+    .mhero .cta .btn{width:100%}
+    .mhero .meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:22px;
+      font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+    .mhero .hint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:3;
+      width:1px;height:22px;background:linear-gradient(180deg,var(--acc),transparent);
+      animation:hintdrop 2s var(--ease) infinite}
+  }
+
   /* ---------- HERO ---------- */
   .hero{position:relative;padding-top:clamp(50px,7vw,88px);padding-bottom:clamp(64px,9vw,112px);overflow:hidden}
   #bg-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
@@ -741,6 +775,26 @@
       <span class="vhero-hint" aria-hidden="true">Scroll<i></i></span>
     </div>
   </div>
+
+  <!-- HERO PER TELEFONO (solo sotto gli 880px) -->
+  <section class="mhero">
+    <div class="bg ph" aria-hidden="true">
+      <img src="video/hero-poster.webp" alt="" fetchpriority="high" decoding="async">
+    </div>
+    <div class="wrap">
+      <span class="eyebrow">Web Design Studio</span>
+      <h1>Websites your business deserves &mdash; <em>designed around you.</em></h1>
+      <p>Custom, multilingual websites for restaurants, shops and small businesses on the Adriatic.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="#work">See the work</a>
+        <a class="btn btn-ghost" href="#contact">Start your project</a>
+      </div>
+      <div class="meta">
+        <span>Four languages</span><span>Never templated</span><span>Live in days</span>
+      </div>
+    </div>
+    <span class="hint" aria-hidden="true"></span>
+  </section>
 
   <!-- HERO -->
   <section class="hero">
