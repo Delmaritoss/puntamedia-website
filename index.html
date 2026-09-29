@@ -1666,6 +1666,12 @@
     }
     window.addEventListener('scroll', onScroll, {passive:true});
     window.addEventListener('resize', function(){ measure(); measureFit(); onScroll(); });
+    // I font arrivano dopo: finche non ci sono, il testo occupa meno e
+    // l'altezza misurata e piu bassa del vero. Rimisuro quando sono pronti.
+    if(document.fonts && document.fonts.ready){
+      document.fonts.ready.then(function(){ measure(); measureFit(); onScroll(); });
+    }
+    window.addEventListener('load', function(){ measure(); measureFit(); onScroll(); });
     // catch up the moment the tab becomes visible again
     document.addEventListener('visibilitychange', function(){
       if(!document.hidden){ measure(); onScroll(); }
