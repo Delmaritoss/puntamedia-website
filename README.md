@@ -10,8 +10,19 @@ Un unico file HTML autonomo. Nessuna build, nessuna dipendenza da installare, ne
 index.html          tutto il sito: markup, CSS e JavaScript
 img/                fotografie di sfondo e delle sezioni (WebP)
 video/              il filmato della hero + il suo poster
+showcase/           le pagine dei progetti inventati, da cui escono gli screenshot
 image-prompts.md    i prompt usati per generare le immagini
 ```
+
+Gli screenshot nella sezione lavori si rifanno cosi, da `showcase/`:
+
+```bash
+msedge --headless=new --hide-scrollbars --force-device-scale-factor=2 --window-size=1240,806 --screenshot=out.png showcase/riva-grill.html
+```
+
+Poi si riduce a 1240x806 e si salva in `img/` come WebP. La pagina e alta
+esattamente 806 px perche 1240x806 e il rapporto della finestrella (16/10.4):
+cosi l'immagine entra intera, senza tagli.
 
 Librerie esterne: nessuna. Solo i font da Google Fonts.
 
@@ -35,6 +46,6 @@ Spuntare **Enforce HTTPS** quando il certificato è pronto (qualche minuto).
 
 ## Da completare
 
-- [ ] Prezzi reali (adesso sono segnaposto: €490 / €890)
 - [ ] Email, numero WhatsApp e profili social
-- [ ] Due progetti in più nella sezione lavori
+- [ ] Il sito di **Apartmani Kalelarga** (la scheda c'è già, la finestrella è ancora quella in lavorazione)
+- [ ] Konoba Makara è un cliente vero; Riva Grill e Apartmani Kalelarga sono inventati. Se vuoi essere trasparente, basta scrivere "Concept" nella riga del tag.
