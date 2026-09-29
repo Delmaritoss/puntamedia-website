@@ -1499,7 +1499,7 @@
     vid.addEventListener('canplaythrough', activate);
     vid.addEventListener('error', function(){ /* leave the CSS hero in place */ });
 
-    var vw = 0, vh = 0, pending = false;
+    var vw = 0, vh = 0, raf = 0;
     function measure(){
       var de = document.documentElement;
       vw = de.clientWidth  || window.innerWidth;
@@ -1508,7 +1508,6 @@
     measure();
 
     function draw(){
-      pending = false;
       var r = track.getBoundingClientRect();
       var span = track.offsetHeight - vh;
       var p = clamp(span > 0 ? (-r.top) / span : 0);
@@ -1564,12 +1563,21 @@
       veil.style.opacity = String(1 - ramp(p, 0, .35));
     }
     function onScroll(){
-      if(!ready || pending) return;
-      pending = true;
-      requestAnimationFrame(draw);
+      if(!ready) return;
+      // Replace any queued frame instead of gating on a boolean. A flag sticks
+      // on forever if the frame never fires — exactly what happens when the page
+      // loads in a hidden or background tab, leaving the hero frozen at frame 0
+      // even after the tab is brought to the front.
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(draw);
     }
     window.addEventListener('scroll', onScroll, {passive:true});
     window.addEventListener('resize', function(){ measure(); onScroll(); });
+    // catch up the moment the tab becomes visible again
+    document.addEventListener('visibilitychange', function(){
+      if(!document.hidden){ measure(); onScroll(); }
+    });
+    window.addEventListener('pageshow', function(){ measure(); onScroll(); });
     if(vid.readyState >= 1) activate();
   })();
 
