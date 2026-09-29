@@ -228,7 +228,7 @@
       padding:0 0 calc(34px + env(safe-area-inset-bottom,0px));
     }
     .mhero .bg{position:absolute;inset:0;z-index:0}
-    .mhero .bg img{width:100%;height:100%;object-fit:cover;object-position:52% 38%}
+    .mhero .bg img{width:100%;height:100%;object-fit:cover;object-position:50% 34%}
     .mhero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
       background:linear-gradient(180deg,
         rgba(8,24,43,.55) 0%,
@@ -282,6 +282,7 @@
   .dots i{width:9px;height:9px;border-radius:50%;display:block;background:rgba(160,200,235,.24)}
   .url{flex:1;margin-left:8px;background:rgba(0,0,0,.22);border-radius:3px;padding:5px 12px;font-size:11px;letter-spacing:.06em;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .screen{aspect-ratio:16/10.4;overflow:hidden;position:relative}
+  .screen .shot{width:100%;height:100%;object-fit:cover;object-position:top center}
   .floaty{
     position:absolute;border-radius:var(--r);padding:14px 18px;
     background:rgba(17,42,70,.92);border:1px solid var(--line-strong);
@@ -401,7 +402,7 @@
   .mk-center .sub{font-size:10.5px;font-weight:300;color:rgba(255,255,255,.82);margin-top:6px;letter-spacing:.04em}
   .mk-center .pill{margin-top:16px;font-size:8.5px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:#12302f;background:#e8bd85;padding:8px 18px;border-radius:2px}
 
-  /* Juicy Patty — retro diner */
+  /* Riva Grill — retro diner */
   .mk-jp{background:#f2e7d5}
   .mk-jp .band{position:absolute;top:0;left:0;right:0;height:33%;background:repeating-linear-gradient(45deg,#d8433a 0 18px,#bd332c 18px 36px)}
   .mk-jp-nav{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:13px 18px;z-index:4;color:#fff;font-family:var(--sans);font-weight:600;letter-spacing:.12em;font-size:13px}
@@ -425,13 +426,13 @@
 
   /* ---------- VALUE STRIP ---------- */
   .strip{border-block:1px solid var(--line);background:var(--ink-2)}
-  .strip-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+  .strip-grid{display:grid;grid-template-columns:repeat(3,1fr)}
   .val{padding:38px 28px;border-left:1px solid var(--line)}
   .val:first-child{border-left:none}
   .val .n{font-family:var(--serif);font-weight:600;font-size:clamp(21px,2.5vw,28px);line-height:1.2}
   .val .l{color:var(--muted);font-size:14px;margin-top:8px;line-height:1.6}
   @media(max-width:760px){
-    .strip-grid{grid-template-columns:1fr 1fr}
+    .strip-grid{grid-template-columns:1fr}
     .val{border-top:1px solid var(--line);padding:30px 22px}
     .val:nth-child(1),.val:nth-child(2){border-top:none}
     .val:nth-child(odd){border-left:none}
@@ -778,7 +779,7 @@
   <!-- HERO PER TELEFONO (solo sotto gli 880px) -->
   <section class="mhero">
     <div class="bg ph" aria-hidden="true">
-      <img src="video/hero-poster.webp" alt="" fetchpriority="high" decoding="async">
+      <img src="img/hero-phone.webp" alt="" fetchpriority="high" decoding="async">
     </div>
     <div class="wrap">
       <span class="eyebrow">Web Design Studio</span>
@@ -863,7 +864,6 @@
         <div class="val"><div class="n">Entirely custom</div><div class="l">Designed around your brand &mdash; never a drag-and-drop template.</div></div>
         <div class="val"><div class="n">Four languages</div><div class="l">Croatian, English, German and Italian, so every guest feels at home.</div></div>
         <div class="val"><div class="n">Days, not months</div><div class="l">A considered process that still gets you online quickly.</div></div>
-        <div class="val"><div class="n">Made on Ugljan</div><div class="l">Rooted on the Adriatic, building for businesses everywhere.</div></div>
       </div>
     </div>
   </section>
@@ -963,17 +963,7 @@
             <div class="browser">
               <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">konoba-makara.hr</span></div>
               <div class="screen">
-                <div class="mk mk-makara">
-                  <div class="sky"></div><div class="sun"></div>
-                  <div class="mk-nav">MAKARA<span class="r"><span>MENI</span><span>GALERIJA</span><span>KONTAKT</span></span></div>
-                  <div class="mk-center">
-                    <span class="tag">Lukoran &middot; Otok Ugljan</span>
-                    <span class="big">Okus mora</span>
-                    <span class="sub">Fresh Adriatic plates &middot; wood-fired &middot; sunset terrace</span>
-                    <span class="pill">Rezerviraj stol</span>
-                  </div>
-                  <div class="sea"></div>
-                </div>
+                <img class="shot" src="img/work-makara.webp" alt="La pagina iniziale del sito di Konoba Makara" loading="lazy" decoding="async">
               </div>
             </div>
           </div>
@@ -994,11 +984,11 @@
         <div class="work-visual stage reveal">
           <div class="device">
             <div class="browser">
-              <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">juicypatty.hr</span></div>
+              <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">rivagrill.hr</span></div>
               <div class="screen">
                 <div class="mk mk-jp">
                   <div class="band"></div>
-                  <div class="mk-jp-nav">JUICY PATTY <span class="r">MENU &middot; LOCATION</span></div>
+                  <div class="mk-jp-nav">RIVA GRILL <span class="r">MENU &middot; LOCATION</span></div>
                   <div class="burger"><i class="top"></i><i class="let"></i><i class="pat"></i><i class="bot"></i></div>
                   <div class="plate"><div class="t">Big. Bold. Juicy.</div><div class="s">Preko &middot; Ugljan</div></div>
                   <div class="star">FRESH<br>DAILY</div>
@@ -1009,7 +999,7 @@
         </div>
         <div class="work-copy reveal">
           <span class="work-tag">Fast food &middot; Diner</span>
-          <h3>Juicy Patty</h3>
+          <h3>Riva Grill</h3>
           <div class="loc">Preko, Island of Ugljan &middot; Croatia</div>
           <p>A playful, retro-diner look for a fast-food spot that wanted personality. Appetite-first visuals, an easy-to-scan menu and clear directions &mdash; the kind of page that turns a hungry scroll into a walk-in order.</p>
           <div class="chips"><span class="chip">Retro branding</span><span class="chip">Digital menu</span><span class="chip">Bilingual</span><span class="chip">Maps &amp; hours</span></div>
@@ -1706,8 +1696,6 @@
       "Croatian, English, German and Italian, so every guest feels at home.":"Hrvatski, engleski, njemački i talijanski — da se svaki gost osjeća dobrodošlo.",
       "Days, not months":"Dani, ne mjeseci",
       "A considered process that still gets you online quickly.":"Promišljen proces koji vas brzo dovodi online.",
-      "Made on Ugljan":"Nastalo na Ugljanu",
-      "Rooted on the Adriatic, building for businesses everywhere.":"S korijenima na Jadranu, gradimo za tvrtke svugdje.",
       "What I do":"Čime se bavim",
       "Everything your business needs to look its best online.":"Sve što vaš posao treba da izgleda najbolje na internetu.",
       "One partner, from the first conversation to a living site that keeps working for you — in every language your customers speak.":"Jedan partner, od prvog razgovora do žive stranice koja radi za vas — na svakom jeziku kojim govore vaši gosti.",
