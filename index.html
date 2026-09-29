@@ -215,42 +215,42 @@
   @media(prefers-reduced-motion:reduce){ .vhero-hint i{animation:none} }
 
 
-  /* ---------- HERO PER TELEFONO ----------
-     Non l'hero desktop rimpicciolita e nemmeno il ripiego di prima: una
-     composizione verticale, una foto sola a tutta pagina, il testo in basso
-     dove arriva il pollice. Sotto gli 880px questa sostituisce le altre due. */
-  .mhero{display:none}
+  /* ---------- HERO ----------
+     Composizione verticale: una foto sola a tutta pagina, il testo in basso
+     dove arriva il pollice. E' anche il ripiego universale — se la hero video
+     non parte (telefono, reduced-motion, video non disponibile) resta questa. */
+  .has-vhero .mhero{display:none}
+  .mhero{
+    display:flex;flex-direction:column;justify-content:flex-end;
+    position:relative;min-height:86vh;min-height:86svh;overflow:hidden;
+    padding:0 0 calc(34px + env(safe-area-inset-bottom,0px));
+  }
+  .mhero .bg{position:absolute;inset:0;z-index:0}
+  .mhero .bg img{width:100%;height:100%;object-fit:cover;object-position:50% 34%}
+  .mhero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:linear-gradient(180deg,
+      rgba(8,24,43,.55) 0%,
+      rgba(8,24,43,.30) 26%,
+      rgba(8,24,43,.82) 62%,
+      var(--ink) 100%)}
+  .mhero .wrap{position:relative;z-index:2}
+  .mhero h1{font-size:clamp(31px,5.4vw,52px);line-height:1.08;margin-top:16px}
+  .mhero h1 em{color:var(--acc);font-weight:600}
+  .mhero p{color:var(--muted);font-size:clamp(15.5px,1.7vw,17.5px);line-height:1.7;margin-top:14px;max-width:44ch}
+  .mhero .cta{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap}
+  .mhero .meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:24px;
+    font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  .mhero .hint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:3;
+    width:1px;height:22px;background:linear-gradient(180deg,var(--acc),transparent);
+    animation:hintdrop 2s var(--ease) infinite}
   @media(max-width:880px){
-    .hero{display:none}
-    .mhero{
-      display:flex;flex-direction:column;justify-content:flex-end;
-      position:relative;min-height:86vh;min-height:86svh;overflow:hidden;
-      padding:0 0 calc(34px + env(safe-area-inset-bottom,0px));
-    }
-    .mhero .bg{position:absolute;inset:0;z-index:0}
-    .mhero .bg img{width:100%;height:100%;object-fit:cover;object-position:50% 34%}
-    .mhero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-      background:linear-gradient(180deg,
-        rgba(8,24,43,.55) 0%,
-        rgba(8,24,43,.30) 26%,
-        rgba(8,24,43,.82) 62%,
-        var(--ink) 100%)}
-    .mhero .wrap{position:relative;z-index:2}
-    .mhero h1{font-size:clamp(31px,8.6vw,42px);line-height:1.08;margin-top:16px}
-    .mhero h1 em{color:var(--acc);font-weight:600}
-    .mhero p{color:var(--muted);font-size:15.5px;line-height:1.66;margin-top:14px;max-width:34ch}
-    .mhero .cta{display:flex;flex-direction:column;gap:10px;margin-top:26px}
+    .mhero .cta{flex-direction:column}
     .mhero .cta .btn{width:100%}
-    .mhero .meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:22px;
-      font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
-    .mhero .hint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:3;
-      width:1px;height:22px;background:linear-gradient(180deg,var(--acc),transparent);
-      animation:hintdrop 2s var(--ease) infinite}
+    .mhero p{max-width:34ch}
   }
 
   /* ---------- HERO ---------- */
   .hero{position:relative;padding-top:clamp(50px,7vw,88px);padding-bottom:clamp(64px,9vw,112px);overflow:hidden}
-  #bg-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
   .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:200px;background:linear-gradient(180deg,transparent,var(--ink));z-index:1;pointer-events:none}
   .hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(100deg,rgba(8,24,43,.92) 0%,rgba(8,24,43,.74) 34%,rgba(8,24,43,.3) 62%,rgba(8,24,43,.05) 100%)}
   .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.02fr .98fr;gap:60px;align-items:center}
@@ -796,66 +796,6 @@
     <span class="hint" aria-hidden="true"></span>
   </section>
 
-  <!-- HERO -->
-  <section class="hero">
-    <canvas id="bg-canvas" aria-hidden="true"></canvas>
-    <div class="wrap hero-grid">
-      <div class="hero-copy">
-        <span class="eyebrow">Web Design Studio</span>
-        <h1>Websites your business deserves &mdash; <em>designed around you, built to perform.</em></h1>
-        <p class="hero-sub">Puntamedia designs and builds custom, multilingual websites for restaurants, shops and small businesses &mdash; in whatever style suits your brand, and built to bring you customers.</p>
-        <div class="hero-cta">
-          <a class="btn btn-primary" href="#work">See the work</a>
-          <a class="btn btn-ghost" href="#contact">Start your project</a>
-        </div>
-        <div class="hero-meta">
-          <span><b>Four languages</b></span>
-          <span><b>Never templated</b></span>
-          <span><b>Live in days</b></span>
-        </div>
-      </div>
-
-      <div class="hero-visual stage">
-        <div class="device" id="heroDevice">
-          <div class="laptop">
-            <div class="laptop-shadow" aria-hidden="true"></div>
-            <div class="laptop-lid">
-              <span class="laptop-cam" aria-hidden="true"></span>
-              <div class="laptop-screen">
-                <div class="mini-frame" inert aria-hidden="true">
-                  <div class="mini-page replica" id="miniPage"></div>
-                </div>
-                <span class="screen-scrim" aria-hidden="true"></span>
-                <button type="button" class="screen-open" id="diveBtn">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                  Open
-                </button>
-              </div>
-              <span class="laptop-brand" aria-hidden="true"></span>
-            </div>
-            <div class="laptop-base" aria-hidden="true">
-              <div class="base-hinge"></div>
-              <div class="kb">
-                <div class="kb-row fn n13"></div>
-                <div class="kb-row n14"></div>
-                <div class="kb-row n14"></div>
-                <div class="kb-row n13"></div>
-                <div class="kb-row n12"></div>
-                <div class="kb-row space">
-                  <i class="k1"></i><i class="k1"></i><i class="k2"></i>
-                  <i class="sp"></i>
-                  <i class="k2"></i><i class="k1"></i><i class="k1"></i>
-                </div>
-              </div>
-              <div class="trackpad"></div>
-            </div>
-          </div>
-          <div class="floaty tl"><div class="k">Loads in</div><div class="v">0.9 seconds</div></div>
-          <div class="floaty br"><div class="k">Built for</div><div class="v">Every screen</div></div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- VALUE STRIP -->
   <section class="strip light">
@@ -1513,8 +1453,6 @@
     // Solo ora vale la pena scaricarlo: su telefono la hero video non parte
     // mai, e con preload="auto" il visitatore si sarebbe scaricato quasi 4 MB
     // in 4G per niente.
-    vid.preload = 'auto';
-    vid.load();
 
     // Screen width in the frame, normalised, sampled every 8 frames. Measured
     // off the encoded file; the horizontal edges are clean, the vertical ones
@@ -1572,6 +1510,11 @@
     }
     vid.addEventListener('loadedmetadata', activate);
     vid.addEventListener('canplaythrough', activate);
+    // Solo adesso, con gli ascoltatori registrati, faccio partire il
+    // caricamento: chiamarlo prima significava perdere l'evento quando il
+    // video arrivava dalla cache, e restava visibile la hero di ripiego.
+    vid.preload = 'auto';
+    vid.load();
     vid.addEventListener('error', function(){ /* leave the CSS hero in place */ });
 
     var vw = 0, vh = 0, raf = 0;
@@ -1856,363 +1799,6 @@
     });
   })();
 
-  /* ---------- Hero: animated gradient wave (WebGL) ----------
-     Ported from the React component to plain JS. The useEffect wrapper and the
-     TypeScript annotations were the only framework-specific parts; the MiniGl
-     and Gradient logic below is the original, unchanged in behaviour. */
-  (function(){
-    var canvas = document.getElementById('bg-canvas');
-    if(!canvas || !canvas.getContext('webgl',{antialias:true})) return;
-
-    function normalizeColor(hex){
-      return [((hex>>16)&255)/255, ((hex>>8)&255)/255, (255&hex)/255];
-    }
-
-    function MiniGl(cv){
-      var _miniGl = this, context = cv.getContext('webgl',{antialias:true});
-      this.canvas = cv; this.gl = context; this.meshes = [];
-
-      this.Uniform = class {
-        constructor(e){
-          this.type = 'float';
-          Object.assign(this, e);
-          var map = {float:'1f',int:'1i',vec2:'2fv',vec3:'3fv',vec4:'4fv',mat4:'Matrix4fv'};
-          this.typeFn = map[this.type] || '1f';
-        }
-        update(loc){
-          if(this.value === undefined || loc === null) return;
-          if(this.typeFn.indexOf('Matrix') === 0) context['uniform'+this.typeFn](loc, this.transpose||false, this.value);
-          else context['uniform'+this.typeFn](loc, this.value);
-        }
-        getDeclaration(name, type, length){
-          if(this.excludeFrom === type) return '';
-          if(this.type === 'array'){
-            return this.value[0].getDeclaration(name, type, this.value.length) +
-                   '\nconst int ' + name + '_length = ' + this.value.length + ';';
-          }
-          if(this.type === 'struct'){
-            var nn = name.replace('u_','');
-            nn = nn.charAt(0).toUpperCase() + nn.slice(1);
-            var self = this;
-            var fields = Object.keys(this.value).map(function(k){
-              return self.value[k].getDeclaration(k, type).replace(/^uniform/,'');
-            }).join('');
-            return 'uniform struct ' + nn + ' {\n' + fields + '} ' + name + (length?'['+length+']':'') + ';';
-          }
-          return 'uniform ' + this.type + ' ' + name + (length?'['+length+']':'') + ';';
-        }
-      };
-
-      this.Attribute = class {
-        constructor(e){
-          this.type = context.FLOAT; this.normalized = false;
-          this.buffer = context.createBuffer();
-          Object.assign(this, e);
-        }
-        update(){
-          if(this.values){
-            context.bindBuffer(this.target, this.buffer);
-            context.bufferData(this.target, this.values, context.STATIC_DRAW);
-          }
-        }
-        attach(name, program){
-          var loc = context.getAttribLocation(program, name);
-          if(this.target === context.ARRAY_BUFFER){
-            context.bindBuffer(this.target, this.buffer);
-            context.enableVertexAttribArray(loc);
-            context.vertexAttribPointer(loc, this.size, this.type, this.normalized, 0, 0);
-          }
-          return loc;
-        }
-        use(loc){
-          context.bindBuffer(this.target, this.buffer);
-          if(this.target === context.ARRAY_BUFFER){
-            context.enableVertexAttribArray(loc);
-            context.vertexAttribPointer(loc, this.size, this.type, this.normalized, 0, 0);
-          }
-        }
-      };
-
-      this.Material = class {
-        constructor(vertexShader, fragmentShader, uniforms){
-          uniforms = uniforms || {};
-          this.uniforms = uniforms; this.uniformInstances = [];
-          function getShader(type, source){
-            var sh = context.createShader(type);
-            context.shaderSource(sh, source); context.compileShader(sh);
-            if(!context.getShaderParameter(sh, context.COMPILE_STATUS)){
-              console.error(context.getShaderInfoLog(sh));
-              throw new Error('Shader compilation error');
-            }
-            return sh;
-          }
-          function decls(u, type){
-            return Object.keys(u).map(function(k){ return u[k].getDeclaration(k, type); }).join('\n');
-          }
-          var prefix = 'precision highp float;';
-          var vs = prefix + '\nattribute vec4 position;\nattribute vec2 uv;\nattribute vec2 uvNorm;\n' +
-                   decls(_miniGl.commonUniforms,'vertex') + '\n' + decls(uniforms,'vertex') + '\n' + vertexShader;
-          var fs = prefix + '\n' + decls(_miniGl.commonUniforms,'fragment') + '\n' +
-                   decls(uniforms,'fragment') + '\n' + fragmentShader;
-
-          this.program = context.createProgram();
-          context.attachShader(this.program, getShader(context.VERTEX_SHADER, vs));
-          context.attachShader(this.program, getShader(context.FRAGMENT_SHADER, fs));
-          context.linkProgram(this.program);
-          if(!context.getProgramParameter(this.program, context.LINK_STATUS)){
-            console.error(context.getProgramInfoLog(this.program));
-            throw new Error('Program linking error');
-          }
-          context.useProgram(this.program);
-          this.attachUniforms(undefined, _miniGl.commonUniforms);
-          this.attachUniforms(undefined, this.uniforms);
-        }
-        attachUniforms(name, uniforms){
-          var self = this;
-          if(name === undefined){
-            Object.keys(uniforms).forEach(function(k){ self.attachUniforms(k, uniforms[k]); });
-          } else if(uniforms.type === 'array'){
-            uniforms.value.forEach(function(u,i){ self.attachUniforms(name+'['+i+']', u); });
-          } else if(uniforms.type === 'struct'){
-            Object.keys(uniforms.value).forEach(function(k){ self.attachUniforms(name+'.'+k, uniforms.value[k]); });
-          } else {
-            this.uniformInstances.push({uniform:uniforms, location:context.getUniformLocation(this.program, name)});
-          }
-        }
-      };
-
-      this.PlaneGeometry = class {
-        constructor(){
-          this.width = 1; this.height = 1; this.vertexCount = 0;
-          this.xSegCount = 0; this.ySegCount = 0;
-          this.attributes = {
-            position: new _miniGl.Attribute({target:context.ARRAY_BUFFER, size:3}),
-            uv:       new _miniGl.Attribute({target:context.ARRAY_BUFFER, size:2}),
-            uvNorm:   new _miniGl.Attribute({target:context.ARRAY_BUFFER, size:2}),
-            index:    new _miniGl.Attribute({target:context.ELEMENT_ARRAY_BUFFER, size:3, type:context.UNSIGNED_SHORT})
-          };
-        }
-        setTopology(x,y){
-          x = x||1; y = y||1;
-          this.xSegCount = x; this.ySegCount = y;
-          this.vertexCount = (x+1)*(y+1);
-          var quads = x*y*2;
-          this.attributes.uv.values     = new Float32Array(2*this.vertexCount);
-          this.attributes.uvNorm.values = new Float32Array(2*this.vertexCount);
-          this.attributes.index.values  = new Uint16Array(3*quads);
-          for(var j=0;j<=y;j++){
-            for(var i=0;i<=x;i++){
-              var k = j*(x+1)+i;
-              this.attributes.uv.values[2*k]       = i/x;
-              this.attributes.uv.values[2*k+1]     = 1 - j/y;
-              this.attributes.uvNorm.values[2*k]   = (i/x)*2 - 1;
-              this.attributes.uvNorm.values[2*k+1] = 1 - (j/y)*2;
-              if(i<x && j<y){
-                var q = j*x+i;
-                this.attributes.index.values[6*q]   = k;
-                this.attributes.index.values[6*q+1] = k+1+x;
-                this.attributes.index.values[6*q+2] = k+1;
-                this.attributes.index.values[6*q+3] = k+1;
-                this.attributes.index.values[6*q+4] = k+1+x;
-                this.attributes.index.values[6*q+5] = k+2+x;
-              }
-            }
-          }
-          this.attributes.uv.update(); this.attributes.uvNorm.update(); this.attributes.index.update();
-        }
-        setSize(w,h){
-          w = w||1; h = h||1;
-          this.width = w; this.height = h;
-          this.attributes.position.values = new Float32Array(3*this.vertexCount);
-          var ox = w/-2, oy = h/-2, sw = w/this.xSegCount, sh = h/this.ySegCount;
-          for(var j=0;j<=this.ySegCount;j++){
-            var py = oy + j*sh;
-            for(var i=0;i<=this.xSegCount;i++){
-              var px = ox + i*sw, k = j*(this.xSegCount+1)+i;
-              this.attributes.position.values[3*k]   = px;
-              this.attributes.position.values[3*k+1] = -py;
-              this.attributes.position.values[3*k+2] = 0;
-            }
-          }
-          this.attributes.position.update();
-        }
-      };
-
-      this.Mesh = class {
-        constructor(geometry, material){
-          this.geometry = geometry; this.material = material; this.attributeInstances = [];
-          var self = this;
-          Object.keys(geometry.attributes).forEach(function(k){
-            self.attributeInstances.push({
-              attribute: geometry.attributes[k],
-              location:  geometry.attributes[k].attach(k, material.program)
-            });
-          });
-          _miniGl.meshes.push(this);
-        }
-        draw(){
-          context.useProgram(this.material.program);
-          this.material.uniformInstances.forEach(function(o){ o.uniform.update(o.location); });
-          this.attributeInstances.forEach(function(o){ o.attribute.use(o.location); });
-          context.drawElements(context.TRIANGLES, this.geometry.attributes.index.values.length, context.UNSIGNED_SHORT, 0);
-        }
-      };
-
-      var I = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
-      this.commonUniforms = {
-        projectionMatrix: new this.Uniform({type:'mat4', value:I}),
-        modelViewMatrix:  new this.Uniform({type:'mat4', value:I}),
-        resolution:       new this.Uniform({type:'vec2', value:[1,1]}),
-        aspectRatio:      new this.Uniform({type:'float', value:1})
-      };
-
-      this.setSize = function(w,h){
-        this.width = w; this.height = h;
-        cv.width = w; cv.height = h;
-        context.viewport(0,0,w,h);
-        this.commonUniforms.resolution.value = [w,h];
-        this.commonUniforms.aspectRatio.value = w/h;
-      };
-      this.setOrthographicCamera = function(){
-        this.commonUniforms.projectionMatrix.value =
-          [2/this.width,0,0,0, 0,2/this.height,0,0, 0,0,-0.001,0, 0,0,0,1];
-      };
-      this.render = function(){
-        context.clearColor(0,0,0,0); context.clearDepth(1);
-        this.meshes.forEach(function(m){ m.draw(); });
-      };
-    }
-
-    var VERT = [
-      'vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}',
-      'vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}',
-      'vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}',
-      'vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}',
-      'float snoise(vec3 v){',
-      '  const vec2 C=vec2(1.0/6.0,1.0/3.0); const vec4 D=vec4(0.0,0.5,1.0,2.0);',
-      '  vec3 i=floor(v+dot(v,C.yyy)); vec3 x0=v-i+dot(i,C.xxx);',
-      '  vec3 g=step(x0.yzx,x0.xyz); vec3 l=1.0-g;',
-      '  vec3 i1=min(g.xyz,l.zxy); vec3 i2=max(g.xyz,l.zxy);',
-      '  vec3 x1=x0-i1+C.xxx; vec3 x2=x0-i2+C.yyy; vec3 x3=x0-D.yyy;',
-      '  i=mod289(i);',
-      '  vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));',
-      '  float n_=0.142857142857; vec3 ns=n_*D.wyz-D.xzx;',
-      '  vec4 j=p-49.0*floor(p*ns.z*ns.z);',
-      '  vec4 x_=floor(j*ns.z); vec4 y_=floor(j-7.0*x_);',
-      '  vec4 x=x_*ns.x+ns.yyyy; vec4 y=y_*ns.x+ns.yyyy; vec4 h=1.0-abs(x)-abs(y);',
-      '  vec4 b0=vec4(x.xy,y.xy); vec4 b1=vec4(x.zw,y.zw);',
-      '  vec4 s0=floor(b0)*2.0+1.0; vec4 s1=floor(b1)*2.0+1.0; vec4 sh=-step(h,vec4(0.0));',
-      '  vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy; vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;',
-      '  vec3 p0=vec3(a0.xy,h.x); vec3 p1=vec3(a0.zw,h.y); vec3 p2=vec3(a1.xy,h.z); vec3 p3=vec3(a1.zw,h.w);',
-      '  vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));',
-      '  p0*=norm.x; p1*=norm.y; p2*=norm.z; p3*=norm.w;',
-      '  vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0); m=m*m;',
-      '  return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));',
-      '}',
-      'vec3 blendNormal(vec3 base, vec3 blend, float opacity){return (blend*opacity+base*(1.0-opacity));}',
-      'varying vec3 v_color;',
-      'void main(){',
-      '  float time=u_time*u_global.noiseSpeed;',
-      '  vec2 noiseCoord=resolution*uvNorm*u_global.noiseFreq;',
-      '  float tilt=resolution.y/2.0*uvNorm.y;',
-      '  float incline=resolution.x*uvNorm.x/2.0*u_vertDeform.incline;',
-      '  float offset=resolution.x/2.0*u_vertDeform.incline*mix(u_vertDeform.offsetBottom,u_vertDeform.offsetTop,uv.y);',
-      '  float noise=snoise(vec3(noiseCoord.x*u_vertDeform.noiseFreq.x+time*u_vertDeform.noiseFlow, noiseCoord.y*u_vertDeform.noiseFreq.y, time*u_vertDeform.noiseSpeed+u_vertDeform.noiseSeed))*u_vertDeform.noiseAmp;',
-      '  noise*=1.0-pow(abs(uvNorm.y),2.0); noise=max(0.0,noise);',
-      '  vec3 pos=vec3(position.x, position.y+tilt+incline+noise-offset, position.z);',
-      '  v_color=u_baseColor;',
-      '  for(int i=0;i<u_waveLayers_length;i++){',
-      '    if(u_active_colors[i+1]==1.){',
-      '      WaveLayers layer=u_waveLayers[i];',
-      '      float layerNoise=smoothstep(layer.noiseFloor, layer.noiseCeil, snoise(vec3(noiseCoord.x*layer.noiseFreq.x+time*layer.noiseFlow, noiseCoord.y*layer.noiseFreq.y, time*layer.noiseSpeed+layer.noiseSeed))/2.0+0.5);',
-      '      v_color=blendNormal(v_color, layer.color, pow(layerNoise,4.));',
-      '    }',
-      '  }',
-      '  gl_Position=projectionMatrix*modelViewMatrix*vec4(pos,1.0);',
-      '}'
-    ].join('\n');
-
-    var FRAG = 'varying vec3 v_color;\nvoid main(){ gl_FragColor = vec4(v_color, 1.0); }';
-
-    /* Deep navy ground through to the logo blue */
-    var COLORS = ['#08182B','#14325C','#2C5C8F','#4A85B4','#5A93BC'];
-
-    var minigl, mesh, time = 0, last = 0, playing = false, raf;
-    try{
-      minigl = new MiniGl(canvas);
-      var sc = COLORS.map(function(h){ return normalizeColor(parseInt(h.replace('#','0x'),16)); });
-      var U = {
-        u_time:          new minigl.Uniform({value:0}),
-        u_shadow_power:  new minigl.Uniform({value:5}),
-        u_darken_top:    new minigl.Uniform({value:0}),
-        u_active_colors: new minigl.Uniform({value:[1,1,1,1], type:'vec4'}),
-        u_global: new minigl.Uniform({type:'struct', value:{
-          noiseFreq:  new minigl.Uniform({value:[0.0001,0.0009], type:'vec2'}),
-          noiseSpeed: new minigl.Uniform({value:0.00001})
-        }}),
-        u_vertDeform: new minigl.Uniform({type:'struct', excludeFrom:'fragment', value:{
-          incline:      new minigl.Uniform({value:0.5}),
-          offsetTop:    new minigl.Uniform({value:-0.5}),
-          offsetBottom: new minigl.Uniform({value:-0.5}),
-          noiseFreq:    new minigl.Uniform({value:[3,4], type:'vec2'}),
-          noiseAmp:     new minigl.Uniform({value:250}),
-          noiseSpeed:   new minigl.Uniform({value:10}),
-          noiseFlow:    new minigl.Uniform({value:5}),
-          noiseSeed:    new minigl.Uniform({value:5})
-        }}),
-        u_baseColor:  new minigl.Uniform({value:sc[0], type:'vec3', excludeFrom:'fragment'}),
-        u_waveLayers: new minigl.Uniform({value:[], excludeFrom:'fragment', type:'array'})
-      };
-      for(var i=1;i<sc.length;i++){
-        U.u_waveLayers.value.push(new minigl.Uniform({type:'struct', value:{
-          color:      new minigl.Uniform({value:sc[i], type:'vec3'}),
-          noiseFreq:  new minigl.Uniform({value:[2+i/sc.length, 3+i/sc.length], type:'vec2'}),
-          noiseSpeed: new minigl.Uniform({value:11+0.3*i}),
-          noiseFlow:  new minigl.Uniform({value:6.5+0.3*i}),
-          noiseSeed:  new minigl.Uniform({value:5+10*i}),
-          noiseFloor: new minigl.Uniform({value:0.1}),
-          noiseCeil:  new minigl.Uniform({value:0.63+0.07*i})
-        }}));
-      }
-      mesh = new minigl.Mesh(new minigl.PlaneGeometry(), new minigl.Material(VERT, FRAG, U));
-    }catch(err){
-      console.error('gradient wave failed to start', err);
-      return;
-    }
-
-    function resize(){
-      var w = canvas.clientWidth || window.innerWidth;
-      var h = canvas.clientHeight || window.innerHeight;
-      if(!w || !h) return;
-      minigl.setSize(w,h); minigl.setOrthographicCamera();
-      mesh.geometry.setTopology(Math.ceil(w*0.02), Math.ceil(h*0.05));
-      mesh.geometry.setSize(w,h);
-      mesh.material.uniforms.u_shadow_power.value = w < 600 ? 5 : 6;
-      minigl.render();
-    }
-    function frame(ts){
-      if(!playing) return;
-      time += Math.min(ts - last, 1000/15); last = ts;
-      mesh.material.uniforms.u_time.value = time;
-      minigl.render();
-      raf = requestAnimationFrame(frame);
-    }
-    function play(){
-      if(playing || reduce) return;
-      playing = true; last = performance.now(); raf = requestAnimationFrame(frame);
-    }
-    function pause(){ playing = false; cancelAnimationFrame(raf); }
-
-    if('ResizeObserver' in window) new ResizeObserver(resize).observe(canvas);
-    window.addEventListener('resize', resize);
-    resize();
-
-    /* only burn frames while the hero is actually on screen */
-    if('IntersectionObserver' in window){
-      new IntersectionObserver(function(es){ es[0].isIntersecting ? play() : pause(); }, {threshold:0}).observe(canvas);
-    } else { play(); }
-    document.addEventListener('visibilitychange', function(){ document.hidden ? pause() : play(); });
-  })();
 </script>
 </body>
 </html>
