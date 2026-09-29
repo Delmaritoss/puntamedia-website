@@ -1507,6 +1507,9 @@
 
     function measureFit(){
       if(!page.firstElementChild) return;
+      // la larghezza va imposta PRIMA di misurare: altrimenti il contenuto si
+      // impagina su una larghezza diversa e l'altezza letta non vale nulla
+      page.style.width = vw + 'px';
       page.style.transform = 'none';
       var natural = page.firstElementChild.getBoundingClientRect().height;
       fitK = natural > 0 ? Math.min(1, (vh - 8) / natural) : 1;
