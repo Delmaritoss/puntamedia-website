@@ -180,7 +180,6 @@
   /* delivered through the laptop screen instead, so it must not repeat below.
      Scoped to the page's own strip — the clone inside the overlay shares the
      class, and an unscoped rule blanks the overlay. */
-  .has-vhero main > .strip,
   .has-vhero main > #services{display:none}
   .vhero-pin{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--ink)}
   .vhero-pin video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
@@ -347,7 +346,7 @@
   .mini-frame{position:absolute;inset:0;overflow:hidden;pointer-events:none}
   .mini-page{width:1280px;height:800px;transform-origin:top left;display:flex;align-items:center}
   .replica{background:var(--ink)}
-  .replica .section{padding-block:66px}
+  .replica .section{padding-block:26px}
   .replica .wrap{max-width:1160px;padding-inline:44px}
   .replica .contact h2{font-size:50px}
   .replica .contact-grid{grid-template-columns:1fr 1fr;gap:56px}
@@ -1503,6 +1502,7 @@
     var copy   = document.getElementById('vheroCopy');
     var veil   = document.getElementById('vheroVeil');
     var page   = ov.querySelector('.vh-inner');
+    var navEl  = document.getElementById('siteNav');
     if(!track || !vid || !ov) return;
 
     // Stay on the existing hero for reduced motion, narrow screens, or if the
@@ -1544,7 +1544,7 @@
     // the next section, so the screen shows something that reads as a website.
     function replica(){
       var frag = document.createDocumentFragment();
-      ['.strip', '#services'].forEach(function(sel){
+      ['#services'].forEach(function(sel){
         var src = document.querySelector(sel);
         if(!src) return;
         var c = src.cloneNode(true);
@@ -1583,7 +1583,15 @@
     function draw(){
       var r = track.getBoundingClientRect();
       var span = track.offsetHeight - vh;
-      var p = clamp(span > 0 ? (-r.top) / span : 0);
+      var praw = span > 0 ? (-r.top) / span : 0;
+      var p = clamp(praw);
+
+      // fuori dalla pista praw supera 1: la barra rientra da sola
+      if(navEl){
+        var hide = ramp(praw, .80, .96) * (1 - ramp(praw, 1.0, 1.08));
+        navEl.style.opacity = String(1 - hide);
+        navEl.style.pointerEvents = hide > .6 ? 'none' : '';
+      }
 
       var fi = Math.round(p * (FRAMES - 1));
       if(fi !== lastFrame){
