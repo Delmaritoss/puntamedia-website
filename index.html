@@ -392,36 +392,6 @@
 
   /* ---------- mini site previews (pure CSS, no external images) ---------- */
   .mk{position:absolute;inset:0;font-family:var(--sans)}
-  /* Konoba Makara */
-  .mk-makara{background:linear-gradient(180deg,#123037 0%,#174343 45%,#1d5450 100%)}
-  .mk-makara .sky{position:absolute;inset:0;background:radial-gradient(120% 82% at 78% -12%,rgba(224,168,104,.5),transparent 56%)}
-  .mk-makara .sun{position:absolute;top:17%;right:17%;width:50px;height:50px;border-radius:50%;background:radial-gradient(circle,#f5dcb4,#dd9a58);opacity:.92}
-  .mk-makara .sea{position:absolute;left:0;right:0;bottom:0;height:37%;background:linear-gradient(180deg,rgba(4,20,22,.15),#061a1c);border-top:1px solid rgba(255,255,255,.07)}
-  .mk-nav{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:13px 18px;color:#fff;font-family:var(--serif);font-weight:600;letter-spacing:.14em;font-size:13px;z-index:3}
-  .mk-nav .r{display:flex;gap:13px;font-family:var(--sans);font-weight:300;font-size:8.5px;letter-spacing:.18em;color:rgba(255,255,255,.72)}
-  .mk-center{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;color:#fff;z-index:3;padding:0 20px}
-  .mk-center .tag{font-size:8.5px;letter-spacing:.3em;color:#e8bd85;text-transform:uppercase}
-  .mk-center .big{font-family:var(--serif);font-weight:600;font-size:clamp(28px,7.4vw,48px);letter-spacing:.01em;margin-top:6px}
-  .mk-center .sub{font-size:10.5px;font-weight:300;color:rgba(255,255,255,.82);margin-top:6px;letter-spacing:.04em}
-  .mk-center .pill{margin-top:16px;font-size:8.5px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:#12302f;background:#e8bd85;padding:8px 18px;border-radius:2px}
-
-  /* Riva Grill — retro diner */
-  .mk-jp{background:#f2e7d5}
-  .mk-jp .band{position:absolute;top:0;left:0;right:0;height:33%;background:repeating-linear-gradient(45deg,#d8433a 0 18px,#bd332c 18px 36px)}
-  .mk-jp-nav{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:13px 18px;z-index:4;color:#fff;font-family:var(--sans);font-weight:600;letter-spacing:.12em;font-size:13px}
-  .mk-jp-nav .r{font-weight:300;font-size:8.5px;letter-spacing:.2em;color:rgba(255,255,255,.88)}
-  /* CSS-drawn burger, no emoji */
-  .mk-jp .burger{position:absolute;top:25%;left:50%;transform:translateX(-50%);width:92px;height:92px;border-radius:50%;background:#f8f2e6;border:5px solid #fff;box-shadow:0 14px 28px -10px rgba(0,0,0,.35),0 0 0 4px #d8433a;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2.5px;z-index:5}
-  .mk-jp .burger i{display:block;border-radius:6px}
-  .mk-jp .burger .top{width:46px;height:15px;background:linear-gradient(180deg,#e0a555,#c9873c);border-radius:23px 23px 5px 5px}
-  .mk-jp .burger .let{width:50px;height:6px;background:#5f9a4a;border-radius:4px}
-  .mk-jp .burger .pat{width:48px;height:11px;background:#7d4a2c;border-radius:4px}
-  .mk-jp .burger .bot{width:46px;height:9px;background:#d09a4d;border-radius:4px 4px 8px 8px}
-  .mk-jp .plate{position:absolute;bottom:13%;left:0;right:0;text-align:center;z-index:4}
-  .mk-jp .plate .t{font-family:var(--serif);font-weight:700;color:#bd332c;font-size:clamp(23px,6.2vw,38px);letter-spacing:.01em}
-  .mk-jp .plate .s{font-size:8.5px;letter-spacing:.26em;color:#8a6636;text-transform:uppercase;margin-top:3px}
-  .mk-jp .star{position:absolute;bottom:12%;right:13%;width:50px;height:50px;border-radius:50%;background:#2f7048;color:#fff;display:grid;place-items:center;text-align:center;font-size:8px;font-weight:500;letter-spacing:.1em;line-height:1.25;transform:rotate(-10deg);z-index:6}
-
   /* reserved slot */
   .mk-soon{background:linear-gradient(160deg,var(--surface-2),var(--surface));display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px}
   .mk-soon .plus{width:44px;height:44px;border:1px solid var(--line-strong);display:grid;place-items:center;color:var(--acc);font-family:var(--serif);font-size:26px;line-height:1}
@@ -637,6 +607,7 @@
     box-shadow:0 44px 96px -48px rgba(0,0,0,.9)}
   .ba-stack{position:relative;aspect-ratio:16/10;--pos:50}
   .ba-pane{position:absolute;inset:0;overflow:hidden;container-type:inline-size}
+  .ba-pane .shot{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
   .ba-pane.after{clip-path:inset(0 0 0 calc(var(--pos) * 1%))}
   .ba-line{position:absolute;top:0;bottom:0;left:calc(var(--pos) * 1%);width:2px;
     background:var(--acc);z-index:6;pointer-events:none}
@@ -929,13 +900,7 @@
             <div class="browser">
               <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">rivagrill.hr</span></div>
               <div class="screen">
-                <div class="mk mk-jp">
-                  <div class="band"></div>
-                  <div class="mk-jp-nav">RIVA GRILL <span class="r">MENU &middot; LOCATION</span></div>
-                  <div class="burger"><i class="top"></i><i class="let"></i><i class="pat"></i><i class="bot"></i></div>
-                  <div class="plate"><div class="t">Big. Bold. Juicy.</div><div class="s">Preko &middot; Ugljan</div></div>
-                  <div class="star">FRESH<br>DAILY</div>
-                </div>
+                <img class="shot" src="img/work-riva.webp" alt="La pagina iniziale del sito di Riva Grill" loading="lazy" decoding="async">
               </div>
             </div>
           </div>
@@ -956,18 +921,18 @@
         <div class="work-visual stage reveal">
           <div class="device">
             <div class="browser">
-              <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">your-business.com</span></div>
+              <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">apartmani-kalelarga.hr</span></div>
               <div class="screen"><div class="mk mk-soon"><div class="plus">+</div><div class="t">Project in progress</div></div></div>
             </div>
           </div>
         </div>
         <div class="work-copy reveal">
-          <span class="work-tag">New &middot; 2026</span>
-          <h3>Your project here</h3>
-          <div class="loc">Two more launches on the way</div>
-          <p>The next case studies are being built now. Would you like yours to be one of them? There is room for a few more businesses this season &mdash; let's make something people remember.</p>
-          <div class="chips"><span class="chip">Now booking</span><span class="chip">Limited slots</span></div>
-          <a class="work-link" href="#contact">Enquire about a slot
+          <span class="work-tag">Apartments &middot; Stays</span>
+          <h3>Apartmani Kalelarga</h3>
+          <div class="loc">Zadar &middot; Croatia</div>
+          <p>In the studio right now: a calm, bright site for two apartments a minute from Zadar's old town. Photography first, availability and house rules in four languages, and a booking enquiry that reaches the owner's phone.</p>
+          <div class="chips"><span class="chip">In build</span><span class="chip">Four languages</span><span class="chip">Booking enquiries</span></div>
+          <a class="work-link" href="#contact">Want yours next? Let's talk
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M9 7h8v8"/></svg>
           </a>
         </div>
@@ -1005,17 +970,7 @@
             </div>
           </div>
           <div class="ba-pane after" id="baAfter">
-            <div class="mk mk-makara">
-              <div class="sky"></div><div class="sun"></div>
-              <div class="mk-nav">KONOBA<span class="r"><span>MENI</span><span>GALERIJA</span><span>KONTAKT</span></span></div>
-              <div class="mk-center">
-                <span class="tag">Otok Ugljan</span>
-                <span class="big">Okus mora</span>
-                <span class="sub">Fresh Adriatic plates &middot; wood-fired &middot; sunset terrace</span>
-                <span class="pill">Rezerviraj stol</span>
-              </div>
-              <div class="sea"></div>
-            </div>
+            <img class="shot" src="img/work-makara.webp" alt="Il sito di Konoba Makara rifatto" loading="lazy" decoding="async">
           </div>
           <span class="ba-tag l">Before</span>
           <span class="ba-tag r">After</span>
@@ -1059,7 +1014,7 @@
       <div class="tiers">
         <div class="tier reveal">
           <h3>Essential</h3>
-          <div class="price"><small>From</small>&euro;490</div>
+          <div class="price"><small>From</small>&euro;350</div>
           <ul>
             <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>One-page site, beautifully done</li>
             <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Two languages</li>
@@ -1072,7 +1027,7 @@
         <div class="tier feat reveal">
           <span class="badge">Most chosen</span>
           <h3>Complete</h3>
-          <div class="price"><small>From</small>&euro;890</div>
+          <div class="price"><small>From</small>&euro;600</div>
           <ul>
             <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Up to six pages</li>
             <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>All four languages</li>
@@ -1439,13 +1394,30 @@
     var fitK   = 1;                  // quanto rimpicciolire perche entri tutto
 
     function measureFit(){
-      if(!page.firstElementChild) return;
-      // la larghezza va imposta PRIMA di misurare: altrimenti il contenuto si
-      // impagina su una larghezza diversa e l'altezza letta non vale nulla
-      page.style.width = vw + 'px';
+      var el = page.firstElementChild;
+      if(!el) return;
+      // La pagina non ci sta in altezza, quindi va rimpicciolita. Il punto e
+      // che va impaginata piu larga del viewport nella stessa misura: cosi,
+      // una volta ridotta, copre lo schermo da bordo a bordo invece di
+      // lasciare una striscia vuota a destra.
+      //
+      // L'altezza dipende dalla larghezza e la larghezza dal fattore, quindi
+      // non basta calcolarlo: l'iterazione semplice oscilla. Cerco per
+      // bisezione il fattore piu grande che ci sta ancora, che e monotono.
       page.style.transform = 'none';
-      var natural = page.firstElementChild.getBoundingClientRect().height;
-      fitK = natural > 0 ? Math.min(1, (vh - 8) / natural) : 1;
+      var limit = vh - 8;
+      function heightAt(k){
+        page.style.width = (vw / k) + 'px';
+        return el.getBoundingClientRect().height * k;
+      }
+      if(heightAt(1) <= limit){ fitK = 1; return; }
+      var lo = 0.45, hi = 1;
+      for(var i = 0; i < 7; i++){
+        var mid = (lo + hi) / 2;
+        if(heightAt(mid) <= limit) lo = mid; else hi = mid;
+      }
+      fitK = lo;
+      page.style.width = (vw / fitK) + 'px';
     }
     if(!track || !vid || !ov) return;
 
@@ -1586,7 +1558,9 @@
       ov.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
       // the screen has rounded corners; square ones poke over the bezel
       ov.style.borderRadius = (w * 0.013 * (1 - full)) + 'px';
-      page.style.width = vw + 'px';
+      // impaginata a vw/fitK e ridotta di fitK: il risultato e largo esattamente
+      // quanto il pannello, sia dentro il laptop sia a schermo pieno
+      page.style.width = (vw / fitK) + 'px';
       page.style.transform = 'scale(' + (w / vw * fitK) + ')';
 
       veil.style.opacity = String(1 - ramp(p, 0, .35));
@@ -1671,9 +1645,9 @@
       "Preko, Island of Ugljan · Croatia":"Preko, otok Ugljan · Hrvatska",
       "A playful, retro-diner look for a fast-food spot that wanted personality. Appetite-first visuals, an easy-to-scan menu and clear directions — the kind of page that turns a hungry scroll into a walk-in order.":"Razigran, retro izgled za zalogajnicu koja je htjela karakter. Vizuali koji bude apetit, pregledan jelovnik i jasne upute — stranica koja gladno pregledavanje pretvara u narudžbu.",
       "Retro branding":"Retro brending","Digital menu":"Digitalni jelovnik","Bilingual":"Dvojezično","Maps & hours":"Karta i radno vrijeme",
-      "New · 2026":"Novo · 2026.","Your project here":"Ovdje vaš projekt","Two more launches on the way":"Još dva projekta u izradi",
-      "The next case studies are being built now. Would you like yours to be one of them? There is room for a few more businesses this season — let's make something people remember.":"Sljedeći projekti su u izradi. Želite da vaš bude jedan od njih? Ima mjesta za još nekoliko tvrtki ove sezone — napravimo nešto pamtljivo.",
-      "Now booking":"Upisujem projekte","Limited slots":"Ograničen broj mjesta","Enquire about a slot":"Pitajte za termin",
+      "Apartments · Stays":"Apartmani · Smještaj","Zadar · Croatia":"Zadar · Hrvatska",
+      "In the studio right now: a calm, bright site for two apartments a minute from Zadar's old town. Photography first, availability and house rules in four languages, and a booking enquiry that reaches the owner's phone.":"Trenutno u izradi: smirena, svijetla stranica za dva apartmana minutu od zadarske jezgre. Prvo fotografije, zatim dostupnost i kućni red na četiri jezika, te upit za rezervaciju koji stiže vlasniku na mobitel.",
+      "In build":"U izradi","Booking enquiries":"Upiti za rezervaciju","Want yours next? Let's talk":"Želite da vaš bude sljedeći? Javite se",
       "Before & after":"Prije i poslije","Most sites aren't broken. They're just old.":"Stranice najčešće nisu pokvarene. Samo su stare.",
       "Drag the handle to see what a rebuild does for a business that already has a website — same konoba, same menu, twenty years of difference.":"Povucite ručicu i vidite što obnova znači za posao koji već ima stranicu — ista konoba, isti jelovnik, dvadeset godina razlike.",
       "Before":"Prije","After":"Poslije",

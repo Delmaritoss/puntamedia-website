@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<title>Riva Grill — Preko, otok Ugljan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F4EADA;
+    --paper:#FCF6EC;
+    --ink:#221913;
+    --red:#B32B24;
+    --red-dk:#8A1E19;
+    --mustard:#E3A32C;
+    --green:#3E6B4C;
+    --slab:"Alfa Slab One",Georgia,serif;
+    --sans:"DM Sans",system-ui,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1240px;height:806px;overflow:hidden}
+  body{font-family:var(--sans);color:var(--ink);background:var(--cream);
+       display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+
+  /* ---------- barra in alto ---------- */
+  .top{flex:0 0 74px;display:flex;align-items:center;gap:34px;
+       padding:0 46px;background:var(--paper);border-bottom:1px solid rgba(34,25,19,.14)}
+  .brand{display:flex;align-items:center;gap:13px}
+  .brand .word{font-family:var(--slab);font-size:21px;line-height:1}
+  .brand .word b{color:var(--red);font-weight:400}
+  nav{display:flex;gap:26px;margin-left:8px}
+  nav a{font-size:11.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+        color:rgba(34,25,19,.62);text-decoration:none}
+  nav a.on{color:var(--ink)}
+  .order{margin-left:auto;display:inline-flex;align-items:center;
+         background:var(--red);color:var(--paper);border-radius:999px;
+         padding:11px 20px;font-size:11.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+         box-shadow:0 2px 0 var(--red-dk)}
+
+  /* ---------- hero ---------- */
+  .hero{flex:1;display:grid;grid-template-columns:1.06fr .94fr;align-items:center;
+        gap:20px;padding:0 46px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(-58deg,rgba(179,43,36,.055) 0 12px,transparent 12px 30px);
+    -webkit-mask-image:linear-gradient(100deg,transparent 40%,#000 92%);
+            mask-image:linear-gradient(100deg,transparent 40%,#000 92%)}
+  .hero > *{position:relative}
+
+  .eyebrow{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;
+           letter-spacing:.2em;text-transform:uppercase;color:var(--red)}
+  .eyebrow i{width:22px;height:2px;background:var(--red);display:block}
+
+  h1{font-family:var(--slab);font-size:78px;line-height:.93;
+     margin-top:17px;font-weight:400}
+  h1 .j{color:var(--red);position:relative;display:inline-block}
+  h1 .j svg{position:absolute;left:-2px;right:-2px;bottom:-14px;width:calc(100% + 4px);height:15px}
+  .lead{margin-top:22px;max-width:41ch;font-size:16.5px;line-height:1.62;color:rgba(34,25,19,.74)}
+
+  .cta{display:flex;gap:12px;margin-top:28px}
+  .btn{display:inline-flex;align-items:center;border-radius:6px;
+       font-size:12px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+       padding:15px 24px;text-decoration:none}
+  .btn-red{background:var(--red);color:var(--paper);box-shadow:0 3px 0 var(--red-dk)}
+  .btn-line{border:1.6px solid rgba(34,25,19,.3);color:var(--ink)}
+
+  .facts{display:flex;align-items:center;gap:15px;margin-top:30px;
+         font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+         color:rgba(34,25,19,.5)}
+  .facts s{width:4px;height:4px;border-radius:50%;background:var(--mustard);display:block}
+
+  /* ---------- sigillo ---------- */
+  .mark{display:grid;place-items:center;position:relative}
+  .rays{position:absolute;width:430px;height:430px;border-radius:50%;
+    background:repeating-conic-gradient(var(--mustard) 0deg 4.6deg,transparent 4.6deg 11deg);
+    opacity:.32;
+    -webkit-mask-image:radial-gradient(circle,#000 33%,rgba(0,0,0,.6) 56%,transparent 74%);
+            mask-image:radial-gradient(circle,#000 33%,rgba(0,0,0,.6) 56%,transparent 74%)}
+  .seal{width:288px;height:288px;position:relative;
+        filter:drop-shadow(0 14px 26px rgba(34,25,19,.22))}
+  .stamp{position:absolute;right:22px;bottom:14px;width:92px;height:92px;border-radius:50%;
+         background:var(--green);color:var(--paper);display:grid;place-content:center;
+         text-align:center;transform:rotate(-13deg);
+         font-size:11px;font-weight:700;letter-spacing:.11em;line-height:1.34;
+         border:2px dashed rgba(252,246,236,.55);box-shadow:0 8px 18px rgba(34,25,19,.24)}
+
+  /* ---------- fascia jelovnik ---------- */
+  .menu{flex:0 0 252px;background:var(--ink);padding:26px 46px 0;position:relative}
+  .menu::before{content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(-58deg,rgba(255,255,255,.028) 0 12px,transparent 12px 30px)}
+  .menu > *{position:relative}
+  .menu-head{display:flex;align-items:center;gap:16px}
+  .menu-head span{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--mustard)}
+  .menu-head em{font-style:normal;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+                color:rgba(252,246,236,.42)}
+  .menu-head i{flex:1;height:1px;background:rgba(252,246,236,.18);display:block}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}
+  .card{background:var(--paper);border-radius:9px;padding:19px 20px 20px;
+        display:flex;flex-direction:column;gap:7px;position:relative;min-height:148px;
+        box-shadow:0 10px 22px rgba(0,0,0,.3)}
+  .card h3{font-family:var(--slab);font-size:21px;font-weight:400;line-height:1.1;padding-right:70px}
+  .card p{font-size:13.5px;line-height:1.48;color:rgba(34,25,19,.62)}
+  .card .kn{margin-top:auto;font-size:10px;font-weight:700;letter-spacing:.15em;
+            text-transform:uppercase;color:var(--green)}
+  .price{position:absolute;top:17px;right:18px;font-family:var(--slab);font-size:17px;
+         color:var(--red);line-height:1}
+
+  .stripe{flex:0 0 12px;
+    background:repeating-linear-gradient(-58deg,var(--red) 0 15px,var(--mustard) 15px 30px)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <svg width="40" height="40" viewBox="0 0 200 200" aria-hidden="true"><use href="#seal"/></svg>
+    <span class="word">RIVA <b>GRILL</b></span>
+  </div>
+  <nav>
+    <a class="on" href="#">Jelovnik</a><a href="#">Ro&scaron;tilj</a><a href="#">Za van</a><a href="#">Kontakt</a>
+  </nav>
+  <span class="order">Naru&ccaron;i &middot; 023 555 120</span>
+</header>
+
+<section class="hero">
+  <div>
+    <span class="eyebrow"><i></i>Preko &middot; otok Ugljan</span>
+    <h1>Big. Bold.<br><span class="j">Juicy.<svg viewBox="0 0 200 16" preserveAspectRatio="none"><path d="M3 11 C50 3, 150 3, 197 9" fill="none" stroke="#E3A32C" stroke-width="5" stroke-linecap="round"/></svg></span></h1>
+    <p class="lead">Ro&scaron;tilj na ugljen, doma&cacute;e pecivo i krumpiri&cacute;i rezani svaki dan. Pet minuta od trajektne luke.</p>
+    <div class="cta">
+      <a class="btn btn-red" href="#">Pogledaj jelovnik</a>
+      <a class="btn btn-line" href="#">Gdje smo</a>
+    </div>
+    <div class="facts"><span>Svaki dan 11&ndash;23</span><s></s><span>Ro&scaron;tilj na ugljen</span><s></s><span>Za van i dostava</span></div>
+  </div>
+
+  <div class="mark">
+    <div class="rays"></div>
+    <svg class="seal" viewBox="0 0 200 200" aria-label="Riva Grill"><use href="#seal"/></svg>
+    <div class="stamp">FRESH<br>DAILY</div>
+  </div>
+</section>
+
+<section class="menu">
+  <div class="menu-head">
+    <span>Iz jelovnika</span><i></i><em>Cijene s PDV-om</em>
+  </div>
+  <div class="cards">
+    <article class="card">
+      <h3>Riva Burger</h3><span class="price">8,50 &euro;</span>
+      <p>180 g junetine s ro&scaron;tilja, cheddar, karamelizirani luk i na&scaron; umak.</p>
+      <span class="kn">Najprodavanije</span>
+    </article>
+    <article class="card">
+      <h3>&Ccaron;evapi u lepinji</h3><span class="price">7,00 &euro;</span>
+      <p>Deset komada, doma&cacute;a lepinja, ajvar i kajmak sa strane.</p>
+      <span class="kn">Klasika</span>
+    </article>
+    <article class="card">
+      <h3>Plata za dvoje</h3><span class="price">24,00 &euro;</span>
+      <p>Ra&zcaron;nji&cacute;i, kobasice, krumpiri&cacute;i i sezonska salata.</p>
+      <span class="kn">Za podijeliti</span>
+    </article>
+  </div>
+</section>
+
+<div class="stripe"></div>
+
+<!-- il sigillo, disegnato una volta e riusato grande e piccolo -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="seal" viewBox="0 0 200 200">
+    <defs>
+      <path id="arcTop" d="M 100,100 m -76,0 a 76,76 0 0,1 152,0"/>
+      <path id="arcBot" d="M 100,100 m -68,0 a 68,68 0 0,0 136,0"/>
+    </defs>
+    <circle cx="100" cy="100" r="100" fill="#B32B24"/>
+    <circle cx="100" cy="100" r="92" fill="none" stroke="#F4EADA" stroke-width="1.6" opacity=".85"/>
+    <circle cx="100" cy="100" r="55" fill="#F4EADA"/>
+    <text font-family="Alfa Slab One, Georgia, serif" font-size="20.5" fill="#F4EADA" letter-spacing="1.6">
+      <textPath href="#arcTop" startOffset="50%" text-anchor="middle">RIVA GRILL</textPath>
+    </text>
+    <text font-family="DM Sans, sans-serif" font-size="12" font-weight="700" fill="#F4EADA" letter-spacing="3.2">
+      <textPath href="#arcBot" startOffset="50%" text-anchor="middle">PREKO · UGLJAN</textPath>
+    </text>
+    <g fill="#F4EADA">
+      <circle cx="26" cy="100" r="3.4"/><circle cx="174" cy="100" r="3.4"/>
+    </g>
+    <!-- panino, tre fasce nette perche resti leggibile anche a 40 px -->
+    <g transform="translate(100,100)">
+      <path d="M-34 -8 C-34 -27 -19 -37 0 -37 C19 -37 34 -27 34 -8 Z" fill="#B32B24"/>
+      <g fill="#F4EADA">
+        <ellipse cx="-16" cy="-22" rx="3.4" ry="2" transform="rotate(-22 -16 -22)"/>
+        <ellipse cx="2"   cy="-28" rx="3.4" ry="2" transform="rotate(8 2 -28)"/>
+        <ellipse cx="19"  cy="-21" rx="3.4" ry="2" transform="rotate(26 19 -21)"/>
+      </g>
+      <path d="M-37 -4 H37 V3 c-6 7 -12.3 7 -18.5 0 c-6.2 7 -12.3 7 -18.5 0 c-6.2 7 -12.3 7 -18.5 0 c-6.2 7 -12.3 7 -18.5 0 Z" fill="#3E6B4C"/>
+      <rect x="-32" y="6" width="64" height="12" rx="5" fill="#B32B24"/>
+      <path d="M-31 23 C-31 32 -20 35 0 35 C20 35 31 32 31 23 Z" fill="#B32B24"/>
+    </g>
+  </symbol>
+</svg>
+
+</body>
+</html>
