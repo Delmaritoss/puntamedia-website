@@ -225,8 +225,11 @@
     position:relative;min-height:86vh;min-height:86svh;overflow:hidden;
     padding:0 0 calc(34px + env(safe-area-inset-bottom,0px));
   }
-  .mhero .bg{position:absolute;inset:0;z-index:0}
-  .mhero .bg img{width:100%;height:100%;object-fit:cover;object-position:50% 34%}
+  .mhero .bg{position:absolute;inset:0;z-index:0;background:var(--ink)}
+  /* Alzo la foto: cosi il telefono sta sopra al titolo invece che dietro.
+     Quello che resta scoperto in basso e tavolo quasi nero, coperto dal velo. */
+  .mhero .bg img{width:100%;height:112%;object-fit:cover;object-position:50% 0;
+    transform:translateY(-19%)}
   .mhero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
     background:linear-gradient(180deg,
       rgba(8,24,43,.55) 0%,
@@ -1630,6 +1633,8 @@
       "Web Design Studio":"Studio za web dizajn",
       "Websites your business deserves —":"Web stranice kakve vaš posao zaslužuje —",
       "designed around you, built to perform.":"osmišljene za vas, stvorene da donose goste.",
+      "designed around you.":"osmišljene za vas.",
+      "Custom, multilingual websites for restaurants, shops and small businesses on the Adriatic.":"Prilagođene, višejezične web stranice za restorane, trgovine i male tvrtke na Jadranu.",
       "Puntamedia designs and builds custom, multilingual websites for restaurants, shops and small businesses — in whatever style suits your brand, and built to bring you customers.":"Puntamedia izrađuje prilagođene, višejezične web stranice za restorane, trgovine i male tvrtke — u stilu koji odgovara vašem brendu i s ciljem da vam dovedu goste.",
       "See the work":"Pogledajte radove","Start your project":"Započnite projekt","Open":"Otvori",
       "Four languages":"Četiri jezika","Never templated":"Bez predložaka","Live in days":"Online za nekoliko dana",
