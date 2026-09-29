@@ -258,7 +258,7 @@
   .floaty .v{font-family:var(--serif);font-weight:600;font-size:20px;line-height:1.2;margin-top:2px}
   .floaty.tl{top:-52px;left:-30px}
   .floaty.br{bottom:-28px;right:-24px}
-  @media(max-width:560px){.floaty.tl{left:-6px;top:-46px}.floaty.br{right:-4px;bottom:-22px}.floaty{padding:10px 14px}.floaty .v{font-size:16px}}
+  @media(max-width:880px){.floaty{display:none}}
 
   /* ---------- Hero laptop (pure CSS, aluminium unibody) ---------- */
   .laptop{position:relative;transform-style:preserve-3d}
@@ -722,7 +722,7 @@
   <!-- VIDEO HERO (activated by JS only when the clip is ready on a wide screen) -->
   <div class="vhero-track" id="vheroTrack">
     <div class="vhero-pin" id="vheroPin">
-      <video id="heroVideo" muted playsinline preload="auto" poster="video/hero-poster.webp" aria-hidden="true">
+      <video id="heroVideo" muted playsinline preload="none" poster="video/hero-poster.webp" aria-hidden="true">
         <source src="video/hero.mp4" type="video/mp4">
       </video>
       <span class="vhero-veil" id="vheroVeil" aria-hidden="true"></span>
@@ -1454,6 +1454,12 @@
     // Stay on the existing hero for reduced motion, narrow screens, or if the
     // clip never becomes seekable. Scrubbing is the fragile part on phones.
     if(reduce || window.innerWidth <= 880) return;
+
+    // Solo ora vale la pena scaricarlo: su telefono la hero video non parte
+    // mai, e con preload="auto" il visitatore si sarebbe scaricato quasi 4 MB
+    // in 4G per niente.
+    vid.preload = 'auto';
+    vid.load();
 
     // Screen width in the frame, normalised, sampled every 8 frames. Measured
     // off the encoded file; the horizontal edges are clean, the vertical ones
