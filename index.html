@@ -1503,6 +1503,14 @@
     var veil   = document.getElementById('vheroVeil');
     var page   = ov.querySelector('.vh-inner');
     var navEl  = document.getElementById('siteNav');
+    var fitK   = 1;                  // quanto rimpicciolire perche entri tutto
+
+    function measureFit(){
+      if(!page.firstElementChild) return;
+      page.style.transform = 'none';
+      var natural = page.firstElementChild.getBoundingClientRect().height;
+      fitK = natural > 0 ? Math.min(1, (vh - 8) / natural) : 1;
+    }
     if(!track || !vid || !ov) return;
 
     // Stay on the existing hero for reduced motion, narrow screens, or if the
@@ -1565,6 +1573,7 @@
       ready = true;
       vid.pause();
       page.appendChild(replica());
+      measure(); measureFit();
       document.documentElement.classList.add('has-vhero');
       onScroll();
     }
@@ -1639,7 +1648,7 @@
       // the screen has rounded corners; square ones poke over the bezel
       ov.style.borderRadius = (w * 0.013 * (1 - full)) + 'px';
       page.style.width = vw + 'px';
-      page.style.transform = 'scale(' + (w / vw) + ')';
+      page.style.transform = 'scale(' + (w / vw * fitK) + ')';
 
       veil.style.opacity = String(1 - ramp(p, 0, .35));
     }
@@ -1653,7 +1662,7 @@
       raf = requestAnimationFrame(draw);
     }
     window.addEventListener('scroll', onScroll, {passive:true});
-    window.addEventListener('resize', function(){ measure(); onScroll(); });
+    window.addEventListener('resize', function(){ measure(); measureFit(); onScroll(); });
     // catch up the moment the tab becomes visible again
     document.addEventListener('visibilitychange', function(){
       if(!document.hidden){ measure(); onScroll(); }
