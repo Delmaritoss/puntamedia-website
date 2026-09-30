@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<title>Puntamedia — vodič za klijente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#08182B;
+    --navy:#1C3A64;
+    --acc:#2F6E9E;
+    --acc-soft:#5A93BC;
+    --paper:#FFFFFF;
+    --tint:#F2F6FA;
+    --line:#D4E0EA;
+    --text:#152B40;
+    --muted:#5A7489;
+    --serif:"Cormorant Garamond",Georgia,serif;
+    --sans:"Jost",system-ui,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  @page{size:A4;margin:0}
+  html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-family:var(--sans);color:var(--text);background:var(--paper);font-weight:300}
+
+  .page{width:210mm;height:297mm;padding:15mm 18mm 16mm;display:flex;flex-direction:column;
+        page-break-after:always;position:relative;background:var(--paper);overflow:hidden}
+  .page:last-child{page-break-after:auto}
+
+  /* ---------- copertina ---------- */
+  .cover{background:var(--ink);color:#EDF3F9;justify-content:center;padding:0 24mm}
+  .cover .mark{display:flex;align-items:center;gap:11px;margin-bottom:26mm}
+  .cover .mark svg{width:26px;height:26px}
+  .cover .mark span{font-family:var(--serif);font-size:25pt;font-weight:600;letter-spacing:.01em}
+  .cover h1{font-family:var(--serif);font-size:38pt;line-height:1.1;font-weight:600;letter-spacing:-.005em}
+  .cover .rule{width:52px;height:2px;background:var(--acc-soft);margin:9mm 0 7mm}
+  .cover .lead{font-size:12pt;line-height:1.7;color:#A9C0D6;max-width:118mm;font-weight:300}
+  .cover .lead em{display:block;font-style:normal;color:#7E9BB5;font-size:11pt;margin-top:3.5mm}
+  .cover .langs{margin-top:26mm;font-size:8.5pt;letter-spacing:.24em;text-transform:uppercase;color:#6E8AA8}
+  .cover .foot{position:absolute;left:24mm;right:24mm;bottom:16mm;font-size:8.5pt;color:#5E7A96;
+               border-top:1px solid rgba(255,255,255,.12);padding-top:4mm;display:flex;justify-content:space-between}
+
+  /* ---------- intestazione lingua ---------- */
+  .lang-head{display:flex;align-items:baseline;gap:5mm;border-bottom:1.5px solid var(--ink);
+             padding-bottom:3mm;margin-bottom:7mm}
+  .lang-head .code{font-family:var(--sans);font-size:8.5pt;font-weight:600;letter-spacing:.22em;
+                   text-transform:uppercase;color:var(--acc)}
+  .lang-head h2{font-family:var(--serif);font-size:19pt;font-weight:600;line-height:1.15;color:var(--ink)}
+  .intro{font-size:9.5pt;line-height:1.72;color:var(--muted);margin-bottom:5.8mm;max-width:158mm}
+
+  /* ---------- sezioni ---------- */
+  .sec{margin-bottom:5mm;break-inside:avoid}
+  .sec h3{display:flex;align-items:center;gap:3.2mm;font-family:var(--serif);font-size:13.5pt;
+          font-weight:700;color:var(--ink);margin-bottom:2.6mm;letter-spacing:.005em}
+  .sec h3 i{flex:none;width:6.2mm;height:6.2mm;border-radius:50%;background:var(--ink);color:#fff;
+            font-family:var(--sans);font-style:normal;font-size:7.5pt;font-weight:600;
+            display:flex;align-items:center;justify-content:center;line-height:1}
+  ul{list-style:none;margin-left:9.4mm}
+  li{position:relative;font-size:9.3pt;line-height:1.6;padding-left:4.2mm;margin-bottom:1.25mm}
+  li::before{content:"";position:absolute;left:0;top:1.62mm;width:1.5mm;height:1.5mm;
+             border-radius:50%;background:var(--acc-soft)}
+  li b{font-weight:600;color:var(--ink)}
+  li .q{color:var(--muted)}
+
+  /* riquadro di rilievo */
+  .note{margin:3mm 0 0 9.4mm;background:var(--tint);border-left:2.5px solid var(--acc);
+        padding:3.4mm 4.2mm;font-size:9pt;line-height:1.6}
+  .note b{font-weight:600;color:var(--ink)}
+  .note.warn{background:#FDF4EC;border-left-color:#C8803A}
+
+  /* elenco dati da fornire, in due colonne */
+  .grid{margin-left:9.4mm;display:grid;grid-template-columns:1fr 1fr;gap:0 7mm}
+  .grid li{margin-bottom:1.2mm}
+
+  .steps{margin-left:9.4mm;display:grid;grid-template-columns:1fr 1fr;gap:2mm 7mm}
+  .steps div{font-size:9.3pt;line-height:1.5;padding-left:7.5mm;position:relative}
+  .steps div span{position:absolute;left:0;top:0;font-family:var(--serif);font-size:11pt;
+                  font-weight:700;color:var(--acc-soft)}
+
+  .cta{margin-top:auto;border-top:1px solid var(--line);padding-top:4.5mm;font-size:9.3pt;
+       line-height:1.65;color:var(--muted)}
+  .cta b{color:var(--ink);font-weight:500}
+  .cta .contact{margin-top:2.5mm;font-size:8.5pt;letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
+
+  .pfoot{position:absolute;left:18mm;right:18mm;bottom:6mm;display:flex;justify-content:space-between;
+         font-size:7.5pt;letter-spacing:.1em;color:#93A9BC;border-top:1px solid var(--line);padding-top:2.5mm}
+</style>
+</head>
+<body>
+
+<!-- ============ COPERTINA ============ -->
+<section class="page cover">
+  <div class="mark">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 4.5 L21 12 L3 19.5 L7.5 12 Z" fill="#5A93BC"/></svg>
+    <span>Puntamedia</span>
+  </div>
+  <h1>Vodič za klijente<br>Guida per i clienti<br>Client guide</h1>
+  <div class="rule"></div>
+  <p class="lead">
+    Sve što trebate znati prije izrade — jednostavno objašnjeno.
+    <em>Tutto quello che serve sapere — spiegato in modo semplice.</em>
+    <em>Everything you need to know — explained simply.</em>
+  </p>
+  <div class="langs">Hrvatski · Italiano · English</div>
+  <div class="foot"><span>Puntamedia — izrada web stranica</span><span>Otok Ugljan, Hrvatska</span></div>
+</section>
+
+<!-- ============ HRVATSKI 1 ============ -->
+<section class="page">
+  <div class="lang-head"><span class="code">Hrvatski</span><h2>Izrada web stranica — vodič za klijente</h2></div>
+  <p class="intro">Izrađujem moderne web stranice za obrte i tvrtke — restorane i konobe, trgovine, salone, apartmane, majstore i drugo. Ovaj vodič objašnjava što dobivate, što trebate pripremiti, kako proces izgleda i što ostaje na vama poslije.</p>
+
+  <div class="sec">
+    <h3><i>1</i>Što dobivate</h3>
+    <ul>
+      <li>Dizajn i branding po mjeri vašeg posla — boje, tipografija i stil (logo izrađujem ako ga nemate)</li>
+      <li>Stranice po mjeri: Početna, O nama, Usluge / Jelovnik / Proizvodi, Galerija, Kontakt</li>
+      <li>Fotografije i galerija, kontakt podaci i lokacija na karti</li>
+      <li>Obrazac za upit ili rezervaciju, ili poziv i WhatsApp u jednom kliku</li>
+      <li>Suptilne animacije — profesionalno, ne kičasto</li>
+      <li>Više jezika po potrebi: hrvatski, engleski, njemački, talijanski</li>
+      <li>Prilagođeno mobitelu, brzo učitavanje, spremno za Google</li>
+      <li><b>Bez WordPressa i bez dodataka</b> — nema dodataka koji se sami pokvare ni sigurnosnih zakrpa svaki mjesec</li>
+    </ul>
+  </div>
+
+  <div class="sec">
+    <h3><i>2</i>Što pripremiti</h3>
+    <ul>
+      <li>Naziv i logo (ili ga izradim) i kratak opis posla</li>
+      <li>Što nudite — usluge, jelovnik ili proizvodi, s cijenama</li>
+      <li>Fotografije — interijer, proizvodi, ekipa, okolina; što više, to bolje</li>
+      <li>Kontakt: telefon, e-mail, adresa, radno vrijeme, društvene mreže</li>
+      <li>Recenzije koje želite prikazati — <b>samo prave</b>, s Googlea ili TripAdvisora</li>
+      <li>Primjeri stranica koji vam se sviđaju (jako pomaže)</li>
+    </ul>
+    <div class="note warn"><b>Fotografije moraju biti vaše.</b> Slike skinute s interneta ne smijemo staviti — za to odgovara vlasnik stranice, ne izvođač. Ako nemate dobre fotografije, recite mi: dogovorimo snimanje ili kupimo licencu.</div>
+  </div>
+
+  <div class="sec">
+    <h3><i>3</i>Domena i hosting — na vaše ime</h3>
+    <ul>
+      <li>Domena je vaša adresa, npr. <span class="q">vašobrt.hr</span> ili <span class="q">vašobrt.com</span></li>
+      <li><b>Domenu i hosting otvaramo na vas, ne na mene.</b> Vaš e-mail, vaša kartica, vi ste vlasnik — mene dodate kao suradnika</li>
+      <li>Tako je stranica vaša zauvijek: ako se jednog dana razidemo ne morate ništa tražiti od mene, a ako mene nestane stranica radi dalje</li>
+      <li><span class="q">.hr</span> — treba OIB obrta ili tvrtke; za obrt je često besplatna</li>
+      <li><span class="q">.com</span> — odmah, bez papirologije, oko 10–15 € godišnje</li>
+      <li>Hosting koji koristim je besplatan i bez ograničenja prometa; SSL (lokot i <span class="q">https</span>) uključen je i obnavlja se sam</li>
+      <li>Sve postavljam ja — vi samo jednom otvorite račun i date mi pristup</li>
+    </ul>
+    <div class="note"><b>Jedino što se plaća svake godine jest domena.</b> Podsjetnik stiže vama na e-mail. Uključite automatsku obnovu i više ne morate razmišljati o tome.</div>
+  </div>
+
+  <div class="pfoot"><span>Puntamedia — vodič za klijente</span><span>2</span></div>
+</section>
+
+<!-- ============ HRVATSKI 2 ============ -->
+<section class="page">
+  <div class="sec">
+    <h3><i>4</i>Zakonski podaci koje stranica mora imati</h3>
+    <p class="intro" style="margin-left:9.4mm;margin-bottom:3mm;max-width:none">Hrvatski propisi traže da su podaci o poslovanju vidljivi na stranici. Stavljam ih u podnožje ili na zasebnu stranicu (Impressum). Trebam od vas:</p>
+    <ul class="grid">
+      <li>puni naziv obrta ili tvrtke, kako je upisan</li>
+      <li>sjedište — puna adresa</li>
+      <li>registar i broj upisa <span class="q">(Obrtni ili Sudski registar)</span></li>
+      <li>OIB</li>
+      <li>banka i IBAN</li>
+      <li>jeste li u sustavu PDV-a</li>
+      <li>za d.o.o. još: sud upisa</li>
+      <li>za d.o.o. još: temeljni kapital i je li uplaćen</li>
+    </ul>
+    <div class="note warn">Za nedostatak ovih podataka propisane su novčane kazne, i <b>snosi ih vlasnik stranice</b>. Zato ih tražim prije objave, a ne poslije.</div>
+  </div>
+
+  <div class="sec">
+    <h3><i>5</i>Privatnost, kolačići i pristupačnost</h3>
+    <ul>
+      <li>Ako stranica ima obrazac za upit, ona prikuplja osobne podatke — <b>potrebna je izjava o privatnosti</b>. Pripremam je ja, vi mi samo kažete na koji e-mail stižu upiti i tko ih čita</li>
+      <li><b>Google karta postavlja kolačić čim se učita</b>, prije nego posjetitelj išta klikne. Zato kartu učitavam tek nakon pristanka posjetitelja, ili stavljam traku za pristanak</li>
+      <li>Isto vrijedi za Google Analytics i za snimke s YouTubea, ako ih želite</li>
+      <li>Stranice radim tako da rade s tipkovnicom i čitačima ekrana. Europski zakon o pristupačnosti primjenjuje se od lipnja 2025.; obrti i tvrtke s manje od 10 zaposlenih zasad su izuzeti, ali ako narastete ili počnete prodavati online — stranica je već spremna</li>
+    </ul>
+  </div>
+
+  <div class="sec">
+    <h3><i>6</i>Uređivanje sami (opcijski)</h3>
+    <ul>
+      <li>Ako želite, dodajem jednostavan panel za uređivanje</li>
+      <li>Sami mijenjate cijene, tekstove, fotografije i radno vrijeme — bez koda</li>
+      <li>Promjene se na stranici vide za par minuta</li>
+      <li>Prijava: napravite besplatan GitHub račun (e-mail i lozinka), ja mu dam pristup vašoj stranici, a vi otvorite <span class="q">vašastranica/admin</span> → <span class="q">Login with GitHub</span></li>
+      <li>Postavlja se jednom; poslije je to samo prijava i jednostavni obrasci</li>
+    </ul>
+    <div class="note"><b>Savjet:</b> promijenite sve što trebate pa spremite jedanput. Svako spremanje iznova objavljuje stranicu, pa je jedno spremanje s deset izmjena bolje od deset spremanja.</div>
+  </div>
+
+  <div class="sec">
+    <h3><i>7</i>Plan — korak po korak</h3>
+    <div class="steps">
+      <div><span>1</span>Razgovor o poslu i ciljevima</div>
+      <div><span>5</span>Otvarate račun za domenu i hosting, dodajete mene</div>
+      <div><span>2</span>Pošaljete materijale i zakonske podatke</div>
+      <div><span>6</span>Puštam stranicu online i prijavljujem je na Google</div>
+      <div><span>3</span>Izrađujem i dizajniram stranicu</div>
+      <div><span>7</span>Opcijski: panel za uređivanje</div>
+      <div><span>4</span>Pokazujem vam na privremenoj adresi, doradimo</div>
+      <div><span>8</span>Primopredaja — dobivate sve pristupe i upute</div>
+    </div>
+  </div>
+
+  <div class="pfoot"><span>Puntamedia — vodič za klijente</span><span>3</span></div>
+</section>
+
+<!-- ============ HRVATSKI 3 ============ -->
+<section class="page">
+  <div class="sec">
+    <h3><i>8</i>Što dobivate na primopredaji</h3>
+    <p class="intro" style="margin-left:9.4mm;margin-bottom:3mm;max-width:none">Na kraju dobivate jedan dokument i jednu mapu, složene tako da sve možete nastaviti i bez mene:</p>
+    <ul>
+      <li>popis svega što je napravljeno i što je ostalo otvoreno</li>
+      <li><b>sve lozinke i pristupi</b> — domena, hosting, panel za uređivanje, e-mail, Google profil</li>
+      <li>gdje živi kod stranice i kako mu se pristupa</li>
+      <li>kratke upute kako mijenjati sadržaj, s primjerima</li>
+      <li>što je uključeno u cijenu, a što se plaća posebno</li>
+      <li>moj kontakt i u kojem roku odgovaram</li>
+    </ul>
+    <div class="note"><b>Prije nego se povučem, zajedno provjerimo da se vi uspijevate prijaviti na sve.</b> Pristup koji niste isprobali nije pristup.</div>
+  </div>
+
+  <div class="sec">
+    <h3><i>9</i>Što ostaje na vama poslije</h3>
+    <ul>
+      <li><b>Obnova domene jednom godišnje.</b> Podsjetnik stiže vama na e-mail; uključite automatsku obnovu. Ako domena istekne, stranica postaje nedostupna — to je jedino što stvarno može ugasiti stranicu</li>
+      <li><b>Čitajte sandučić na koji stižu upiti.</b> Stranica donosi goste samo ako netko odgovara</li>
+      <li>Javite mi kad se promijene radno vrijeme, cijene ili kontakt — ili promijenite sami u panelu</li>
+      <li><b>Držite svoj Google profil ažurnim</b> (Google Business Profile). Kod lokalnog posla odande dolazi većina posjeta, često više nego sa same stranice</li>
+      <li>Ako se promijene podaci tvrtke — adresa, IBAN, PDV status — javite da ažuriram Impressum</li>
+      <li>Fotografije stare brže nego što mislite. Nove slike jednom godišnje vrijede više od redizajna</li>
+    </ul>
+  </div>
+
+  <div class="cta">
+    <b>Javite se — rado ću vam napraviti besplatan prijedlog kako bi vaša stranica izgledala, bez obveze.</b><br>
+    Pogledajte primjer: konobamakara.hr
+    <div class="contact">Puntamedia · [ e-mail ] · [ WhatsApp ] · [ Instagram ]</div>
+  </div>
+
+  <div class="pfoot"><span>Puntamedia — vodič za klijente</span><span>4</span></div>
+</section>
+
+<!-- ============ ITALIANO 1 ============ -->
+<section class="page">
+  <div class="lang-head"><span class="code">Italiano</span><h2>Realizzazione siti web — guida per i clienti</h2></div>
+  <p class="intro">Progetto e realizzo siti web moderni per artigiani e aziende — ristoranti e trattorie, negozi, saloni, appartamenti, artigiani e altro. Questa guida spiega cosa ricevete, cosa dovete preparare, come funziona il processo e cosa resta a voi dopo.</p>
+
+  <div class="sec">
+    <h3><i>1</i>Cosa ricevete</h3>
+    <ul>
+      <li>Design e branding su misura per la vostra attività — colori, tipografia e stile (creo anche il logo, se non l'avete)</li>
+      <li>Pagine su misura: Home, Chi siamo, Servizi / Menù / Prodotti, Galleria, Contatti</li>
+      <li>Foto e galleria, contatti e la vostra posizione sulla mappa</li>
+      <li>Modulo di richiesta o prenotazione, oppure chiamata e WhatsApp con un tocco</li>
+      <li>Animazioni discrete — professionali, non appariscenti</li>
+      <li>Più lingue se servono: croato, inglese, tedesco, italiano</li>
+      <li>Ottimizzato per il cellulare, veloce, pronto per Google</li>
+      <li><b>Senza WordPress e senza plugin</b> — niente estensioni che si rompono da sole né patch di sicurezza ogni mese</li>
+    </ul>
+  </div>
+
+  <div class="sec">
+    <h3><i>2</i>Cosa preparare</h3>
+    <ul>
+      <li>Nome e logo (o lo creo io) e una breve descrizione dell'attività</li>
+      <li>Cosa offrite — servizi, menù o prodotti, con i prezzi</li>
+      <li>Foto — interni, prodotti, squadra, dintorni; più ce ne sono, meglio è</li>
+      <li>Contatti: telefono, e-mail, indirizzo, orari, social</li>
+      <li>Recensioni da mostrare — <b>solo quelle vere</b>, da Google o TripAdvisor</li>
+      <li>Esempi di siti che vi piacciono (aiuta molto)</li>
+    </ul>
+    <div class="note warn"><b>Le foto devono essere vostre.</b> Le immagini prese da internet non si possono usare — ne risponde il titolare del sito, non chi lo realizza. Se non avete buone foto ditemelo: organizziamo un servizio fotografico o compriamo una licenza.</div>
+  </div>
+
+  <div class="sec">
+    <h3><i>3</i>Dominio e hosting — a vostro nome</h3>
+    <ul>
+      <li>Il dominio è il vostro indirizzo, es. <span class="q">vostraattivita.hr</span> oppure <span class="q">vostraattivita.com</span></li>
+      <li><b>Dominio e hosting si aprono a vostro nome, non al mio.</b> La vostra e-mail, la vostra carta, il proprietario siete voi — e aggiungete me come collaboratore</li>
+      <li>Così il sito è vostro per sempre: se un giorno ci separiamo non dovete chiedere niente a me, e se sparisco io il sito continua a funzionare</li>
+      <li><span class="q">.hr</span> — serve l'OIB dell'attività croata; per un <span class="q">obrt</span> spesso è gratuito</li>
+      <li><span class="q">.com</span> — subito, senza documenti, circa 10–15 € l'anno</li>
+      <li>L'hosting che uso è gratuito e senza limiti di traffico; l'SSL (il lucchetto e <span class="q">https</span>) è incluso e si rinnova da solo</li>
+      <li>Configuro tutto io — voi aprite l'account una volta sola e mi date accesso</li>
+    </ul>
+    <div class="note"><b>L'unica cosa che si paga ogni anno è il dominio.</b> Il promemoria arriva a voi per e-mail. Attivate il rinnovo automatico e non dovete più pensarci.</div>
+  </div>
+
+  <div class="pfoot"><span>Puntamedia — guida per i clienti</span><span>5</span></div>
+</section>
+
+<!-- ============ ITALIANO 2 ============ -->
+<section class="page">
+  <div class="sec">
+    <h3><i>4</i>I dati che il sito deve mostrare per legge</h3>
+    <p class="intro" style="margin-left:9.4mm;margin-bottom:3mm;max-width:none">La legge croata richiede che i dati dell'attività siano visibili sul sito. Li metto nel piè di pagina o in una pagina dedicata (Impressum). Mi servono da voi:</p>
+    <ul class="grid">
+      <li>denominazione completa, come è registrata</li>
+      <li>sede — indirizzo completo</li>
+      <li>registro e numero di iscrizione</li>
+      <li>OIB (codice fiscale croato)</li>
+      <li>banca e IBAN</li>
+      <li>se siete soggetti a IVA (PDV)</li>
+      <li>per le <span class="q">d.o.o.</span>: tribunale di iscrizione</li>
+      <li>per le <span class="q">d.o.o.</span>: capitale sociale e se versato</li>
+    </ul>
+    <div class="note warn">Per la mancanza di questi dati sono previste sanzioni pecuniarie, e <b>le paga il titolare del sito</b>. Per questo li chiedo prima della pubblicazione, non dopo.</div>
+  </div>
+
+  <div class="sec">
+    <h3><i>5</i>Privacy, cookie e accessibilità</h3>
+    <ul>
+      <li>Se il sito ha un modulo di contatto, raccoglie dati personali — <b>serve l'informativa privacy</b>. La preparo io, voi mi dite solo a quale e-mail arrivano le richieste e chi le legge</li>
+      <li><b>La mappa di Google imposta un cookie appena si carica</b>, prima ancora che il visitatore clicchi qualcosa. Per questo la carico solo dopo il consenso, oppure metto una barra di consenso</li>
+      <li>Lo stesso vale per Google Analytics e per i video di YouTube, se li volete</li>
+      <li>Realizzo i siti in modo che funzionino con la tastiera e con i lettori di schermo. La legge europea sull'accessibilità si applica da giugno 2025; le attività con meno di 10 dipendenti per ora sono escluse, ma se crescete o iniziate a vendere online il sito è già pronto</li>
+    </ul>
+  </div>
+
+  <div class="sec">
+    <h3><i>6</i>Modificare da soli (facoltativo)</h3>
+    <ul>
+      <li>Se volete, aggiungo un semplice pannello di modifica</li>
+      <li>Cambiate voi prezzi, testi, foto e orari — senza codice</li>
+      <li>Le modifiche compaiono sul sito in un paio di minuti</li>
+      <li>Accesso: create un account GitHub gratuito (e-mail e password), io gli do accesso al vostro sito, e voi aprite <span class="q">vostrosito/admin</span> → <span class="q">Login with GitHub</span></li>
+      <li>Si imposta una volta sola; poi è solo un accesso e moduli semplici</li>
+    </ul>
+    <div class="note"><b>Consiglio:</b> cambiate tutto quello che vi serve e poi salvate una volta sola. Ogni salvataggio ripubblica il sito, quindi un salvataggio con dieci modifiche è meglio di dieci salvataggi.</div>
+  </div>
+
+  <div class="sec">
+    <h3><i>7</i>Il piano — passo per passo</h3>
+    <div class="steps">
+      <div><span>1</span>Parliamo dell'attività e degli obiettivi</div>
+      <div><span>5</span>Aprite l'account per dominio e hosting, aggiungete me</div>
+      <div><span>2</span>Inviate i materiali e i dati legali</div>
+      <div><span>6</span>Pubblico il sito e lo registro su Google</div>
+      <div><span>3</span>Progetto e realizzo il sito</div>
+      <div><span>7</span>Facoltativo: pannello di modifica</div>
+      <div><span>4</span>Ve lo mostro a un indirizzo temporaneo, perfezioniamo</div>
+      <div><span>8</span>Consegna — ricevete tutti gli accessi e le istruzioni</div>
+    </div>
+  </div>
+
+  <div class="pfoot"><span>Puntamedia — guida per i clienti</span><span>6</span></div>
+</section>
+
+<!-- ============ ITALIANO 3 ============ -->
+<section class="page">
+  <div class="sec">
+    <h3><i>8</i>Cosa ricevete alla consegna</h3>
+    <p class="intro" style="margin-left:9.4mm;margin-bottom:3mm;max-width:none">Alla fine ricevete un documento e una cartella, messi insieme in modo che possiate andare avanti anche senza di me:</p>
+    <ul>
+      <li>l'elenco di tutto ciò che è stato fatto e di ciò che è rimasto aperto</li>
+      <li><b>tutte le password e gli accessi</b> — dominio, hosting, pannello di modifica, e-mail, profilo Google</li>
+      <li>dove si trova il codice del sito e come ci si accede</li>
+      <li>istruzioni brevi su come cambiare i contenuti, con esempi</li>
+      <li>cosa è incluso nel prezzo e cosa si paga a parte</li>
+      <li>il mio contatto e i tempi di risposta</li>
+    </ul>
+    <div class="note"><b>Prima che io mi faccia da parte, verifichiamo insieme che riusciate a entrare ovunque.</b> Un accesso che non avete provato non è un accesso.</div>
+  </div>
+
+  <div class="sec">
+    <h3><i>9</i>Cosa resta a voi dopo</h3>
+    <ul>
+      <li><b>Il rinnovo del dominio, una volta l'anno.</b> Il promemoria arriva a voi per e-mail; attivate il rinnovo automatico. Se il dominio scade il sito diventa irraggiungibile — è l'unica cosa che può davvero spegnerlo</li>
+      <li><b>Leggete la casella dove arrivano le richieste.</b> Il sito porta clienti solo se qualcuno risponde</li>
+      <li>Ditemi quando cambiano orari, prezzi o contatti — oppure cambiateli voi dal pannello</li>
+      <li><b>Tenete aggiornato il profilo Google</b> (Google Business Profile). Per un'attività locale è da lì che arriva la maggior parte delle visite, spesso più che dal sito stesso</li>
+      <li>Se cambiano i dati dell'attività — indirizzo, IBAN, posizione IVA — avvisatemi per aggiornare l'Impressum</li>
+      <li>Le foto invecchiano più in fretta di quanto si creda. Foto nuove una volta l'anno valgono più di un restyling</li>
+    </ul>
+  </div>
+
+  <div class="cta">
+    <b>Contattatemi — vi preparo volentieri una proposta gratuita di come potrebbe essere il vostro sito, senza impegno.</b><br>
+    Guardate un esempio: konobamakara.hr
+    <div class="contact">Puntamedia · [ e-mail ] · [ WhatsApp ] · [ Instagram ]</div>
+  </div>
+
+  <div class="pfoot"><span>Puntamedia — guida per i clienti</span><span>7</span></div>
+</section>
+
+<!-- ============ ENGLISH 1 ============ -->
+<section class="page">
+  <div class="lang-head"><span class="code">English</span><h2>Website development — client guide</h2></div>
+  <p class="intro">I design and build modern websites for all kinds of businesses — restaurants and taverns, shops, salons, apartments, tradespeople and more. This guide explains what you get, what to prepare, how the process works, and what stays with you afterwards.</p>
+
+  <div class="sec">
+    <h3><i>1</i>What you get</h3>
+    <ul>
+      <li>A custom design and branding matched to your business — colours, typography and style (I can design a logo too)</li>
+      <li>Pages tailored to you: Home, About, Services / Menu / Products, Gallery, Contact</li>
+      <li>Photos and gallery, contact details, and your location on a map</li>
+      <li>An enquiry or reservation form, or one-tap call and WhatsApp</li>
+      <li>Tasteful animation — subtle and professional, never gaudy</li>
+      <li>Multiple languages if you need them: Croatian, English, German, Italian</li>
+      <li>Mobile-friendly, fast to load, ready for Google</li>
+      <li><b>No WordPress and no plugins</b> — nothing that breaks on its own, no monthly security patching</li>
+    </ul>
+  </div>
+
+  <div class="sec">
+    <h3><i>2</i>What to prepare</h3>
+    <ul>
+      <li>Business name and logo (or I create one) and a short description</li>
+      <li>What you offer — services, menu or products, with prices</li>
+      <li>Photos — interior, products, team, surroundings; the more the better</li>
+      <li>Contact: phone, e-mail, address, opening hours, social media</li>
+      <li>Reviews you would like to show — <b>real ones only</b>, from Google or TripAdvisor</li>
+      <li>Examples of sites you like (this helps a lot)</li>
+    </ul>
+    <div class="note warn"><b>The photos must be yours.</b> Images taken from the internet cannot be used — the site owner is liable, not the developer. If you don't have good photos, tell me: we arrange a shoot or buy a licence.</div>
+  </div>
+
+  <div class="sec">
+    <h3><i>3</i>Domain and hosting — in your name</h3>
+    <ul>
+      <li>The domain is your address, e.g. <span class="q">yourbusiness.hr</span> or <span class="q">yourbusiness.com</span></li>
+      <li><b>The domain and hosting are opened in your name, not mine.</b> Your e-mail, your card, you are the owner — and you add me as a collaborator</li>
+      <li>That way the site is yours for good: if we part ways one day you don't have to ask me for anything, and if I disappear the site keeps running</li>
+      <li><span class="q">.hr</span> — needs the OIB of your Croatian business; often free for an <span class="q">obrt</span></li>
+      <li><span class="q">.com</span> — immediate, no paperwork, roughly €10–15 a year</li>
+      <li>The hosting I use is free and has no traffic limit; SSL (the padlock and <span class="q">https</span>) is included and renews itself</li>
+      <li>I set all of it up — you open the account once and give me access</li>
+    </ul>
+    <div class="note"><b>The only thing paid every year is the domain.</b> The reminder comes to you by e-mail. Turn on auto-renew and you never have to think about it again.</div>
+  </div>
+
+  <div class="pfoot"><span>Puntamedia — client guide</span><span>8</span></div>
+</section>
+
+<!-- ============ ENGLISH 2 ============ -->
+<section class="page">
+  <div class="sec">
+    <h3><i>4</i>Details your site must show by law</h3>
+    <p class="intro" style="margin-left:9.4mm;margin-bottom:3mm;max-width:none">Croatian law requires your business details to be visible on the site. I put them in the footer or on a dedicated page (Impressum). I need from you:</p>
+    <ul class="grid">
+      <li>full registered business name</li>
+      <li>registered seat — full address</li>
+      <li>register and registration number</li>
+      <li>OIB (Croatian tax number)</li>
+      <li>bank and IBAN</li>
+      <li>whether you are VAT-registered</li>
+      <li>for a <span class="q">d.o.o.</span>: the registering court</li>
+      <li>for a <span class="q">d.o.o.</span>: share capital and whether paid up</li>
+    </ul>
+    <div class="note warn">Missing details carry fines, and <b>the site owner pays them</b>. That is why I ask for these before we go live, not after.</div>
+  </div>
+
+  <div class="sec">
+    <h3><i>5</i>Privacy, cookies and accessibility</h3>
+    <ul>
+      <li>If the site has an enquiry form it collects personal data — <b>a privacy notice is required</b>. I prepare it; you only tell me which e-mail the enquiries go to and who reads them</li>
+      <li><b>A Google map sets a cookie the moment it loads</b>, before the visitor clicks anything. So I load the map only after the visitor consents, or add a consent bar</li>
+      <li>The same applies to Google Analytics and to YouTube videos, if you want them</li>
+      <li>I build sites so they work with a keyboard and with screen readers. The European Accessibility Act applies from June 2025; businesses with fewer than 10 employees are exempt for now, but if you grow or start selling online, the site is already ready</li>
+    </ul>
+  </div>
+
+  <div class="sec">
+    <h3><i>6</i>Editing it yourself (optional)</h3>
+    <ul>
+      <li>If you want, I add a simple editing panel</li>
+      <li>You change prices, text, photos and opening hours yourself — no code</li>
+      <li>Changes appear on the site within a couple of minutes</li>
+      <li>Login: create a free GitHub account (e-mail and password), I give it access to your site, and you open <span class="q">yoursite/admin</span> → <span class="q">Login with GitHub</span></li>
+      <li>Set up once; after that it is just a login and simple forms</li>
+    </ul>
+    <div class="note"><b>A tip:</b> make all the changes you need, then save once. Every save republishes the site, so one save with ten edits beats ten saves.</div>
+  </div>
+
+  <div class="sec">
+    <h3><i>7</i>The plan — step by step</h3>
+    <div class="steps">
+      <div><span>1</span>We talk about your business and goals</div>
+      <div><span>5</span>You open the domain and hosting account, add me</div>
+      <div><span>2</span>You send the materials and legal details</div>
+      <div><span>6</span>I put the site live and register it on Google</div>
+      <div><span>3</span>I design and build the site</div>
+      <div><span>7</span>Optional: the editing panel</div>
+      <div><span>4</span>I show it to you at a temporary address, we refine</div>
+      <div><span>8</span>Handover — you receive every access and the instructions</div>
+    </div>
+  </div>
+
+  <div class="pfoot"><span>Puntamedia — client guide</span><span>9</span></div>
+</section>
+
+<!-- ============ ENGLISH 3 ============ -->
+<section class="page">
+  <div class="sec">
+    <h3><i>8</i>What you receive at handover</h3>
+    <p class="intro" style="margin-left:9.4mm;margin-bottom:3mm;max-width:none">At the end you get one document and one folder, put together so that you can carry on without me:</p>
+    <ul>
+      <li>a list of everything that was built, and anything left open</li>
+      <li><b>every password and access</b> — domain, hosting, editing panel, e-mail, Google profile</li>
+      <li>where the site's code lives and how to reach it</li>
+      <li>short instructions for changing the content, with examples</li>
+      <li>what is included in the price and what is charged separately</li>
+      <li>my contact details and how quickly I reply</li>
+    </ul>
+    <div class="note"><b>Before I step away, we check together that you can log in everywhere.</b> An access you have not tried is not an access.</div>
+  </div>
+
+  <div class="sec">
+    <h3><i>9</i>What stays with you afterwards</h3>
+    <ul>
+      <li><b>Renewing the domain once a year.</b> The reminder comes to you by e-mail; turn on auto-renew. If the domain lapses the site becomes unreachable — it is the one thing that can genuinely switch it off</li>
+      <li><b>Read the inbox the enquiries arrive in.</b> A website only brings customers if somebody answers</li>
+      <li>Tell me when opening hours, prices or contact details change — or change them yourself in the panel</li>
+      <li><b>Keep your Google profile up to date</b> (Google Business Profile). For a local business that is where most visits come from, often more than from the site itself</li>
+      <li>If your business details change — address, IBAN, VAT status — let me know so I can update the Impressum</li>
+      <li>Photos age faster than you would think. New pictures once a year are worth more than a redesign</li>
+    </ul>
+  </div>
+
+  <div class="cta">
+    <b>Get in touch — I'll gladly put together a free proposal of how your site could look, with no obligation.</b><br>
+    See an example: konobamakara.hr
+    <div class="contact">Puntamedia · [ e-mail ] · [ WhatsApp ] · [ Instagram ]</div>
+  </div>
+
+  <div class="pfoot"><span>Puntamedia — client guide</span><span>10</span></div>
+</section>
+
+</body>
+</html>
