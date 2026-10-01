@@ -397,6 +397,107 @@
   .mk-soon .plus{width:44px;height:44px;border:1px solid var(--line-strong);display:grid;place-items:center;color:var(--acc);font-family:var(--serif);font-size:26px;line-height:1}
   .mk-soon .t{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim)}
 
+  /* ---------- COME NASCE: la pagina che si costruisce ----------
+     Cinque stadi guidati dallo scroll. Il markup sotto non cambia
+     mai: si muovono --b-grid, --b-word, --b-voice, --b-pic e
+     --b-live, quindi a ogni istante quella e' una pagina vera,
+     solo meno finita. Niente di tutto cio' e' un'immagine. */
+  .made-track{position:relative;height:330vh;margin-top:clamp(36px,5vw,64px)}
+  .made-pin{position:sticky;top:0;min-height:100vh;display:grid;align-content:center;
+    gap:clamp(18px,2.6vw,34px);grid-template-columns:1fr}
+  @media(min-width:980px){.made-pin{grid-template-columns:170px 1fr;align-items:center}}
+
+  .made-steps{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+  .made-steps li{display:flex;gap:11px;align-items:baseline;font-size:11px;letter-spacing:.15em;
+    text-transform:uppercase;color:var(--dim);opacity:.42;
+    transition:opacity .3s var(--ease),color .3s var(--ease)}
+  .made-steps li b{font-weight:500;font-variant-numeric:tabular-nums;color:var(--acc-deep)}
+  .made-steps li[data-on="1"]{opacity:1;color:var(--acc-bright)}
+  .made-steps li[data-on="1"] b{color:var(--acc-bright)}
+  @media(max-width:979px){.made-steps{grid-auto-flow:column;gap:0;justify-content:space-between}
+    .made-steps li span{display:none}}
+
+  .made-frame{position:relative;border-radius:9px;overflow:hidden;aspect-ratio:16/10.2;
+    background:#fff;
+    outline:1px solid rgba(150,195,232,calc(.10 + .16 * var(--b-live)));
+    box-shadow:0 calc(34px * var(--b-live)) calc(72px * var(--b-live)) calc(-30px * var(--b-live)) rgba(2,10,20,.85)}
+  .made-bar{display:flex;align-items:center;gap:7px;padding:9px 13px;background:#E8EEF5;
+    border-bottom:1px solid rgba(12,32,56,.08);opacity:var(--b-live)}
+  .made-bar i{width:8px;height:8px;border-radius:50%;background:rgba(12,32,56,.17)}
+  .made-bar em{font-style:normal;font-size:11px;color:#50708C;letter-spacing:.03em}
+
+  /* la luce che segue il puntatore, solo quando la pagina e' viva */
+  .made-glow{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;
+    transition:opacity .4s var(--ease);mix-blend-mode:soft-light;
+    background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.55),transparent 70%)}
+  .made-frame.is-live .made-glow{opacity:1}
+
+  .bp{position:absolute;inset:0;padding:clamp(14px,2.3vw,26px);display:grid;
+    grid-template-rows:auto 1fr auto;gap:clamp(8px,1.3vw,15px);background:#fff;font-family:var(--sans)}
+  .made-bar + .bp{inset:37px 0 0}
+  .bp-grid{position:absolute;inset:0;pointer-events:none;opacity:var(--b-grid);
+    background:repeating-linear-gradient(to right,rgba(47,110,158,.26) 0 1px,transparent 1px calc(100%/12)),
+               repeating-linear-gradient(to bottom,rgba(47,110,158,.11) 0 1px,transparent 1px 28px)}
+  .bp-slot{outline:1px dashed rgba(47,110,158,calc(.5 * var(--b-grid)))}
+
+  .bp-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+  .bp-mark{font-family:var(--serif);font-weight:600;
+    font-size:calc(13px + 7px * var(--b-voice));
+    color:rgb(12 32 56 / calc(.5 + .5 * var(--b-word)))}
+  .bp-nav{display:flex;gap:clamp(9px,1.3vw,17px)}
+  .bp-nav a{font-size:10px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
+    color:rgb(76 104 131 / calc(.85 * var(--b-word)));position:relative;pointer-events:none}
+  .bp-nav a::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:1px;
+    background:#2F6E9E;transform:scaleX(0);transform-origin:0 50%;transition:transform .22s var(--ease)}
+  .bp-body{position:relative;display:grid;gap:clamp(8px,1.2vw,14px);align-content:center}
+  @media(min-width:620px){.bp-body{grid-template-columns:1.05fr .95fr;align-items:center}}
+  .bp h3{font-family:var(--serif);font-weight:600;margin:0;
+    font-size:calc(15px + 25px * var(--b-voice));
+    line-height:calc(1.3 - .27 * var(--b-voice));
+    color:rgb(12 32 56 / calc(.16 + .84 * var(--b-word)));text-wrap:balance}
+  .bp h3 em{font-style:italic;color:rgb(47 110 158 / var(--b-voice))}
+  .bp-left p{font-size:clamp(10px,1.05vw,12.5px);line-height:1.6;margin:7px 0 0;max-width:34ch;
+    color:rgb(76 104 131 / calc(.14 + .86 * var(--b-word)))}
+  .bp-cta{margin-top:11px;padding:8px 15px;border:0;cursor:default;pointer-events:none;
+    font-family:var(--sans);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
+    border-radius:calc(3px * var(--b-voice));
+    color:rgb(255 255 255 / var(--b-voice));
+    background:rgb(47 110 158 / var(--b-voice));
+    outline:1px solid rgb(76 104 131 / calc(.4 * (1 - var(--b-voice)) * var(--b-word)));
+    transition:transform .14s var(--ease),filter .14s var(--ease)}
+  .bp-shot{position:relative;margin:0;border-radius:calc(4px * var(--b-voice));overflow:hidden;
+    aspect-ratio:4/3;background:rgb(47 110 158 / calc(.06 * var(--b-word)))}
+  .bp-shot img{width:100%;height:100%;object-fit:cover;display:block;
+    opacity:var(--b-pic);filter:saturate(calc(.25 + .75 * var(--b-pic)))}
+  /* e' un <footer> vero, quindi prende la regola globale del piede del sito:
+     fondo scuro e padding. Qui dentro va azzerata. */
+  .bp-foot{display:flex;align-items:center;gap:15px;margin:0;padding:0;background:none;border:0;
+    font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:rgb(76 104 131 / calc(.8 * var(--b-word)))}
+
+  /* viva: adesso risponde al puntatore, che e' la prova che non e' una figura */
+  .made-frame.is-live .bp-nav a,
+  .made-frame.is-live .bp-cta{pointer-events:auto;cursor:pointer}
+  @media(hover:hover) and (pointer:fine){
+    .made-frame.is-live .bp-nav a:hover::after{transform:scaleX(1)}
+    .made-frame.is-live .bp-cta:hover{filter:brightness(1.08)}
+  }
+  .made-frame.is-live .bp-cta:active{transform:translateY(1px)}
+  .made-frame.is-live .bp-nav a:focus-visible,
+  .made-frame.is-live .bp-cta:focus-visible{outline:2px solid #2F6E9E;outline-offset:3px}
+
+  .made-cap{margin-top:16px;font-size:13.5px;color:var(--muted);min-height:1.7em;line-height:1.6}
+  .made-cap b{color:var(--text);font-weight:400}
+
+  @media(max-width:900px){
+    .made-track{height:230vh}
+    .made-pin{min-height:78svh}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .made-steps li,.made-glow,.bp-nav a::after,.bp-cta{transition:none}
+    .made-track{height:190vh}
+  }
+
   /* ---------- VALUE STRIP ---------- */
   .strip{border-block:1px solid var(--line);background:var(--ink-2)}
   .strip-grid{display:grid;grid-template-columns:repeat(3,1fr)}
@@ -533,7 +634,10 @@
   .sec-bg img{opacity:.62}
   .sec-bg::after{content:"";position:absolute;inset:0;z-index:2;
     background:linear-gradient(180deg,var(--ink-2) 0%,rgba(12,32,56,.58) 36%,rgba(12,32,56,.74) 72%,var(--ink-2) 100%)}
-  .has-bg{position:relative;overflow:hidden}
+  /* clip, non hidden: taglia lo sfondo allo stesso modo ma non crea un
+     contenitore di scorrimento, quindi position:sticky dentro continua a
+     funzionare. Con hidden il prima/dopo non si incollava e spariva. */
+  .has-bg{position:relative;overflow:clip}
   .has-bg > .wrap{position:relative;z-index:1}
   /* contact sits on the page ground, not --ink-2, so its veil fades to that;
      and a lighter grade keeps the harbour lights warm against the navy */
@@ -605,7 +709,35 @@
   .ba{position:relative;margin-top:54px;max-width:900px;margin-inline:auto;
     border:1px solid var(--line-strong);border-radius:6px;overflow:hidden;
     box-shadow:0 44px 96px -48px rgba(0,0,0,.9)}
-  .ba-stack{position:relative;aspect-ratio:16/10;--pos:50}
+  /* La lama la muove lo scroll, non piu' solo il dito. I due siti si
+     spostano a velocita' leggermente diverse, cosi' il vecchio esce
+     mentre il nuovo entra, invece di comparire sotto una tendina piatta. */
+  .ba-track{position:relative;height:300vh;margin-top:54px}
+  /* minmax(0,1fr) e non auto: con la colonna a contenuto il riquadro, che ha
+     solo un aspect-ratio e nessuna larghezza propria, collassava a zero. */
+  .ba-pin{position:sticky;top:0;min-height:100vh;display:grid;
+    grid-template-columns:minmax(0,1fr);align-content:center}
+  .ba-track .ba{margin-top:0;width:100%}
+  .ba-stack{position:relative;aspect-ratio:16/10;--pos:50;--sweep:0}
+  .ba-pane:not(.after){transform:translateX(calc(-2.2% * var(--sweep)));
+    filter:saturate(calc(1 - .55 * var(--sweep))) brightness(calc(1 - .12 * var(--sweep)))}
+  .ba-pane.after{transform:translateX(calc(2.6% * (1 - var(--sweep))))}
+  .ba-tag.l{opacity:calc(1 - .72 * var(--sweep))}
+  .ba-tag.r{opacity:calc(.28 + .72 * var(--sweep))}
+  /* la maniglia resta spenta finche' lo scroll non ha finito il suo giro */
+  .ba-range{pointer-events:none}
+  .ba-stack.is-free .ba-range{pointer-events:auto}
+  .ba-stack.is-free .ba-knob{box-shadow:0 10px 26px -8px rgba(0,0,0,.85),0 0 0 5px rgba(90,147,188,.18)}
+  /* Su telefono le due piste da tre schermate l'una portavano la pagina a
+     ventiquattro schermate. Resta spazio per l'animazione, ma meno. */
+  @media(max-width:900px){
+    .ba-track{height:200vh}
+    .ba-pin{min-height:72svh}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .ba-track{height:150vh}
+    .ba-pane:not(.after),.ba-pane.after{transform:none;filter:none}
+  }
   .ba-pane{position:absolute;inset:0;overflow:hidden;container-type:inline-size}
   .ba-pane .shot{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
   .ba-pane.after{clip-path:inset(0 0 0 calc(var(--pos) * 1%))}
@@ -862,6 +994,61 @@
     </div>
   </section>
 
+  <!-- ══ COME NASCE ════════════════════════════════════════════
+       Niente occhiello qui, di proposito: ce ne sono gia' dodici
+       identici sulla pagina ed e' una delle cose che la fanno
+       sembrare fatta a stampo.
+       La pagina qui dentro e' markup vero dall'inizio alla fine.
+       Non cambia il markup, cambiano quattro variabili guidate
+       dallo scroll: quindi non e' il disegno di uno screenshot,
+       e' una pagina vera meno finita. ═══════════════════════════ -->
+  <section class="section" id="made">
+    <div class="wrap">
+      <div class="head reveal">
+        <h2>Watch one get made.</h2>
+        <p>No mood boards and no slide decks. Scroll, and a page assembles itself: the grid first, then the words, then the voice, then the photographs. This is the actual job, start to finish.</p>
+      </div>
+
+      <div class="made-track" id="madeTrack">
+        <div class="made-pin">
+          <ol class="made-steps" id="madeSteps">
+            <li data-on="1"><b>1</b><span>The structure</span></li>
+            <li><b>2</b><span>The words</span></li>
+            <li><b>3</b><span>The voice</span></li>
+            <li><b>4</b><span>The photographs</span></li>
+            <li><b>5</b><span>Online</span></li>
+          </ol>
+
+          <div class="made-right">
+            <div class="made-frame" id="madeFrame">
+              <span class="made-glow" aria-hidden="true"></span>
+              <div class="made-bar" aria-hidden="true"><i></i><i></i><i></i><em>konoba-primjer.hr</em></div>
+              <article class="bp">
+                <span class="bp-grid" aria-hidden="true"></span>
+                <header class="bp-head bp-slot">
+                  <span class="bp-mark">Konoba</span>
+                  <nav class="bp-nav"><a href="#made">Jelovnik</a><a href="#made">Galerija</a><a href="#made">Kontakt</a></nav>
+                </header>
+                <div class="bp-body">
+                  <div class="bp-slot bp-left">
+                    <h3>Okus mora, <em>svaki dan.</em></h3>
+                    <p>Svje&zcaron;a riba s ro&scaron;tilja, doma&cacute;e maslinovo ulje i terasa okrenuta zalasku.</p>
+                    <button type="button" class="bp-cta">Rezerviraj stol</button>
+                  </div>
+                  <figure class="bp-shot bp-slot">
+                    <img src="img/restaurant.webp" width="1200" height="900" alt="" loading="lazy" decoding="async">
+                  </figure>
+                </div>
+                <footer class="bp-foot bp-slot"><span>Svaki dan 12 do 23</span><span>Lukoran</span></footer>
+              </article>
+            </div>
+            <p class="made-cap" id="madeCap"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- WORK -->
   <section class="section grad-bg" id="work" style="border-block:1px solid var(--line)">
     <div class="wrap">
@@ -949,9 +1136,11 @@
       <div class="head reveal">
         <span class="eyebrow">Before &amp; after</span>
         <h2>Most sites aren't broken. They're just old.</h2>
-        <p>Drag the handle to see what a rebuild does for a business that already has a website &mdash; same konoba, same menu, twenty years of difference.</p>
+        <p>Keep scrolling and watch twenty years go by. Same konoba, same menu, same photographs. Only the website changed. When it lands, the handle is yours.</p>
       </div>
-      <div class="ba reveal">
+      <div class="ba-track" id="baTrack">
+       <div class="ba-pin">
+        <div class="ba reveal">
         <div class="ba-stack" id="baStack">
           <div class="ba-pane">
             <div class="os">
@@ -979,6 +1168,8 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 6 4 12l5 6M15 6l5 6-5 6"/></svg>
           </span></div>
         </div>
+        </div>
+       </div>
       </div>
     </div>
   </section>
@@ -1590,13 +1781,64 @@
     if(vid.readyState >= 1) activate();
   })();
 
-  /* ---------- Before / after comparison ---------- */
+  /* ---------- Prima / dopo, guidato dallo scroll ----------------------
+     La lama la muove lo scroll. Prima tiene fermo sul sito vecchio il
+     tempo di leggerlo, poi attraversa, poi tiene fermo sul nuovo. Finito
+     il giro la maniglia torna in mano a chi guarda, cosi' puo' rifarlo
+     avanti e indietro quanto vuole. ----------------------------------- */
   (function(){
-    var range = document.getElementById('baRange'), stack = document.getElementById('baStack');
+    var range = document.getElementById('baRange');
+    var stack = document.getElementById('baStack');
+    var track = document.getElementById('baTrack');
     if(!range || !stack) return;
-    function set(){ stack.style.setProperty('--pos', range.value); }
-    range.addEventListener('input', set);
-    set();
+
+    function put(v){
+      stack.style.setProperty('--pos', v);
+      range.value = Math.round(v);
+    }
+    /* se non c'e' la pista restiamo al vecchio comportamento a trascinamento */
+    if(!track){ range.addEventListener('input', function(){ put(range.value); }); put(range.value); return; }
+
+    var raf = 0, freed = false, held = false;
+    function clamp(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
+    function ramp(v,a,b){ return clamp((v - a) / (b - a)); }
+    /* morbida ai due capi: la lama parte e si ferma senza strappi */
+    function ease(t){ return t * t * (3 - 2 * t); }
+
+    function draw(){
+      if(held) return;
+      var vh = document.documentElement.clientHeight || window.innerHeight;
+      var span = track.offsetHeight - vh;
+      var p = clamp(span > 0 ? (-track.getBoundingClientRect().top) / span : 0);
+
+      var sweep = ease(ramp(p, .16, .80));
+      stack.style.setProperty('--sweep', sweep.toFixed(3));
+      /* il clip nasconde il pannello nuovo PARTENDO DA SINISTRA, quindi
+         --pos a 100 vuol dire tutto vecchio e a 0 tutto nuovo: la lama
+         viaggia da destra a sinistra e il sito nuovo entra da destra. */
+      put(100 - sweep * 100);
+
+      var free = p > .86;
+      if(free !== freed){ freed = free; stack.classList.toggle('is-free', free); }
+    }
+
+    function onScroll(){ cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); }
+    window.addEventListener('scroll', onScroll, { passive:true });
+    window.addEventListener('resize', onScroll);
+    document.addEventListener('visibilitychange', function(){ if(!document.hidden) onScroll(); });
+
+    /* mentre trascina, lo scroll si fa da parte e non gli strappa la lama */
+    range.addEventListener('pointerdown', function(){ held = true; });
+    range.addEventListener('input', function(){
+      stack.style.setProperty('--pos', range.value);
+      stack.style.setProperty('--sweep', (1 - range.value / 100).toFixed(3));
+    });
+    ['pointerup','pointercancel','blur'].forEach(function(e){
+      range.addEventListener(e, function(){ held = false; });
+    });
+    range.addEventListener('keydown', function(){ held = true; });
+
+    onScroll();
   })();
 
   /* ---------- Croatian / English ---------- */
@@ -1611,6 +1853,10 @@
       "Custom, multilingual websites for restaurants, shops and small businesses on the Adriatic.":"Prilagođene, višejezične web stranice za restorane, trgovine i male tvrtke na Jadranu.",
       "Puntamedia designs and builds custom, multilingual websites for restaurants, shops and small businesses — in whatever style suits your brand, and built to bring you customers.":"Puntamedia izrađuje prilagođene, višejezične web stranice za restorane, trgovine i male tvrtke — u stilu koji odgovara vašem brendu i s ciljem da vam dovedu goste.",
       "See the work":"Pogledajte radove","Start your project":"Započnite projekt","Open":"Otvori",
+      /* come nasce */
+      "Watch one get made.":"Pogledajte kako nastaje.",
+      "No mood boards and no slide decks. Scroll, and a page assembles itself: the grid first, then the words, then the voice, then the photographs. This is the actual job, start to finish.":"Bez ploča s idejama i bez prezentacija. Skrolajte i stranica se slaže sama: prvo mreža, onda riječi, onda glas, onda fotografije. To je cijeli posao, od početka do kraja.",
+      "The structure":"Struktura","The words":"Riječi","The voice":"Glas","The photographs":"Fotografije",
       "Four languages":"Četiri jezika","Never templated":"Bez predložaka","Live in days":"Online za nekoliko dana",
       "Loads in":"Učitava se za","0.9 seconds":"0,9 sekundi","Built for":"Prilagođeno za","Every screen":"Svakom ekranu",
       "Entirely custom":"Potpuno prilagođeno",
@@ -1738,6 +1984,8 @@
         el.setAttribute('placeholder', (l === 'hr' && PH[k]) ? PH[k] : k);
       });
       document.documentElement.lang = l;
+      /* la didascalia della pagina che si costruisce la scrive il suo script */
+      if(window.__pmMadeRelabel) window.__pmMadeRelabel();
       boxes.forEach(function(box){
         box.querySelectorAll('button').forEach(function(b){
           b.setAttribute('aria-pressed', String(b.dataset.lang === l));
@@ -1776,6 +2024,93 @@
       note.style.color=''; note.textContent = 'Opening your email app';
       window.location.href = 'mailto:hello@puntamedia.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
     });
+  })();
+
+
+  /* ---------- COME NASCE ------------------------------------------------
+     Il progresso lo ricavo dalla pista alta e dal blocco appiccicato
+     dentro, non da un osservatore: cosi' la pagina si costruisce sotto la
+     mano di chi scrolla invece che scattare quando entra in vista.
+     Quando e' finita diventa viva al puntatore, che e' l'unica prova vera
+     che non sia la figura di un sito. --------------------------------- */
+  (function(){
+    var track = document.getElementById('madeTrack');
+    var frame = document.getElementById('madeFrame');
+    var cap   = document.getElementById('madeCap');
+    if(!track || !frame || !cap) return;
+    var steps = [].slice.call(document.querySelectorAll('#madeSteps li'));
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var raf = 0, lastStep = -1, live = false;
+
+    var CAPS_EN = [
+      'The grid first. Where everything sits, before any of it exists.',
+      'Then the words. Real ones, written for this place, never filler.',
+      'Then the voice: sizes, spacing, and the colours of the business.',
+      'Then the photographs, into the frames that were waiting for them.',
+      'And then it is a page. Move your pointer over it.'
+    ];
+    var CAPS_HR = [
+      'Prvo mreža. Gdje što stoji, prije nego išta postoji.',
+      'Onda riječi. Prave, napisane za to mjesto, nikad ispuna.',
+      'Onda glas: veličine, razmaci i boje same tvrtke.',
+      'Onda fotografije, u okvire koji su ih čekali.',
+      'I onda je stranica. Prijeđite mišem preko nje.'
+    ];
+    function caps(){ return document.documentElement.lang === 'hr' ? CAPS_HR : CAPS_EN; }
+
+    function clamp(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
+    function ramp(v,a,b){ return clamp((v - a) / (b - a)); }
+
+    function draw(){
+      var vh = document.documentElement.clientHeight || window.innerHeight;
+      var r = track.getBoundingClientRect();
+      var span = track.offsetHeight - vh;
+      var p = clamp(span > 0 ? (-r.top) / span : 0);
+
+      var grid  = 1 - ramp(p, .13, .29);
+      var word  = ramp(p, .15, .37);
+      var voice = ramp(p, .39, .61);
+      var pic   = ramp(p, .61, .81);
+      var liveV = ramp(p, .83, .95);
+
+      frame.style.setProperty('--b-grid',  grid.toFixed(3));
+      frame.style.setProperty('--b-word',  word.toFixed(3));
+      frame.style.setProperty('--b-voice', voice.toFixed(3));
+      frame.style.setProperty('--b-pic',   pic.toFixed(3));
+      frame.style.setProperty('--b-live',  liveV.toFixed(3));
+
+      var nowLive = liveV > .92;
+      if(nowLive !== live){ live = nowLive; frame.classList.toggle('is-live', live); }
+
+      var i = p < .15 ? 0 : p < .39 ? 1 : p < .61 ? 2 : p < .83 ? 3 : 4;
+      if(i !== lastStep){
+        lastStep = i;
+        steps.forEach(function(li,n){ li.setAttribute('data-on', n === i ? '1' : '0'); });
+        cap.textContent = caps()[i];
+      }
+    }
+
+    function onScroll(){ cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); }
+    window.addEventListener('scroll', onScroll, { passive:true });
+    window.addEventListener('resize', onScroll);
+    document.addEventListener('visibilitychange', function(){ if(!document.hidden) onScroll(); });
+
+    /* la luce segue il puntatore solo quando la pagina e' finita */
+    if(!reduce && window.matchMedia('(hover:hover) and (pointer:fine)').matches){
+      frame.addEventListener('pointermove', function(e){
+        if(!live) return;
+        var b = frame.getBoundingClientRect();
+        frame.style.setProperty('--mx', ((e.clientX - b.left) / b.width * 100).toFixed(1) + '%');
+        frame.style.setProperty('--my', ((e.clientY - b.top) / b.height * 100).toFixed(1) + '%');
+      });
+    }
+
+    /* la didascalia segue il cambio lingua */
+    window.__pmMadeRelabel = function(){ lastStep = -1; onScroll(); };
+
+    frame.style.setProperty('--b-grid','1');
+    ['--b-word','--b-voice','--b-pic','--b-live'].forEach(function(k){ frame.style.setProperty(k,'0'); });
+    onScroll();
   })();
 
 </script>
