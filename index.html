@@ -529,6 +529,50 @@
   .card p{color:var(--muted);font-size:14.5px;margin-top:10px;line-height:1.7}
 
   /* ---------- WORK ---------- */
+  /* ---------- Selected work: le finestre sono finestre vere ----------
+     Dentro il mockup non c'e' la fotografia della home, c'e' la pagina
+     intera, e scorre mentre il blocco attraversa lo schermo. Chi guarda
+     il portfolio sta leggendo i siti, non le loro copertine. */
+  .screen .shot.wk-page{position:absolute;top:0;left:0;width:100%;height:auto;
+    object-fit:fill;will-change:transform;backface-visibility:hidden}
+  /* la risalita la fa la parallasse qui sotto: al reveal resta la dissolvenza */
+  .js .work-item .reveal{transform:none}
+  .work-visual,.work-copy{will-change:transform}
+
+  /* la barretta di scorrimento: e' quella che fa leggere la finestra come finestra */
+  .wk-rail{position:absolute;top:7px;right:5px;bottom:7px;width:3px;border-radius:3px;
+    background:rgba(237,243,249,.07);opacity:0;transition:opacity .5s var(--ease)}
+  .wk-rail i{position:absolute;left:0;right:0;top:0;height:30%;border-radius:3px;
+    background:rgba(237,243,249,.42);display:block}
+  .work-item.is-reading .wk-rail{opacity:1}
+
+  .wk-live{display:inline-flex;align-items:center;gap:6px;margin-left:10px;flex:0 0 auto;
+    font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--acc)}
+  .wk-live i{width:6px;height:6px;border-radius:50%;background:#5FCB93;display:block}
+  .wk-live i{animation:wk-pulse 2.8s var(--ease) infinite}
+  @keyframes wk-pulse{
+    0%{box-shadow:0 0 0 0 rgba(95,203,147,.5)}
+    70%{box-shadow:0 0 0 7px rgba(95,203,147,0)}
+    100%{box-shadow:0 0 0 0 rgba(95,203,147,0)}
+  }
+
+  /* l'indirizzo si scrive da solo quando il blocco entra */
+  .url.is-typing::after{content:"";display:inline-block;width:1px;height:1em;
+    background:var(--acc);margin-left:2px;vertical-align:-2px;
+    animation:wk-caret .85s steps(1,end) infinite}
+  @keyframes wk-caret{0%,50%{opacity:1}51%,100%{opacity:0}}
+
+  /* Kalelarga non ha una pagina da scorrere: al suo posto una barra di avanzamento */
+  .wk-build{position:absolute;left:18%;right:18%;bottom:30px;height:2px;border-radius:2px;
+    background:rgba(150,195,232,.13);overflow:hidden}
+  .wk-build i{position:absolute;inset:0;display:block;transform:scaleX(0);transform-origin:0 50%;
+    background:linear-gradient(90deg,var(--acc-deep),var(--acc-bright))}
+
+  @media(prefers-reduced-motion:reduce){
+    .wk-live i{animation:none}
+    .url.is-typing::after{display:none}
+  }
+
   .work-item{display:grid;grid-template-columns:.9fr 1.1fr;gap:58px;align-items:center;margin-top:76px}
   .work-item:nth-child(even){grid-template-columns:1.1fr .9fr}
   .work-item:nth-child(even) .work-copy{order:2}
@@ -1058,13 +1102,14 @@
         <p>A few of the places I've helped get online &mdash; each one custom-built, multilingual, and made to win customers.</p>
       </div>
 
-      <article class="work-item">
+      <article class="work-item" data-wk data-wk-lead>
         <div class="work-visual stage reveal">
           <div class="device">
             <div class="browser">
-              <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">konoba-makara.hr</span></div>
-              <div class="screen">
-                <img class="shot" src="img/work-makara.webp" alt="La pagina iniziale del sito di Konoba Makara" loading="lazy" decoding="async">
+              <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url" data-wk-type="konobamakara.hr">konobamakara.hr</span><span class="wk-live"><i></i>Live</span></div>
+              <div class="screen wk-screen">
+                <img class="shot wk-page" src="img/work-makara-page.webp" width="1240" height="2418" alt="Il sito di Konoba Makara, dalla copertina alle prenotazioni" loading="lazy" decoding="async">
+                <span class="wk-rail" aria-hidden="true"><i></i></span>
               </div>
             </div>
           </div>
@@ -1081,13 +1126,14 @@
         </div>
       </article>
 
-      <article class="work-item">
+      <article class="work-item" data-wk>
         <div class="work-visual stage reveal">
           <div class="device">
             <div class="browser">
-              <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">rivagrill.hr</span></div>
-              <div class="screen">
-                <img class="shot" src="img/work-riva.webp" alt="La pagina iniziale del sito di Riva Grill" loading="lazy" decoding="async">
+              <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url" data-wk-type="rivagrill.hr">rivagrill.hr</span></div>
+              <div class="screen wk-screen">
+                <img class="shot wk-page" src="img/work-riva-page.webp" width="1240" height="2060" alt="Il sito di Riva Grill, dalla copertina agli orari" loading="lazy" decoding="async">
+                <span class="wk-rail" aria-hidden="true"><i></i></span>
               </div>
             </div>
           </div>
@@ -1104,12 +1150,12 @@
         </div>
       </article>
 
-      <article class="work-item">
+      <article class="work-item" data-wk>
         <div class="work-visual stage reveal">
           <div class="device">
             <div class="browser">
-              <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">apartmani-kalelarga.hr</span></div>
-              <div class="screen"><div class="mk mk-soon"><div class="plus">+</div><div class="t">Project in progress</div></div></div>
+              <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url" data-wk-type="apartmani-kalelarga.hr">apartmani-kalelarga.hr</span></div>
+              <div class="screen wk-screen"><div class="mk mk-soon"><div class="plus">+</div><div class="t">Project in progress</div><span class="wk-build" aria-hidden="true"><i></i></span></div></div>
             </div>
           </div>
         </div>
@@ -2112,6 +2158,156 @@
     ['--b-word','--b-voice','--b-pic','--b-live'].forEach(function(k){ frame.style.setProperty(k,'0'); });
     onScroll();
   })();
+
+  /* ---------- Selected work: dentro ogni finestra c'e' il sito vero ----------
+     Non una fotografia della home: la pagina intera, che scorre mentre il
+     blocco attraversa lo schermo. Chi arriva qui non guarda tre immagini,
+     legge tre siti.
+     Kalelarga non ha ancora una pagina da scorrere, quindi fa un'altra cosa:
+     una barra che si riempie. Tre blocchi che si comportano uguale sarebbero
+     un blocco mostrato tre volte. */
+  (function(){
+    var items = [].slice.call(document.querySelectorAll('[data-wk]'));
+    if(!items.length) return;
+
+    function clamp(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
+    function ramp(v,a,b){ return clamp((v - a) / (b - a)); }
+    function ease(t){ return t * t * (3 - 2 * t); }
+
+    var reg = items.map(function(el){
+      return {
+        el:     el,
+        visual: el.querySelector('.work-visual'),
+        copy:   el.querySelector('.work-copy'),
+        page:   el.querySelector('.wk-page'),
+        screen: el.querySelector('.wk-screen'),
+        glass:  el.querySelector('.browser'),
+        rail:   el.querySelector('.wk-rail'),
+        build:  el.querySelector('.wk-build'),
+        url:    el.querySelector('[data-wk-type]'),
+        /* il primo e' il progetto vero e finito: ha la corsa piu' lunga
+           e la finestra piu' larga in cui farla */
+        lead:   el.hasAttribute('data-wk-lead'),
+        travel: 0, railRun: 0, now: 0, want: 0, typed: false, reading: false
+      };
+    });
+
+    function measure(){
+      reg.forEach(function(r){
+        if(!r.page || !r.screen) return;
+        var h = r.page.getBoundingClientRect().height;
+        var s = r.screen.getBoundingClientRect().height;
+        r.travel = Math.max(0, h - s);
+        if(r.rail && h > 0){
+          var thumb = r.rail.firstElementChild;
+          thumb.style.height = Math.max(12, s / h * 100).toFixed(2) + '%';
+          r.railRun = Math.max(0, r.rail.clientHeight - thumb.clientHeight);
+        }
+      });
+    }
+
+    function type(r){
+      if(r.typed || !r.url) return;
+      r.typed = true;
+      var full = r.url.getAttribute('data-wk-type') || '';
+      if(reduce || !full){ return; }
+      r.url.textContent = '';
+      r.url.classList.add('is-typing');
+      var i = 0;
+      (function step(){
+        r.url.textContent = full.slice(0, ++i);
+        if(i < full.length) setTimeout(step, 24 + Math.random() * 26);
+        else r.url.classList.remove('is-typing');
+      })();
+    }
+
+    var raf = 0, pend = 0;
+
+    /* la corsa non viene scritta di colpo: insegue il bersaglio di un sesto
+       per fotogramma, cosi' la pagina dentro la finestra ha un peso suo
+       invece di essere incollata alla rotella */
+    function loop(){
+      var alive = false;
+      reg.forEach(function(r){
+        if(!r.page) return;
+        var d = r.want - r.now;
+        if(Math.abs(d) > .3){ r.now += d * .16; alive = true; } else { r.now = r.want; }
+        r.page.style.transform = 'translate3d(0,' + (-r.now).toFixed(2) + 'px,0)';
+        if(r.rail && r.railRun){
+          var k = r.travel ? r.now / r.travel : 0;
+          r.rail.firstElementChild.style.transform = 'translateY(' + (r.railRun * k).toFixed(2) + 'px)';
+        }
+      });
+      raf = alive ? requestAnimationFrame(loop) : 0;
+    }
+    function wake(){ if(!raf) raf = requestAnimationFrame(loop); }
+
+    function draw(){
+      var vh = document.documentElement.clientHeight || window.innerHeight;
+      var wide = window.innerWidth >= 980;
+      reg.forEach(function(r){
+        var b = r.el.getBoundingClientRect();
+        if(b.bottom < -vh || b.top > vh * 2) return;
+        /* 0 quando il blocco entra dal basso, 1 quando e' uscito dall'alto */
+        var t = clamp((vh - b.top) / (vh + b.height));
+
+        if(!reduce){
+          /* la pagina scorre nella parte centrale del passaggio: ai due capi
+             il blocco sta ancora entrando o sta gia' uscendo */
+          var win = r.lead ? ease(ramp(t, .10, .92)) : ease(ramp(t, .17, .85));
+          r.want = r.travel * win;
+
+          /* l'atterraggio: la finestra arriva inclinata all'indietro e si mette
+             dritta prima che la pagina dentro cominci a scorrere. Sta sulla
+             .browser e non sulla .device perche' li' ci scrive gia' il puntatore */
+          if(r.glass){
+            var land = 1 - ease(ramp(t, .04, .33));
+            r.glass.style.transform = land
+              ? 'translateZ(' + (-46 * land * (wide ? 1 : .6)).toFixed(1) + 'px) rotateX(' +
+                (5.5 * land).toFixed(2) + 'deg)'
+              : '';
+          }
+
+          /* profondita': la finestra viaggia un po' piu' veloce del testo */
+          var d = (t - .5) * (wide ? 1 : .5);
+          if(r.visual) r.visual.style.transform = 'translate3d(0,' + (-d * 44).toFixed(1) + 'px,0)';
+          if(r.copy)   r.copy.style.transform   = 'translate3d(0,' + ( d * 20).toFixed(1) + 'px,0)';
+
+          if(r.build) r.build.firstElementChild.style.transform =
+            'scaleX(' + ease(ramp(t, .22, .72)).toFixed(3) + ')';
+        }
+
+        var reading = t > .13 && t < .9;
+        if(reading !== r.reading){ r.reading = reading; r.el.classList.toggle('is-reading', reading); }
+        if(t > .2) type(r);
+      });
+      if(!reduce) wake();
+    }
+
+    function onScroll(){ cancelAnimationFrame(pend); pend = requestAnimationFrame(draw); }
+
+    reg.forEach(function(r){
+      if(!r.page) return;
+      if(r.page.complete && r.page.naturalHeight) return;
+      r.page.addEventListener('load', function(){ measure(); onScroll(); });
+    });
+
+    window.addEventListener('scroll', onScroll, { passive:true });
+    window.addEventListener('resize', function(){ measure(); onScroll(); });
+    document.addEventListener('visibilitychange', function(){ if(!document.hidden) onScroll(); });
+
+    /* a movimento ridotto la pagina resta ferma in cima, ma la barra di
+       Kalelarga va riempita lo stesso: una barra vuota sembra rotta */
+    if(reduce){
+      reg.forEach(function(r){
+        if(r.build) r.build.firstElementChild.style.transform = 'scaleX(1)';
+      });
+    }
+
+    measure();
+    draw();
+  })();
+
 
 </script>
 </body>

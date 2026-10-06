@@ -19,9 +19,12 @@
     --sans:"DM Sans",system-ui,sans-serif;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{width:1240px;height:806px;overflow:hidden}
+  html,body{width:1240px}
+  html{scroll-behavior:auto}
   body{font-family:var(--sans);color:var(--ink);background:var(--cream);
-       display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+       -webkit-font-smoothing:antialiased}
+  /* la prima schermata resta esattamente com'era: e' quella fotografata */
+  .fold{height:806px;display:flex;flex-direction:column;overflow:hidden}
 
   /* ---------- barra in alto ---------- */
   .top{flex:0 0 74px;display:flex;align-items:center;gap:34px;
@@ -105,12 +108,68 @@
   .price{position:absolute;top:17px;right:18px;font-family:var(--slab);font-size:17px;
          color:var(--red);line-height:1}
 
+
+  /* ---------- schermata 2: come lavoriamo ---------- */
+  .how{padding:74px 46px 82px;background:var(--paper);
+       border-bottom:1px solid rgba(34,25,19,.12)}
+  .how-head{display:grid;grid-template-columns:1fr 1fr;gap:46px;align-items:end}
+  .how-head h2{font-family:var(--slab);font-size:56px;line-height:.98;font-weight:400;margin-top:16px}
+  .how-head .lead{margin-top:0;font-size:16px;max-width:46ch;padding-bottom:6px}
+  .steps{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:56px;
+         border-top:2px solid var(--ink)}
+  .steps li{padding:26px 30px 8px 0;position:relative}
+  .steps li + li{padding-left:30px;border-left:1px solid rgba(34,25,19,.14)}
+  .steps b{font-family:var(--slab);font-size:15px;font-weight:400;color:var(--mustard);
+           letter-spacing:.08em;display:block}
+  .steps h3{font-family:var(--slab);font-size:27px;font-weight:400;margin-top:9px}
+  .steps p{font-size:14.5px;line-height:1.6;color:rgba(34,25,19,.64);margin-top:10px;max-width:30ch}
+  .ticket{margin-top:54px;display:flex;align-items:center;justify-content:space-between;gap:30px;
+          background:var(--cream);border:2px dashed rgba(34,25,19,.3);border-radius:12px;
+          padding:28px 34px;position:relative}
+  .ticket::before,.ticket::after{content:"";position:absolute;top:50%;width:26px;height:26px;
+          border-radius:50%;background:var(--paper);transform:translateY(-50%)}
+  .ticket::before{left:-14px}
+  .ticket::after{right:-14px}
+  .ticket-l span,.ticket-r span{font-size:10.5px;font-weight:700;letter-spacing:.18em;
+          text-transform:uppercase;color:var(--green);display:block}
+  .ticket-l h3{font-family:var(--slab);font-size:30px;font-weight:400;margin-top:8px}
+  .ticket-r{text-align:right}
+  .ticket-r b{font-family:var(--slab);font-size:40px;font-weight:400;color:var(--red);
+          line-height:1;display:block}
+  .ticket-r span{color:rgba(34,25,19,.5);margin-top:9px}
+
+  /* ---------- schermata 3: dove e quando ---------- */
+  .foot{background:var(--ink);color:var(--paper);padding:76px 46px 0;position:relative;overflow:hidden}
+  .foot::before{content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(-58deg,rgba(255,255,255,.025) 0 12px,transparent 12px 30px)}
+  .foot > *{position:relative}
+  .cols{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:46px}
+  .cols h4{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+           color:var(--mustard)}
+  .cols h3{font-family:var(--slab);font-size:34px;font-weight:400;line-height:1.08;margin-top:14px}
+  .cols p{font-size:14.5px;line-height:1.72;color:rgba(252,246,236,.68);margin-top:14px;max-width:34ch}
+  .rows{margin-top:16px;border-top:1px solid rgba(252,246,236,.16)}
+  .rows div{display:flex;justify-content:space-between;gap:16px;padding:11px 0;
+            border-bottom:1px solid rgba(252,246,236,.1);font-size:14px}
+  .rows div span:first-child{color:rgba(252,246,236,.62)}
+  .rows div b{font-weight:500}
+  .tel{display:inline-flex;align-items:center;margin-top:20px;background:var(--mustard);color:var(--ink);
+       border-radius:6px;padding:14px 22px;font-size:12px;font-weight:700;letter-spacing:.13em;
+       text-transform:uppercase;text-decoration:none;box-shadow:0 3px 0 #b7801c}
+  .wordmark{margin-top:64px;font-family:var(--slab);font-size:150px;line-height:.8;font-weight:400;
+            color:transparent;-webkit-text-stroke:1.4px rgba(252,246,236,.26);
+            text-align:center;letter-spacing:.01em;padding-bottom:22px}
+  .legal{display:flex;justify-content:space-between;gap:20px;padding:18px 0 22px;
+         border-top:1px solid rgba(252,246,236,.14);
+         font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(252,246,236,.42)}
+
   .stripe{flex:0 0 12px;
     background:repeating-linear-gradient(-58deg,var(--red) 0 15px,var(--mustard) 15px 30px)}
 </style>
 </head>
 <body>
 
+<div class="fold">
 <header class="top">
   <div class="brand">
     <svg width="40" height="40" viewBox="0 0 200 200" aria-hidden="true"><use href="#seal"/></svg>
@@ -165,6 +224,57 @@
 </section>
 
 <div class="stripe"></div>
+</div><!-- /fold -->
+
+<section class="how">
+  <div class="how-head">
+    <div>
+      <span class="eyebrow"><i></i>Kako radimo</span>
+      <h2>Od ro&scaron;tilja<br>do ruke.</h2>
+    </div>
+    <p class="lead">Ni&scaron;ta se ne pe&ccaron;e unaprijed. Narud&zcaron;ba ide na ugljen tek kad je primimo, pa je sve toplo kad do&dstrok;e do tebe.</p>
+  </div>
+  <ol class="steps">
+    <li><b>01</b><h3>Naru&ccaron;i&scaron;</h3><p>Na &scaron;alteru ili telefonom. Odmah ti ka&zcaron;emo koliko se &ccaron;eka.</p></li>
+    <li><b>02</b><h3>Pe&ccaron;emo</h3><p>Ugljen, lijevano &zcaron;eljezo i pecivo iz pekare preko puta.</p></li>
+    <li><b>03</b><h3>Uzme&scaron;</h3><p>Za van, na klupu uz rivu ili dostava do stana.</p></li>
+  </ol>
+  <div class="ticket">
+    <div class="ticket-l"><span>Dnevna ponuda</span><h3>Burger, krumpiri&cacute;i i pi&cacute;e</h3></div>
+    <div class="ticket-r"><b>11,50 &euro;</b><span>Svaki dan do 16 sati</span></div>
+  </div>
+</section>
+
+<section class="foot">
+  <div class="cols">
+    <div>
+      <h4>Gdje smo</h4>
+      <h3>Obala kralja<br>Petra Kre&scaron;imira IV</h3>
+      <p>Preko, otok Ugljan. Pet minuta pje&scaron;ke od trajektne luke, odmah uz rivu.</p>
+      <a class="tel" href="#">Nazovi &middot; 023 555 120</a>
+    </div>
+    <div>
+      <h4>Radno vrijeme</h4>
+      <div class="rows">
+        <div><span>Ponedjeljak &ndash; &ccaron;etvrtak</span><b>11 &ndash; 23</b></div>
+        <div><span>Petak i subota</span><b>11 &ndash; 01</b></div>
+        <div><span>Nedjelja</span><b>12 &ndash; 23</b></div>
+        <div><span>Ro&scaron;tilj</span><b>do 22:30</b></div>
+      </div>
+    </div>
+    <div>
+      <h4>Za van</h4>
+      <div class="rows">
+        <div><span>Preuzimanje</span><b>10 min</b></div>
+        <div><span>Dostava Preko</span><b>2,00 &euro;</b></div>
+        <div><span>Dostava Lukoran</span><b>4,00 &euro;</b></div>
+        <div><span>Pla&cacute;anje</span><b>kartice</b></div>
+      </div>
+    </div>
+  </div>
+  <div class="wordmark">RIVA GRILL</div>
+  <div class="legal"><span>&copy; Riva Grill, Preko</span><span>Izradio Puntamedia</span></div>
+</section>
 
 <!-- il sigillo, disegnato una volta e riusato grande e piccolo -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
