@@ -1,0 +1,10 @@
+# Cloudflare Pages legge questo file e lo applica a ogni risposta.
+# Niente che riguardi la cache: Pages mette gia' gli asset sulla sua rete
+# da solo. Qui ci sono solo le intestazioni che il sito non puo' darsi
+# da se' stando in un file statico.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), interest-cohort=()

@@ -3,3 +3,6 @@ desktop.ini
 .DS_Store
 *.tmp
 .claude/
+
+# la prova scrollcraft messa da parte: 24 MB di copie, non va online
+scrollcraft/
