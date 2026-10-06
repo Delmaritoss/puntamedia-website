@@ -36,13 +36,23 @@ Librerie esterne: nessuna. Solo i font da Google Fonts.
 
 ## Pubblicarlo
 
-È un sito statico: va bene qualunque hosting. Con GitHub Pages:
+È un sito statico senza passo di build: nessun comando, nessuna cartella di
+output, la radice del repo è già il sito.
 
-1. Settings → Pages → Source: `Deploy from a branch` → `main` / `root`
-2. Per il dominio: Settings → Pages → Custom domain
-3. Dal pannello del registrar, un record `CNAME` che punta a `<utente>.github.io`
+**Cloudflare Pages**, collegato a questo repo. Workers & Pages → Create
+application → Pages → Connect to Git → `puntamedia-website`. Framework preset
+*None*, build command vuoto, output directory `/`. Da lì ogni push su `main`
+pubblica da solo.
 
-Spuntare **Enforce HTTPS** quando il certificato è pronto (qualche minuto).
+`_headers` viene letto da Cloudflare e aggiunge le intestazioni di sicurezza che
+un file statico non può darsi da sé. Non tocca la cache: ci pensa già Pages.
+
+Per un dominio: Pages → il progetto → Custom domains. Un `.hr` non si può
+comprare da Cloudflare, va preso da un registrar croato (serve l'OIB e una copia
+di un documento) e poi si spostano i nameserver.
+
+Niente percorsi assoluti nel markup, quindi il sito funziona a qualunque radice:
+`pages.dev`, un sottodominio o un dominio proprio, senza modifiche.
 
 ## Da completare
 
