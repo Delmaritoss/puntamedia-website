@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+# Pagine dimostrative usate per gli screenshot dei lavori: non sono siti veri
+Disallow: /showcase/
+
+Sitemap: https://puntamedia.net/sitemap.xml
