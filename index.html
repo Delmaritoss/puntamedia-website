@@ -8,12 +8,36 @@
 <meta property="og:title" content="Puntamedia — Web Design Studio">
 <meta property="og:description" content="Custom, multilingual websites for restaurants, shops and small businesses.">
 <meta property="og:url" content="https://puntamedia.net/">
-<meta property="og:image" content="https://puntamedia.net/img/hero-start.webp">
+<meta property="og:image" content="https://puntamedia.net/img/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="Puntamedia">
 <meta name="twitter:card" content="summary_large_image">
 <title>Puntamedia</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap">
+<link rel="canonical" href="https://puntamedia.net/">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#08182B">
+<!-- Font in casa, non da Google: nessun dato dei visitatori va a Google (GDPR) -->
+<link rel="preload" href="fonts/jost-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/cormorant-garamond-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts/fonts.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Puntamedia",
+  "url": "https://puntamedia.net/",
+  "logo": "https://puntamedia.net/icon-512.png",
+  "image": "https://puntamedia.net/img/og-image.jpg",
+  "email": "hello@puntamedia.net",
+  "description": "Custom, multilingual websites for restaurants, shops and small businesses, in Croatian, English, German and Italian.",
+  "knowsLanguage": ["hr", "en", "it", "de"],
+  "areaServed": ["Croatia", "Italy", "Europe"]
+}
+</script>
 <style>
   :root{
     /* Drawn from the logo: deep navy headland over an Adriatic blue wave */
@@ -642,6 +666,10 @@
   @media(max-width:460px){.two{grid-template-columns:1fr}}
   form .btn-primary{margin-top:8px}
   .form-note{font-size:11px;letter-spacing:.14em;text-transform:uppercase;text-align:center;color:var(--dim)}
+  .form-note.is-ok{color:var(--acc-bright)}
+  .form-note.is-err{color:var(--acc)}
+  form .btn-primary[disabled]{opacity:.6;cursor:progress;transform:none}
+  .hp{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
   /* ---------- FOOTER ---------- */
   footer{border-top:1px solid var(--line);padding-block:48px;background:var(--ink-2)}
@@ -1340,7 +1368,7 @@
       <div class="reveal">
         <span class="eyebrow">Why Puntamedia</span>
         <h2>Big-studio websites, without the big-studio distance.</h2>
-        <p>I'm a web designer working from the island of Ugljan, building sites for the kind of businesses I grew up around &mdash; restaurants, shops, studios and family-run places. I use modern tools to move quickly, but every site is finished by hand, with real care for how it looks and how it works.</p>
+        <p>I'm half Croatian, half Italian, and I build websites for the kind of businesses I grew up around on both sides of the Adriatic &mdash; restaurants, shops, studios and family-run places. I use modern tools to move quickly, but every site is finished by hand, with real care for how it looks and how it works.</p>
         <p>You talk to the person building your site, not a call centre. That means it gets done properly, quickly, and it actually sounds like you.</p>
         <div class="promise">
           <div class="row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span>One person, start to finish &mdash; clear communication, no runaround.</span></div>
@@ -1351,7 +1379,7 @@
       <div class="about-card reveal">
         <span class="eyebrow">The promise</span>
         <p class="quote" style="margin-top:22px">&ldquo;Your website should feel like the best version of your business &mdash; welcoming, quick, and impossible to forget.&rdquo;</p>
-        <div class="sig">Puntamedia &middot; Otok Ugljan, Croatia</div>
+        <div class="sig">Puntamedia &middot; Half Croatian, half Italian</div>
       </div>
     </div>
   </section>
@@ -1382,15 +1410,17 @@
         </div>
       </div>
 
-      <form id="contactForm" novalidate>
+      <form id="contactForm" novalidate data-endpoint="/api/contact">
         <div class="two">
           <div class="field"><label for="name">Your name</label><input id="name" name="name" type="text" placeholder="Ana Horvat" required></div>
           <div class="field"><label for="business">Business</label><input id="business" name="business" type="text" placeholder="Konoba, shop, studio"></div>
         </div>
         <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" placeholder="you@business.com" required></div>
         <div class="field"><label for="message">What do you need?</label><textarea id="message" name="message" placeholder="A new website for my restaurant, in Croatian and English"></textarea></div>
-        <button class="btn btn-primary" type="submit">Send message</button>
-        <p class="form-note" id="formNote">Opens your email app, ready to send</p>
+        <!-- trappola per i bot: invisibile alle persone, i programmi di spam la compilano -->
+        <div class="hp" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+        <button class="btn btn-primary" type="submit" id="formSend">Send message</button>
+        <p class="form-note" id="formNote" role="status" aria-live="polite">I reply within a day</p>
       </form>
     </div>
   </section>
@@ -1403,7 +1433,7 @@
   <div class="wrap foot">
     <div>
       <div class="brand" style="font-size:21px"><span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M8.4 3.6 25.8 12.9c1.7.9 1.7 3.3 0 4.2l-3.6 1.9c-4.2-2.3-8.9-3.4-13.8-3.4z" fill="#1C3A64"/><path d="M8.4 19.3c4.9 0 9.6 1.1 13.8 3.4l-10.7 5.7c-1.6.9-3.1-.4-3.1-2.1z" fill="#5A93BC"/></svg></span>Puntamedia</div>
-      <div class="muted" style="margin-top:12px">Custom multilingual websites &middot; Otok Ugljan, Croatia</div>
+      <div class="muted" style="margin-top:12px">Custom multilingual websites &middot; Half Croatian, half Italian</div>
     </div>
     <div class="socials">
       <a href="https://instagram.com/puntamedia" target="_blank" rel="noopener" aria-label="Instagram"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
@@ -1411,7 +1441,7 @@
       <a href="mailto:hello@puntamedia.net" aria-label="Email"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m4 7 8 6 8-6"/></svg></a>
     </div>
   </div>
-  <div class="wrap muted" style="margin-top:26px;font-size:11.5px;color:var(--dim);letter-spacing:.1em">&copy; <span id="year"></span> Puntamedia. Built with care on the Adriatic.</div>
+  <div class="wrap muted" style="margin-top:26px;font-size:11.5px;color:var(--dim);letter-spacing:.1em">&copy; <span id="year"></span> Puntamedia. <span>Built with care on the Adriatic.</span></div>
 </footer>
 
 <script>
@@ -1979,20 +2009,20 @@
       "Yes. I've built for a business in Vienna and work remotely without any trouble. Everything happens over email, phone or video, in Croatian, English, German or Italian.":"Da. Radio sam za tvrtku u Beču i bez problema radim na daljinu. Sve ide e-mailom, telefonom ili videopozivom, na hrvatskom, engleskom, njemačkom ili talijanskom.",
       "Why Puntamedia":"Zašto Puntamedia",
       "Big-studio websites, without the big-studio distance.":"Stranice kakve rade veliki studiji, bez njihove distance.",
-      "I'm a web designer working from the island of Ugljan, building sites for the kind of businesses I grew up around — restaurants, shops, studios and family-run places. I use modern tools to move quickly, but every site is finished by hand, with real care for how it looks and how it works.":"Web dizajner sam s otoka Ugljana i radim stranice za poslove uz kakve sam odrastao — restorane, trgovine, studije i obiteljska mjesta. Koristim moderne alate da radim brzo, ali svaku stranicu dovršavam sam, s pažnjom prema izgledu i funkcionalnosti.",
+      "I'm half Croatian, half Italian, and I build websites for the kind of businesses I grew up around on both sides of the Adriatic — restaurants, shops, studios and family-run places. I use modern tools to move quickly, but every site is finished by hand, with real care for how it looks and how it works.":"Napola sam Hrvat, napola Talijan i radim web stranice za poslove uz kakve sam odrastao s obje strane Jadrana — restorane, trgovine, studije i obiteljska mjesta. Koristim moderne alate da radim brzo, ali svaku stranicu dovršavam sam, s pažnjom prema izgledu i funkcionalnosti.",
       "You talk to the person building your site, not a call centre. That means it gets done properly, quickly, and it actually sounds like you.":"Razgovarate s osobom koja gradi vašu stranicu, a ne s pozivnim centrom. To znači da je posao napravljen kako treba, brzo, i da stranica zvuči kao vi.",
       "One person, start to finish — clear communication, no runaround.":"Jedna osoba, od početka do kraja — jasna komunikacija, bez prebacivanja.",
       "Honest pricing and a genuinely fast turnaround.":"Poštene cijene i stvarno brza izrada.",
       "Multilingual by default, so you never lose a customer to language.":"Višejezično po zadanom, da nikad ne izgubite gosta zbog jezika.",
       "The promise":"Obećanje",
       "“Your website should feel like the best version of your business — welcoming, quick, and impossible to forget.”":"„Vaša stranica treba biti najbolja verzija vašeg posla — gostoljubiva, brza i nezaboravna.”",
-      "Puntamedia · Otok Ugljan, Croatia":"Puntamedia · Otok Ugljan, Hrvatska",
+      "Puntamedia · Half Croatian, half Italian":"Puntamedia · Napola hrvatski, napola talijanski",
       "Let's begin":"Krenimo","Tell me about your business.":"Recite mi nešto o svom poslu.",
       "Whether you need a brand-new site or a refresh of an old one, I'd love to hear about it. Send a message and I'll reply within a day.":"Trebate li potpuno novu stranicu ili osvježenje postojeće, rado bih čuo o tome. Pošaljite poruku i javljam se u roku od jednog dana.",
       "Email me directly":"Pišite mi izravno","WhatsApp":"WhatsApp","Quick questions welcome":"Slobodno za kratka pitanja","Work in progress":"Radovi u tijeku",
       "Your name":"Vaše ime","Business":"Tvrtka","Email":"E-mail","What do you need?":"Što trebate?",
-      "Send message":"Pošaljite poruku","Opens your email app, ready to send":"Otvara vašu e-mail aplikaciju, spremno za slanje",
-      "Custom multilingual websites · Otok Ugljan, Croatia":"Prilagođene višejezične stranice · Otok Ugljan, Hrvatska",
+      "Send message":"Pošaljite poruku","I reply within a day":"Odgovaram u roku od jednog dana",
+      "Custom multilingual websites · Half Croatian, half Italian":"Prilagođene višejezične stranice · Napola hrvatski, napola talijanski",
       "Built with care on the Adriatic.":"Izrađeno s pažnjom na Jadranu."
     };
     var PH = {
@@ -2053,22 +2083,56 @@
     if(saved === 'hr') apply('hr');
   })();
 
-  /* ---------- Contact form -> mailto ---------- */
+  /* ---------- Contact form ----------
+     Sends to /api/contact (the Cloudflare worker in worker/contact-form.js),
+     which emails the enquiry straight to the inbox. If that is not set up,
+     or anything goes wrong on the way, it falls back to opening the
+     visitor's email app with the message already written, as before. */
   (function(){
     var form = document.getElementById('contactForm');
     var note = document.getElementById('formNote');
+    var send = document.getElementById('formSend');
     if(!form) return;
-    form.addEventListener('submit',function(e){
+    var TO = 'hello@puntamedia.net';
+    var T = {
+      en:{ missing:'Please add your name and a valid email', sending:'Sending…',
+           sent:'Thank you, your message has arrived. I reply within a day.',
+           fallback:'Opening your email app, just press send', idle:'I reply within a day' },
+      hr:{ missing:'Upišite ime i ispravnu e-mail adresu', sending:'Šaljem…',
+           sent:'Hvala, poruka je stigla. Odgovaram u roku od jednog dana.',
+           fallback:'Otvaram vašu e-mail aplikaciju, samo pritisnite pošalji', idle:'Odgovaram u roku od jednog dana' }
+    };
+    function t(k){ return (T[document.documentElement.lang] || T.en)[k]; }
+    function say(k, cls){ note.textContent = t(k); note.className = 'form-note' + (cls ? ' ' + cls : ''); }
+    function val(id){ return (document.getElementById(id).value || '').trim(); }
+
+    function mailto(d){
+      var subject = 'New project enquiry' + (d.business ? ' — ' + d.business : '');
+      var body = 'Name: ' + d.name + '\nEmail: ' + d.email + (d.business ? '\nBusiness: ' + d.business : '') + '\n\n' + (d.message || '(no message)');
+      say('fallback');
+      window.location.href = 'mailto:' + TO + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    }
+
+    form.addEventListener('submit', function(e){
       e.preventDefault();
-      var name = (document.getElementById('name').value||'').trim();
-      var email = (document.getElementById('email').value||'').trim();
-      var biz = (document.getElementById('business').value||'').trim();
-      var msg = (document.getElementById('message').value||'').trim();
-      if(!name || !email){ note.textContent = 'Please add your name and email first'; note.style.color='#5A93BC'; return; }
-      var subject = 'New project enquiry'+(biz?' — '+biz:'');
-      var body = 'Name: '+name+'\nEmail: '+email+(biz?'\nBusiness: '+biz:'')+'\n\n'+(msg||'(no message)');
-      note.style.color=''; note.textContent = 'Opening your email app';
-      window.location.href = 'mailto:hello@puntamedia.net?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+      var d = { name:val('name'), email:val('email'), business:val('business'),
+                message:val('message'), website:val('website'), lang:document.documentElement.lang };
+      if(!d.name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)){ say('missing', 'is-err'); return; }
+
+      var endpoint = form.getAttribute('data-endpoint');
+      if(!endpoint || !window.fetch){ mailto(d); return; }
+      send.disabled = true; say('sending');
+      var ctl = window.AbortController ? new AbortController() : null;
+      var timer = setTimeout(function(){ if(ctl) ctl.abort(); }, 12000);
+      fetch(endpoint, { method:'POST', headers:{ 'Content-Type':'application/json' },
+                        body:JSON.stringify(d), signal: ctl ? ctl.signal : undefined })
+        .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return { ok:r.ok && j.ok === true }; }); })
+        .catch(function(){ return { ok:false }; })
+        .then(function(res){
+          clearTimeout(timer); send.disabled = false;
+          if(res.ok){ form.reset(); say('sent', 'is-ok'); }
+          else mailto(d);
+        });
     });
   })();
 

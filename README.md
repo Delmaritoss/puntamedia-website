@@ -1,6 +1,6 @@
 # Puntamedia
 
-Sito portfolio di **Puntamedia** — studio di web design con sede sull'isola di Ugljan, Croazia. Siti su misura e multilingue (HR · EN · DE · IT) per ristoranti, negozi e piccole imprese.
+Sito portfolio di **Puntamedia** — studio di web design metà croato e metà italiano. Siti su misura e multilingue (HR · EN · DE · IT) per ristoranti, negozi e piccole imprese.
 
 ## Com'è fatto
 
@@ -11,6 +11,13 @@ index.html          tutto il sito: markup, CSS e JavaScript
 img/                fotografie di sfondo e delle sezioni (WebP)
 video/              il filmato della hero + il suo poster
 showcase/           le pagine dei progetti inventati, da cui escono gli screenshot
+fonts/              i font del sito, serviti da qui e non da Google (GDPR)
+worker/             il Worker di Cloudflare del modulo contatti (vedi worker/README.md)
+404.html            la pagina per gli indirizzi che non esistono
+robots.txt          cosa possono leggere i motori di ricerca (showcase/ escluso)
+sitemap.xml         la mappa del sito per Google
+favicon.*, icon-*   l'icona nella scheda del browser e sul telefono
+site.webmanifest    nome e icone quando il sito viene salvato sul telefono
 image-prompts.md    i prompt usati per generare le immagini
 ```
 
@@ -24,7 +31,10 @@ Poi si riduce a 1240x806 e si salva in `img/` come WebP. La pagina e alta
 esattamente 806 px perche 1240x806 e il rapporto della finestrella (16/10.4):
 cosi l'immagine entra intera, senza tagli.
 
-Librerie esterne: nessuna. Solo i font da Google Fonts.
+Librerie esterne: nessuna. Anche i font (Cormorant Garamond, Jost, e per
+`showcase/` Alfa Slab One e DM Sans) sono nel repo, in `fonts/`: nessuna
+richiesta a Google, quindi niente dati dei visitatori a terzi. Licenza OFL,
+testo in `fonts/OFL.txt`.
 
 ## Cosa contiene
 
@@ -47,15 +57,24 @@ pubblica da solo.
 `_headers` viene letto da Cloudflare e aggiunge le intestazioni di sicurezza che
 un file statico non può darsi da sé. Non tocca la cache: ci pensa già Pages.
 
-Per un dominio: Pages → il progetto → Custom domains. Un `.hr` non si può
-comprare da Cloudflare, va preso da un registrar croato (serve l'OIB e una copia
-di un documento) e poi si spostano i nameserver.
+Il dominio è **puntamedia.net**, comprato su Cloudflare e collegato in Pages →
+il progetto → Custom domains. L'email `hello@puntamedia.net` è in Email Routing
+e inoltra alle caselle personali.
 
-Niente percorsi assoluti nel markup, quindi il sito funziona a qualunque radice:
-`pages.dev`, un sottodominio o un dominio proprio, senza modifiche.
+Nel markup i percorsi sono relativi, quindi il sito si apre anche da
+`pages.dev` o con doppio clic. Le eccezioni sono volute: `canonical`, `og:` e
+la `sitemap.xml` dicono a Google e ai social l'indirizzo vero
+(`https://puntamedia.net/`), e `404.html` usa percorsi dalla radice perché
+Pages la serve a qualunque profondità.
+
+**Pubblicare su `main` solo a lavoro finito**: ogni push su `main` va subito in
+linea. Si lavora su un branch, che Pages pubblica come anteprima, e si unisce a
+`main` una volta sola.
 
 ## Da completare
 
-- [ ] Email, numero WhatsApp e profili social
+- [ ] Numero WhatsApp vero e profili social (Instagram, LinkedIn)
+- [ ] Attivare il worker del modulo contatti: istruzioni in `worker/README.md`
+- [ ] I dati dell'attività nel piede della pagina (nome, OIB, sede)
 - [ ] Il sito di **Apartmani Kalelarga** (la scheda c'è già, la finestrella è ancora quella in lavorazione)
 - [ ] Konoba Makara è un cliente vero; Riva Grill e Apartmani Kalelarga sono inventati. Se vuoi essere trasparente, basta scrivere "Concept" nella riga del tag.
