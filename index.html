@@ -1768,9 +1768,16 @@
       page.style.transform = 'none';
       page.style.height = 'auto';      /* durante la misura l'altezza non deve vincolare */
       var limit = vh - 8;
+      /* offsetHeight, NON getBoundingClientRect.
+         Il rettangolo torna in coordinate gia' trasformate, e da quando il
+         pannello si ingrandisce con uno scale() quella misura e' l'altezza
+         moltiplicata per la scala del momento: un numero piccolo, quindi
+         "ci sta" sempre vero, quindi fitK inchiodato a 1 e la pagina piu'
+         corta dello schermo. offsetHeight e' l'altezza di impaginazione e
+         le trasformazioni degli antenati non la toccano. */
       function heightAt(k){
         page.style.width = (vw / k) + 'px';
-        return el.getBoundingClientRect().height * k;
+        return el.offsetHeight * k;
       }
       if(heightAt(1) <= limit){
         fitK = 1;
