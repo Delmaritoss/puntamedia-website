@@ -561,6 +561,58 @@
   .card p{color:var(--muted);font-size:14.5px;margin-top:10px;line-height:1.7}
 
   /* ---------- WORK ---------- */
+
+  /* ---------- Il ponte: dalla sala al tavolo di lavoro ----------
+     Fra "per chi costruisco" e "guarda come nasce" mancava il passaggio
+     dal posto vero al lavoro. Lo fa una ripresa all'ora blu che si
+     scorre con la rotella.
+     La hero entra DENTRO uno schermo; questa esce all'indietro da un
+     locale. Stesso mondo, movimento opposto: rifare la stessa mossa due
+     volte e' cio' che fa sembrare un sito fatto a stampo. */
+  .br-track{display:none}
+  .has-bridge .br-track{display:block;height:230vh;position:relative;background:var(--ink)}
+  .br-pin{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--ink)}
+  .br-pin video,.br-pin .br-still{position:absolute;inset:0;width:100%;height:100%;
+    object-fit:cover;object-position:50% 50%;display:block}
+  .br-still{transition:opacity .6s var(--ease)}
+  /* la clip comincia gia' scura e arriva da una sezione chiara: la
+     sfumatura in testa impedisce lo scalino */
+  /* #F6F9FC e' scritto a mano di proposito: e' il --ink della classe
+     .light, cioe' il fondo di "per chi costruisco" qui sopra. Dentro la
+     fascia il token --ink vale il blu scuro, quindi non si puo' usare. */
+  .br-top{position:absolute;left:0;right:0;top:0;height:26vh;pointer-events:none;
+    background:linear-gradient(180deg,#F6F9FC 0%,rgba(246,249,252,.42) 30%,rgba(246,249,252,0) 100%);
+    will-change:opacity}
+  .br-bot{position:absolute;left:0;right:0;bottom:0;height:34vh;pointer-events:none;
+    background:linear-gradient(0deg,var(--ink) 0%,rgba(8,24,43,.72) 34%,rgba(8,24,43,0) 100%)}
+  /* velo SOLO dove sta il testo, non su tutto il fotogramma */
+  .br-scrim{position:absolute;right:0;top:0;bottom:0;width:62%;pointer-events:none;
+    background:linear-gradient(270deg,rgba(6,18,34,.82) 0%,rgba(6,18,34,.5) 42%,rgba(6,18,34,0) 100%)}
+  .br-copy{position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;
+    padding-inline:clamp(24px,6vw,96px);pointer-events:none}
+  .br-copy .in{max-width:30ch;text-align:right}
+  .br-line{font-family:var(--serif);font-weight:600;color:var(--text);
+    font-size:clamp(26px,3.4vw,46px);line-height:1.14;
+    opacity:0;transform:translateY(16px);will-change:opacity,transform}
+  .br-line + .br-line{margin-top:18px;color:var(--acc-bright);font-style:italic}
+  @media(max-width:900px){
+    .has-bridge .br-track{height:auto}
+    .br-pin{position:static;height:66svh}
+    .br-copy{align-items:flex-end;padding-bottom:clamp(28px,7vw,54px)}
+    /* fascia corta: le sfumature vanno in pixel, se no si mangiano la foto */
+    .br-top{height:90px}
+    .br-bot{height:150px}
+    .br-copy .in{max-width:22ch}
+    .br-scrim{width:100%;background:linear-gradient(0deg,rgba(6,18,34,.88) 0%,rgba(6,18,34,.35) 46%,rgba(6,18,34,0) 100%)}
+    .br-line{opacity:1;transform:none}
+  }
+  @media(prefers-reduced-motion:reduce){ .br-line{opacity:1;transform:none} }
+  /* "Guarda come nasce" viene subito dopo un pannello incollato, che per
+     uscire si prende gia' una schermata intera. Con anche il riempimento
+     pieno sopra, chi scorre si becca un secondo schermo vuoto prima di
+     leggere qualcosa. */
+  .has-bridge #made{padding-block-start:clamp(26px,3.4vw,52px)}
+
   /* ---------- Selected work: le finestre sono finestre vere ----------
      Dentro il mockup non c'e' la fotografia della home, c'e' la pagina
      intera, e scorre mentre il blocco attraversa lo schermo. Chi guarda
@@ -1070,6 +1122,28 @@
             <p>Rooms, availability and the view &mdash; in every language your guests speak.</p>
           </div>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ IL PONTE ═══════════════════════════════════════════════
+       Fra il posto vero e il lavoro. Niente occhiello, niente titolo:
+       due righe sole su una ripresa. Dopo una sezione fitta di testo
+       serve una pausa, non un'altra sezione. ════════════════════════ -->
+  <section class="br-track" id="brTrack" aria-label="Una terrazza sulla riva, all'ora blu">
+    <div class="br-pin">
+      <video id="brVideo" muted playsinline preload="none"
+             poster="video/bridge-poster.webp" aria-hidden="true"></video>
+      <img class="br-still" id="brStill" src="video/bridge-poster.webp" alt=""
+           width="1280" height="720" loading="lazy" decoding="async">
+      <span class="br-scrim" aria-hidden="true"></span>
+      <span class="br-top" id="brTop" aria-hidden="true"></span>
+      <span class="br-bot" aria-hidden="true"></span>
+      <div class="br-copy">
+        <div class="in">
+          <p class="br-line" id="brL1">Someone chose this table an hour ago.</p>
+          <p class="br-line" id="brL2">On a phone, from the other side of the sea.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -2014,6 +2088,9 @@
       "Custom, multilingual websites for restaurants, shops and small businesses on the Adriatic.":"Prilagođene, višejezične web stranice za restorane, trgovine i male tvrtke na Jadranu.",
       "Puntamedia designs and builds custom, multilingual websites for restaurants, shops and small businesses — in whatever style suits your brand, and built to bring you customers.":"Puntamedia izrađuje prilagođene, višejezične web stranice za restorane, trgovine i male tvrtke — u stilu koji odgovara vašem brendu i s ciljem da vam dovedu goste.",
       "See the work":"Pogledajte radove","Start your project":"Započnite projekt","Open":"Otvori",
+      /* il ponte */
+      "Someone chose this table an hour ago.":"Netko je odabrao ovaj stol prije sat vremena.",
+      "On a phone, from the other side of the sea.":"Na mobitelu, s druge strane mora.",
       /* come nasce */
       "Watch one get made.":"Pogledajte kako nastaje.",
       "No mood boards and no slide decks. Scroll, and a page assembles itself: the grid first, then the words, then the voice, then the photographs. This is the actual job, start to finish.":"Bez ploča s idejama i bez prezentacija. Skrolajte i stranica se slaže sama: prvo mreža, onda riječi, onda glas, onda fotografije. To je cijeli posao, od početka do kraja.",
@@ -2305,6 +2382,112 @@
 
     frame.style.setProperty('--b-grid','1');
     ['--b-word','--b-voice','--b-pic','--b-live'].forEach(function(k){ frame.style.setProperty(k,'0'); });
+    onScroll();
+  })();
+
+  /* ---------- Il ponte, fra il posto vero e il lavoro ----------
+     Stessa meccanica della hero e stesse cicatrici: il filmato si prende
+     intero come blob (Cloudflare Pages non serve gli intervalli), un
+     salto per volta, e l'attesa del primo fotogramma e' un interruttore
+     che scatta una volta sola e non un controllo a ogni giro.
+     Lo scaricamento parte a pagina caricata: 1,2 MB non devono mettersi
+     in coda davanti ai 2,4 della hero. Finche' non c'e', e su telefono e
+     a movimento ridotto per sempre, resta la fotografia ferma. */
+  (function(){
+    var track = document.getElementById('brTrack');
+    var vid   = document.getElementById('brVideo');
+    var still = document.getElementById('brStill');
+    var l1 = document.getElementById('brL1'), l2 = document.getElementById('brL2');
+    var topFade = document.getElementById('brTop');
+    if(!track || !vid || !still) return;
+
+    /* la fascia c'e' comunque: come fotografia non costa quasi niente
+       ed e' la pausa che serve dopo una sezione fitta di testo */
+    document.documentElement.classList.add('has-bridge');
+    if(reduce || window.innerWidth <= 880) return;
+
+    var FRAMES = 61, FPS = 12;
+    var dur = 0, ready = false, shown = false, lastFrame = -1, wantT = -1, pend = 0;
+
+    function clamp(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
+    function ramp(v,a,b){ return clamp((v - a) / (b - a)); }
+    function ease(t){ return t * t * (3 - 2 * t); }
+
+    function activate(){
+      if(ready) return;
+      dur = vid.duration;
+      if(!dur || !isFinite(dur)) return;
+      ready = true;
+      vid.pause();
+      onScroll();
+    }
+
+    function start(){
+      fetch('video/bridge.mp4').then(function(r){
+        if(!r.ok) throw new Error(r.status);
+        return r.blob();
+      }).then(function(b){
+        vid.addEventListener('loadedmetadata', activate);
+        vid.addEventListener('canplaythrough', activate);
+        vid.preload = 'auto';
+        vid.src = URL.createObjectURL(b);
+        vid.load();
+        if(vid.readyState >= 1) activate();
+      }).catch(function(){ /* resta la fotografia */ });
+    }
+    if(document.readyState === 'complete') start();
+    else window.addEventListener('load', start);
+
+    ['loadeddata','canplay','seeked'].forEach(function(e){
+      vid.addEventListener(e, function(){ onScroll(); });
+    });
+
+    /* entra, tiene, esce: senza il tratto piatto in mezzo la riga tocca
+       la piena opacita' per un istante solo e si legge sempre slavata */
+    function line(el, p, a, b, c, d){
+      var o = Math.min(ramp(p, a, b), 1 - ramp(p, c, d));
+      el.style.opacity = o.toFixed(3);
+      el.style.transform = 'translateY(' + (16 * (1 - ease(ramp(p, a, b)))).toFixed(1) + 'px)';
+    }
+
+    function draw(){
+      if(!ready) return;
+      var vh = document.documentElement.clientHeight || window.innerHeight;
+      var span = track.offsetHeight - vh;
+      var p = clamp(span > 0 ? (-track.getBoundingClientRect().top) / span : 0);
+
+      if(!shown){
+        if(vid.readyState >= 2){ shown = true; still.style.opacity = '0'; }
+        else p = 0;
+      }
+
+      var fi = Math.round(p * (FRAMES - 1));
+      if(fi !== lastFrame){
+        lastFrame = fi;
+        wantT = Math.min(dur - 0.001, fi / FPS);
+      }
+      if(wantT >= 0 && !vid.seeking){
+        var t = wantT; wantT = -1;
+        try { vid.currentTime = t; } catch(e){}
+      }
+
+      /* La sfumatura chiara in testa serve SOLO mentre la fascia entra da
+         sotto, quando si vede la giunta con la sezione chiara. Appena il
+         pannello si incolla in alto, quella giunta non c'e' piu' e la
+         sfumatura resterebbe li' a slavare il cielo per tutto il tratto. */
+      if(topFade) topFade.style.opacity = (1 - ramp(p, 0, .10)).toFixed(3);
+
+      /* la prima riga entra appena la fascia e' in campo, la seconda
+         quando la camera si e' gia' allontanata: due affermazioni, non
+         un paragrafo */
+      line(l1, p, .10, .28, .78, .95);
+      line(l2, p, .40, .58, .82, .97);
+    }
+
+    function onScroll(){ cancelAnimationFrame(pend); pend = requestAnimationFrame(draw); }
+    window.addEventListener('scroll', onScroll, { passive:true });
+    window.addEventListener('resize', onScroll);
+    document.addEventListener('visibilitychange', function(){ if(!document.hidden) onScroll(); });
     onScroll();
   })();
 
