@@ -1,10 +1,17 @@
 # Cloudflare Pages legge questo file e lo applica a ogni risposta.
-# Niente che riguardi la cache: Pages mette gia' gli asset sulla sua rete
-# da solo. Qui ci sono solo le intestazioni che il sito non puo' darsi
-# da se' stando in un file statico.
+# Qui ci sono le intestazioni che un file statico non puo' darsi da se'.
 
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=(), interest-cohort=()
+
+# Il filmato della hero e i font non cambiano mai, e il filmato pesa 2,4 MB.
+# Attenzione: se un giorno rifai hero.mp4, cambiagli nome. Chi e' gia' passato
+# di qui si tiene il vecchio fino alla scadenza qui sotto.
+/video/*
+  Cache-Control: public, max-age=86400
+
+/fonts/*
+  Cache-Control: public, max-age=2592000, immutable

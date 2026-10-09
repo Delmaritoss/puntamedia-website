@@ -21,6 +21,14 @@
 <link rel="manifest" href="site.webmanifest">
 <meta name="theme-color" content="#08182B">
 <!-- Font in casa, non da Google: nessun dato dei visitatori va a Google (GDPR) -->
+<!-- Il filmato della hero si prende per intero via fetch (vedi il commento
+     nello script): farlo partire di qui lo sovrappone al caricamento di CSS e
+     font, invece di aspettare la fine del documento.
+     Il media ripete ESATTAMENTE la condizione che nello script decide se la
+     hero video parte. Senza, un telefono si scaricherebbe 2,4 MB in 4G per
+     una hero che su quello schermo non va in onda mai. -->
+<link rel="preload" href="video/hero.mp4" as="fetch" type="video/mp4"
+      media="(min-width: 881px) and (prefers-reduced-motion: no-preference)">
 <link rel="preload" href="fonts/jost-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/cormorant-garamond-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="fonts/fonts.css">
@@ -1716,7 +1724,7 @@
     // No interpolation: the video snaps to a whole frame, so the overlay uses
     // that same frame's geometry. Interpolating between samples put the panel
     // half a frame ahead of the picture during the fast final stretch.
-    var lastFrame = -1;
+    var lastFrame = -1, wantT = -1;
     function lerp(a,b,t){ return a + (b - a) * t; }
     function clamp(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
     function ramp(v,a,b){ return clamp((v - a) / (b - a)); }
@@ -1750,14 +1758,48 @@
       document.documentElement.classList.add('has-vhero');
       onScroll();
     }
-    vid.addEventListener('loadedmetadata', activate);
-    vid.addEventListener('canplaythrough', activate);
-    // Solo adesso, con gli ascoltatori registrati, faccio partire il
-    // caricamento: chiamarlo prima significava perdere l'evento quando il
-    // video arrivava dalla cache, e restava visibile la hero di ripiego.
-    vid.preload = 'auto';
-    vid.load();
+    // Il filmato si scarica INTERO, e solo allora lo si da' al <video>.
+    //
+    // Non e' prudenza. Cloudflare Pages serve questo file SENZA
+    // Accept-Ranges: a una richiesta con Range risponde 200 con tutto il
+    // corpo invece di 206. Senza intervalli il decoder non puo' saltare da
+    // nessuna parte finche' non ha ricevuto tutto in fila. I metadati pero'
+    // arrivano subito, quindi la durata si sapeva e activate() partiva lo
+    // stesso: il pannello cominciava a zoomare e il filmato restava sul
+    // primo fotogramma. Ricaricando andava, perche' il file era gia' nella
+    // cache del browser -- ed e' per questo che il difetto sembrava
+    // capriccioso. Preso in memoria, ogni salto e' immediato e di intervalli
+    // non ne serve nessuno.
+    //
+    // Gli ascoltatori si registrano PRIMA di assegnare la sorgente: al
+    // contrario, un video gia' pronto fa scattare l'evento senza nessuno in
+    // ascolto e resta su la hero di ripiego.
+    function viaBlob(){
+      return fetch('video/hero.mp4').then(function(r){
+        if(!r.ok) throw new Error(r.status);
+        return r.blob();
+      }).then(function(b){
+        vid.addEventListener('loadedmetadata', activate);
+        vid.addEventListener('canplaythrough', activate);
+        vid.preload = 'auto';
+        vid.src = URL.createObjectURL(b);
+        vid.load();
+        if(vid.readyState >= 1) activate();
+      });
+    }
+    viaBlob().catch(function(){
+      // Ripiego, se il recupero non riesce: si aspetta che sia il browser a
+      // dire di avere abbastanza dati. Mai su loadedmetadata, che e' il
+      // difetto qui sopra.
+      vid.addEventListener('canplaythrough', activate);
+      vid.preload = 'auto';
+      vid.load();
+    });
     vid.addEventListener('error', function(){ /* leave the CSS hero in place */ });
+    // quando il filmato guadagna dati o finisce un salto, ridisegno
+    ['loadeddata','canplay','seeked'].forEach(function(e){
+      vid.addEventListener(e, function(){ onScroll(); });
+    });
 
     var vw = 0, vh = 0, raf = 0;
     function measure(){
@@ -1780,10 +1822,22 @@
         navEl.style.pointerEvents = hide > .6 ? 'none' : '';
       }
 
+      // Finche' non c'e' un fotogramma da mostrare il pannello resta al
+      // palo invece di salire per conto suo sopra un'immagine ferma.
+      // Riparte da solo: loadeddata e canplay ridisegnano.
+      if(vid.readyState < 2) p = 0;
+
       var fi = Math.round(p * (FRAMES - 1));
       if(fi !== lastFrame){
         lastFrame = fi;
-        vid.currentTime = Math.min(dur - 0.001, fi / FPS);
+        wantT = Math.min(dur - 0.001, fi / FPS);
+      }
+      // Un salto per volta. Scrivere currentTime mentre il decoder sta
+      // ancora risolvendo il precedente li accoda, e una scorsa veloce
+      // basta a inchiodare il filmato.
+      if(wantT >= 0 && !vid.seeking){
+        var t = wantT; wantT = -1;
+        try { vid.currentTime = t; } catch(e){}
       }
 
       // the headline clears out early, before the move gets fast
@@ -1854,7 +1908,6 @@
       if(!document.hidden){ measure(); onScroll(); }
     });
     window.addEventListener('pageshow', function(){ measure(); onScroll(); });
-    if(vid.readyState >= 1) activate();
   })();
 
   /* ---------- Prima / dopo, guidato dallo scroll ----------------------
