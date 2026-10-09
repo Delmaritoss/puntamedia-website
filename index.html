@@ -1142,8 +1142,8 @@
   <section class="br-track" id="brTrack" aria-label="Una terrazza sulla riva, all'ora blu">
     <div class="br-pin">
       <video id="brVideo" muted playsinline preload="none"
-             poster="video/bridge-poster.webp" aria-hidden="true"></video>
-      <img class="br-still" id="brStill" src="video/bridge-poster.webp" alt=""
+             poster="video/bridge-hq-poster.webp" aria-hidden="true"></video>
+      <img class="br-still" id="brStill" src="video/bridge-hq-poster.webp" alt=""
            width="1280" height="720" loading="lazy" decoding="async">
       <span class="br-scrim" aria-hidden="true"></span>
       <span class="br-top" id="brTop" aria-hidden="true"></span>
@@ -2465,7 +2465,7 @@
     }
 
     function start(){
-      fetch('video/bridge.mp4').then(function(r){
+      fetch('video/bridge-hq.mp4').then(function(r){
         if(!r.ok) throw new Error(r.status);
         return r.blob();
       }).then(function(b){
