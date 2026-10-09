@@ -27,7 +27,7 @@
      Il media ripete ESATTAMENTE la condizione che nello script decide se la
      hero video parte. Senza, un telefono si scaricherebbe 2,4 MB in 4G per
      una hero che su quello schermo non va in onda mai. -->
-<link rel="preload" href="video/hero.mp4" as="fetch" type="video/mp4"
+<link rel="preload" href="video/hero-12fps.mp4" as="fetch" type="video/mp4"
       media="(min-width: 881px) and (prefers-reduced-motion: no-preference)">
 <link rel="preload" href="fonts/jost-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/cormorant-garamond-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -1003,8 +1003,8 @@
   <!-- VIDEO HERO (activated by JS only when the clip is ready on a wide screen) -->
   <div class="vhero-track" id="vheroTrack">
     <div class="vhero-pin" id="vheroPin">
-      <video id="heroVideo" muted playsinline preload="none" poster="video/hero-poster.webp" aria-hidden="true">
-        <source src="video/hero.mp4" type="video/mp4">
+      <video id="heroVideo" muted playsinline preload="none" poster="video/hero-12fps-poster.webp" aria-hidden="true">
+        <source src="video/hero-12fps.mp4" type="video/mp4">
       </video>
       <span class="vhero-veil" id="vheroVeil" aria-hidden="true"></span>
       <div class="vhero-screen" id="vheroScreen" aria-hidden="true"><div class="vh-inner"></div></div>
@@ -1883,7 +1883,7 @@
     // contrario, un video gia' pronto fa scattare l'evento senza nessuno in
     // ascolto e resta su la hero di ripiego.
     function viaBlob(){
-      return fetch('video/hero.mp4').then(function(r){
+      return fetch('video/hero-12fps.mp4').then(function(r){
         if(!r.ok) throw new Error(r.status);
         return r.blob();
       }).then(function(b){

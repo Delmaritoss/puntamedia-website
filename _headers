@@ -7,9 +7,15 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=(), interest-cohort=()
 
-# Il filmato della hero e i font non cambiano mai, e il filmato pesa 2,4 MB.
-# Attenzione: se un giorno rifai hero.mp4, cambiagli nome. Chi e' gia' passato
-# di qui si tiene il vecchio fino alla scadenza qui sotto.
+# I filmati e i font non cambiano mai, e i filmati pesano insieme 3,9 MB.
+#
+# REGOLA, imparata sbagliando il 9 ottobre 2026: un filmato rifatto prende un
+# NOME NUOVO. Rimpiazzato con lo stesso nome, chi era gia' passato di qui si
+# tiene il vecchio fino alla scadenza qui sotto, mentre l'HTML, che si
+# rivalida a ogni caricamento, e' gia' quello nuovo. Hero vecchia 121
+# fotogrammi contro tabelle di tracciamento da 61: la pagina si stacca dallo
+# schermo del laptop, e per un giorno intero non c'e' modo di accorgersene da
+# qui.
 /video/*
   Cache-Control: public, max-age=86400
 
