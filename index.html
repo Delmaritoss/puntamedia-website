@@ -1865,6 +1865,21 @@
       document.documentElement.classList.add('has-vhero');
       measure(); measureFit();
       onScroll();
+
+      /* E poi la si rifa'.
+         La prima misura puo' cadere prima che i font siano applicati al
+         clone, e tutti i ganci che dovrebbero correggerla -- fonts.ready,
+         window.load -- sono promesse ed eventi che scattano UNA volta
+         sola. Col filmato in cache l'attivazione e' quasi istantanea,
+         quindi e' una gara: se quei ganci arrivano prima, la guardia li
+         annulla e fitK resta sbagliato per sempre. E' cosi' che la pagina
+         restava piu' corta dello schermo del laptop.
+         Qui invece la pagina dentro c'e' di sicuro, perche' siamo dopo
+         l'appendChild e dopo has-vhero. */
+      function refit(){ measure(); measureFit(); onScroll(); }
+      requestAnimationFrame(refit);
+      [300, 1200, 3000].forEach(function(ms){ setTimeout(refit, ms); });
+      if(document.fonts && document.fonts.ready) document.fonts.ready.then(refit);
     }
     // Il filmato si scarica INTERO, e solo allora lo si da' al <video>.
     //
