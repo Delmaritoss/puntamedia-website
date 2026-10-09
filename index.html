@@ -1685,14 +1685,28 @@
         page.style.width = (vw / k) + 'px';
         return el.getBoundingClientRect().height * k;
       }
-      if(heightAt(1) <= limit){ fitK = 1; return; }
-      var lo = 0.45, hi = 1;
-      for(var i = 0; i < 7; i++){
-        var mid = (lo + hi) / 2;
-        if(heightAt(mid) <= limit) lo = mid; else hi = mid;
+      if(heightAt(1) <= limit){
+        fitK = 1;
+      } else {
+        var lo = 0.45, hi = 1;
+        for(var i = 0; i < 7; i++){
+          var mid = (lo + hi) / 2;
+          if(heightAt(mid) <= limit) lo = mid; else hi = mid;
+        }
+        fitK = lo;
       }
-      fitK = lo;
+      // Le misure fisse si scrivono SEMPRE, anche quando la pagina ci stava
+      // gia' a fattore 1: prima il ritorno anticipato le saltava e il
+      // pannello restava largo zero.
+      //
+      // Da qui in poi niente di tutto questo lo tocca piu' lo scroll: il
+      // pannello e' grande quanto la finestra, la pagina dentro e' impaginata
+      // a vw/fitK e ridotta di fitK, cioe' larga esattamente vw. Il resto lo
+      // fa una sola trasformazione, in draw().
       page.style.width = (vw / fitK) + 'px';
+      page.style.transform = 'scale(' + fitK + ')';
+      ov.style.width  = vw + 'px';
+      ov.style.height = vh + 'px';
     }
     if(!track || !vid || !ov) return;
 
@@ -1724,7 +1738,7 @@
     // No interpolation: the video snaps to a whole frame, so the overlay uses
     // that same frame's geometry. Interpolating between samples put the panel
     // half a frame ahead of the picture during the fast final stretch.
-    var lastFrame = -1, wantT = -1;
+    var lastFrame = -1, wantT = -1, shown = false;
     function lerp(a,b,t){ return a + (b - a) * t; }
     function clamp(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
     function ramp(v,a,b){ return clamp((v - a) / (b - a)); }
@@ -1822,10 +1836,18 @@
         navEl.style.pointerEvents = hide > .6 ? 'none' : '';
       }
 
-      // Finche' non c'e' un fotogramma da mostrare il pannello resta al
-      // palo invece di salire per conto suo sopra un'immagine ferma.
+      // Finche' non c'e' MAI stato un fotogramma da mostrare, il pannello
+      // resta al palo invece di salire per conto suo sopra un'immagine ferma.
       // Riparte da solo: loadeddata e canplay ridisegnano.
-      if(vid.readyState < 2) p = 0;
+      //
+      // E' un interruttore che scatta una volta sola, non un controllo a ogni
+      // fotogramma. readyState cala sotto 2 per un attimo mentre il decoder
+      // risolve un salto, e siccome durante lo zoom di salti ce n'e' uno per
+      // fotogramma, controllarlo ogni volta rimandava la hero al fotogramma
+      // zero a intermittenza: era quello a far sbattere il testo.
+      if(!shown){
+        if(vid.readyState >= 2) shown = true; else p = 0;
+      }
 
       var fi = Math.round(p * (FRAMES - 1));
       if(fi !== lastFrame){
@@ -1874,15 +1896,25 @@
         w = lerp(w, vw, full);
         h = lerp(h, vh, full);
       }
-      ov.style.width  = w + 'px';
-      ov.style.height = h + 'px';
-      ov.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
-      // the screen has rounded corners; square ones poke over the bezel
-      ov.style.borderRadius = (w * 0.013 * (1 - full)) + 'px';
-      // impaginata a vw/fitK e ridotta di fitK: il risultato e largo esattamente
-      // quanto il pannello, sia dentro il laptop sia a schermo pieno
-      page.style.width = (vw / fitK) + 'px';
-      page.style.transform = 'scale(' + (w / vw * fitK) + ')';
+      // Il pannello non cambia piu' misura, si muove e si ingrandisce con una
+      // sola trasformazione.
+      //
+      // Scrivere width e height a ogni fotogramma su un elemento che ha
+      // will-change:transform costringeva il browser a rifare il livello di
+      // composizione da zero sessanta volte al secondo. Il fotogramma in cui
+      // la texture nuova non e' ancora pronta esce vuoto, ed e' li' che il
+      // testo della pagina sullo schermo sbatteva.
+      //
+      // Lo schermo del laptop non ha le stesse proporzioni della finestra, e
+      // la scala qui e' una sola per non deformare la pagina: l'altezza in
+      // eccesso si toglie col ritaglio, invece che schiacciando il contenuto.
+      var sx  = w / vw;
+      var cut = Math.max(0, vh - h / sx);      // quanto tagliare sotto, in coordinate locali
+      var rad = vw * 0.013 * (1 - full);       // locale: per sx ridiventa il raggio a schermo
+      ov.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) scale(' + sx + ')';
+      // il ritaglio arrotonda anche gli angoli: lo schermo ha i bordi tondi e
+      // quelli squadrati sbucano oltre la cornice
+      ov.style.clipPath = 'inset(0px 0px ' + cut + 'px 0px round ' + rad + 'px)';
 
       veil.style.opacity = String(1 - ramp(p, 0, .35));
     }
