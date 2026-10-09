@@ -224,8 +224,17 @@
     transform-origin:top left;background:#F6F9FC;will-change:transform,opacity}
   /* Laid out once at a fixed width and scaled, so the text never re-wraps as
      the screen grows — a real screen does not re-flow as you walk towards it. */
+  /* Alta quanto il pannello e contenuto centrato. measureFit() sceglie
+     fitK in modo che la sezione ci stia SEMPRE, quindi centrare non puo'
+     mai tagliarla sopra o sotto.
+     Senza altezza propria la pagina era alta solo quanto il suo contenuto:
+     su una finestra larga e bassa la sezione e' naturalmente piu' corta del
+     viewport, e sotto restava una fascia scura dentro lo schermo del
+     laptop. #F6F9FC e' il --ink della classe .light, cioe' il fondo della
+     sezione li' dentro; qui il token vale il blu scuro e non si puo' usare. */
   .vhero-screen .vh-inner{position:absolute;top:0;left:0;
-    transform-origin:top left;background:var(--ink)}
+    transform-origin:top left;background:#F6F9FC;
+    display:flex;flex-direction:column;justify-content:center}
   .vhero-screen .vh-inner > *{width:100%;flex:none}
   .vhero-copy{position:absolute;inset:0;z-index:3;display:flex;align-items:center;
     pointer-events:none;will-change:opacity}
@@ -1744,7 +1753,10 @@
 
     function measureFit(){
       var el = page.firstElementChild;
-      if(!el) return;
+      /* niente contenuto, o pista ancora nascosta: misurare darebbe 0 e
+         fisserebbe fitK a 1. fonts.ready e load possono scattare prima che
+         la hero si attivi, quindi la guardia serve davvero. */
+      if(!el || !track.offsetHeight) return;
       // La pagina non ci sta in altezza, quindi va rimpicciolita. Il punto e
       // che va impaginata piu larga del viewport nella stessa misura: cosi,
       // una volta ridotta, copre lo schermo da bordo a bordo invece di
@@ -1754,6 +1766,7 @@
       // non basta calcolarlo: l'iterazione semplice oscilla. Cerco per
       // bisezione il fattore piu grande che ci sta ancora, che e monotono.
       page.style.transform = 'none';
+      page.style.height = 'auto';      /* durante la misura l'altezza non deve vincolare */
       var limit = vh - 8;
       function heightAt(k){
         page.style.width = (vw / k) + 'px';
@@ -1777,7 +1790,9 @@
       // pannello e' grande quanto la finestra, la pagina dentro e' impaginata
       // a vw/fitK e ridotta di fitK, cioe' larga esattamente vw. Il resto lo
       // fa una sola trasformazione, in draw().
-      page.style.width = (vw / fitK) + 'px';
+      page.style.width  = (vw / fitK) + 'px';
+      /* impaginata a vh/fitK e ridotta di fitK: riempie il pannello esatto */
+      page.style.height = (vh / fitK) + 'px';
       page.style.transform = 'scale(' + fitK + ')';
       ov.style.width  = vw + 'px';
       ov.style.height = vh + 'px';
@@ -1802,11 +1817,11 @@
     // after the bottom edge is lost in the blue spill on the desk.
     // Measured on every one of the 121 frames. TX came out constant at .4995
     // across the whole clip, so it is a number rather than a table.
-    var TW = [.2875,.2875,.2875,.2875,.2875,.2896,.2896,.2896,.2917,.2917,.2917,.2917,.2938,.2938,.2938,.2958,.2979,.2979,.3,.3,.3021,.3021,.3063,.3063,.3083,.3083,.3104,.3125,.3146,.3167,.3167,.3187,.3229,.325,.325,.3271,.3312,.3333,.3354,.3375,.3396,.3438,.3458,.3479,.3521,.3542,.3563,.3604,.3646,.3667,.3688,.3729,.375,.3771,.3812,.3854,.3875,.3917,.3937,.3979,.4021,.4062,.4104,.4146,.4188,.425,.4271,.4333,.4375,.4417,.4479,.4521,.4583,.4667,.4729,.4792,.4833,.4917,.5,.5083,.5167,.525,.5333,.5417,.55,.5583,.5708,.5833,.5917,.6042,.6167,.625,.6396,.65,.6667,.6833,.6979,.7125,.7271,.7438,.7604,.7812,.8,.8167,.8375,.8583,.875,.9,.9229,.9437,.9678,.9931,1.0198,1.048,1.0777,1.1093,1.1427,1.1781,1.2159,1.2562,1.2992];
-    var TY = [.5481,.5481,.5481,.5481,.5463,.5463,.5463,.5463,.5481,.55,.5481,.5481,.5481,.5481,.5481,.55,.55,.55,.55,.5519,.5519,.55,.55,.5519,.5519,.5537,.5537,.5537,.5537,.5537,.5537,.5556,.5556,.5574,.5574,.5593,.5574,.5574,.5593,.5611,.5611,.563,.5611,.563,.5611,.563,.563,.5648,.5667,.5667,.5667,.5648,.5667,.5648,.5667,.5685,.5704,.5722,.5704,.5722,.5704,.5722,.5741,.5741,.5759,.5778,.5759,.5778,.5778,.5778,.5796,.5796,.5833,.5852,.5852,.5852,.5852,.5852,.587,.5907,.5907,.5926,.5926,.5926,.5944,.5944,.5944,.5963,.6019,.6019,.6037,.6037,.6037,.6037,.6074,.6111,.613,.613,.6093,.6056,.6059,.6062,.6066,.6069,.6072,.6075,.6078,.6081,.6085,.6088,.6091,.6094,.6097,.61,.6104,.6107,.611,.6113,.6116,.6119,.6123];
+    var TW = [.2875,.2875,.2875,.2896,.2917,.2917,.2938,.2938,.2979,.3,.3021,.3063,.3083,.3104,.3146,.3167,.3229,.325,.3312,.3354,.3396,.3458,.3521,.3563,.3646,.3688,.375,.3812,.3875,.3937,.4021,.4104,.4188,.4271,.4375,.4479,.4583,.4729,.4833,.5,.5167,.5333,.55,.5708,.5917,.6167,.6396,.6667,.6979,.7271,.7604,.8,.8375,.875,.9229,.9678,1.0198,1.0777,1.1427,1.2159,1.2992];
+    var TY = [.5481,.5481,.5463,.5463,.5481,.5481,.5481,.5481,.55,.55,.5519,.55,.5519,.5537,.5537,.5537,.5556,.5574,.5574,.5593,.5611,.5611,.5611,.563,.5667,.5667,.5667,.5667,.5704,.5704,.5704,.5741,.5759,.5759,.5778,.5796,.5833,.5852,.5852,.587,.5907,.5926,.5944,.5944,.6019,.6037,.6037,.6074,.613,.6093,.6059,.6066,.6072,.6078,.6085,.6091,.6097,.6104,.611,.6116,.6123];
     var CX = 0.4995;
     var H_PER_W = 1.0634;             // aspect 1.67, measured column by column
-    var FRAMES = 121, FPS = 24, BLEED = 1.010;
+    var FRAMES = 61, FPS = 12, BLEED = 1.010;
     var VIDEO_A = 16/9;
 
     // No interpolation: the video snaps to a whole frame, so the overlay uses
@@ -1842,8 +1857,13 @@
       ready = true;
       vid.pause();
       page.appendChild(replica());
-      measure(); measureFit();
+      /* La classe PRIMA della misura. Al contrario, .vhero-track e' ancora
+         display:none mentre measureFit() misura: l'altezza torna 0, "ci
+         sta" e' sempre vero, e fitK resta 1 per sempre. Su una finestra
+         larga e bassa la sezione risultava cosi' piu' corta dello schermo
+         del laptop, con una fascia vuota sotto. */
       document.documentElement.classList.add('has-vhero');
+      measure(); measureFit();
       onScroll();
     }
     // Il filmato si scarica INTERO, e solo allora lo si da' al <video>.
