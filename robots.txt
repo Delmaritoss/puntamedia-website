@@ -2,5 +2,8 @@ User-agent: *
 Allow: /
 # Pagine dimostrative usate per gli screenshot dei lavori: non sono siti veri
 Disallow: /showcase/
+# Sorgenti di stampa dei listini: si indicizzano i PDF, non queste
+Disallow: /listino/extra-
+Disallow: /listino/listino.py
 
 Sitemap: https://puntamedia.net/sitemap.xml
