@@ -208,6 +208,22 @@
      Off by default — activated only when the video is ready on a wide screen. */
   .vhero-track{display:none}
   .has-vhero .vhero-track{display:block;height:320vh;position:relative}
+  /* ---------- Hero ridotta, solo telefono ----------
+     Stessa carrellata guidata dallo scroll, senza il pannello agganciato
+     allo schermo del laptop: li' dentro, su 390 px, la pagina sarebbe
+     illeggibile e costerebbe misure, repliche e un secondo livello di
+     composizione. Qui c'e' il filmato, il testo sopra, e alla fine lo
+     schermo azzurro si scioglie nel fondo della pagina.
+     svh e non vh: con vh la scena si ridimensiona ogni volta che la
+     barra del browser si nasconde, e il pin sobbalza. */
+  .has-vlite .vhero-track{display:block;height:200svh;position:relative}
+  .has-vlite .mhero{display:none}
+  .has-vlite .vhero-pin{height:100svh}
+  .has-vlite .vhero-screen{display:none}
+  .has-vlite .vhero-hint{display:none}
+  /* il fondo che assorbe lo schermo azzurro all'ultimo tratto */
+  .vhero-end{position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:var(--ink);opacity:0;will-change:opacity}
   .has-vhero .hero{display:none}
   /* delivered through the laptop screen instead, so it must not repeat below.
      Scoped to the page's own strip — the clone inside the overlay shares the
@@ -607,6 +623,11 @@
   @media(max-width:900px){
     .has-bridge .br-track{height:auto}
     .br-pin{position:static;height:66svh}
+    /* col filmato in funzione la fascia torna a incollarsi e a scorrere,
+       solo piu' corta che su schermo grande */
+    .has-br-film .br-track{height:175svh}
+    .has-br-film .br-pin{position:sticky;top:0;height:100svh}
+    .has-br-film .br-line{opacity:0;transform:translateY(14px)}
     .br-copy{align-items:flex-end;padding-bottom:clamp(28px,7vw,54px)}
     /* fascia corta: le sfumature vanno in pixel, se no si mangiano la foto */
     .br-top{height:90px}
@@ -1003,10 +1024,15 @@
   <!-- VIDEO HERO (activated by JS only when the clip is ready on a wide screen) -->
   <div class="vhero-track" id="vheroTrack">
     <div class="vhero-pin" id="vheroPin">
-      <video id="heroVideo" muted playsinline preload="none" poster="video/hero-12fps-poster.webp" aria-hidden="true">
-        <source src="video/hero-12fps.mp4" type="video/mp4">
-      </video>
+      <!-- Niente <source> qui dentro, di proposito: la sorgente la sceglie lo
+           script, perche' schermo grande e telefono prendono due file diversi.
+           Con un <source> presente, la riga vid.preload='auto' faceva partire
+           il suo scaricamento prima che src venisse riassegnata, e sul
+           telefono arrivavano i 2,8 MB della clip da desktop oltre ai 479 KB
+           della sua. -->
+      <video id="heroVideo" muted playsinline preload="none" poster="video/hero-12fps-poster.webp" aria-hidden="true"></video>
       <span class="vhero-veil" id="vheroVeil" aria-hidden="true"></span>
+      <span class="vhero-end" id="vheroEnd" aria-hidden="true"></span>
       <div class="vhero-screen" id="vheroScreen" aria-hidden="true"><div class="vh-inner"></div></div>
       <div class="vhero-copy" id="vheroCopy">
         <div class="wrap">
@@ -1956,8 +1982,10 @@
       }).then(function(b){
         vid.addEventListener('loadedmetadata', activate);
         vid.addEventListener('canplaythrough', activate);
-        vid.preload = 'auto';
+        /* prima la sorgente, poi preload: al contrario si fa partire il
+           caricamento di quello che c'era prima */
         vid.src = URL.createObjectURL(b);
+        vid.preload = 'auto';
         vid.load();
         if(vid.readyState >= 1) activate();
       });
@@ -1967,6 +1995,7 @@
       // dire di avere abbastanza dati. Mai su loadedmetadata, che e' il
       // difetto qui sopra.
       vid.addEventListener('canplaythrough', activate);
+      vid.src = 'video/hero-12fps.mp4';   /* non c'e' piu' un <source> */
       vid.preload = 'auto';
       vid.load();
     });
@@ -2485,6 +2514,105 @@
     onScroll();
   })();
 
+  /* ---------- Hero ridotta per telefono ----------
+     Su schermo grande la hero aggancia una pagina vera allo schermo del
+     laptop. Su 390 px quella pagina sarebbe illeggibile, e costerebbe
+     misure, una replica del DOM e un secondo livello di composizione: le
+     tre cose che su un telefono si pagano a scatti.
+     Qui resta la cosa che conta, la carrellata guidata dalla rotella, e
+     niente altro. Filmato ritagliato in verticale, 720x1080, 8 fotogrammi
+     al secondo, 479 KB. Alla fine lo schermo azzurro si scioglie nel fondo
+     della pagina invece di restare li' come un rettangolo. */
+  (function(){
+    var track = document.getElementById('vheroTrack');
+    var vid   = document.getElementById('heroVideo');
+    var copy  = document.getElementById('vheroCopy');
+    var veil  = document.getElementById('vheroVeil');
+    var endEl = document.getElementById('vheroEnd');
+    if(!track || !vid || !copy) return;
+
+    /* la hero grande si prende gli schermi larghi; qui sotto l'altra */
+    if(reduce || window.innerWidth > 880) return;
+    var link = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if(link && (link.saveData || /^(slow-)?2g$/.test(link.effectiveType || ''))) return;
+
+    var FRAMES = 40, FPS = 8;
+    var dur = 0, ready = false, shown = false, lastFrame = -1, wantT = -1, pend = 0;
+
+    function clamp(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
+    function ramp(v,a,b){ return clamp((v - a) / (b - a)); }
+
+    function activate(){
+      if(ready) return;
+      dur = vid.duration;
+      if(!dur || !isFinite(dur)) return;
+      ready = true;
+      vid.pause();
+      document.documentElement.classList.add('has-vlite');
+      onScroll();
+    }
+
+    /* intero come blob, come la hero grande: Cloudflare Pages serve questi
+       file senza Accept-Ranges, e senza intervalli il decoder non salta da
+       nessuna parte finche' non ha ricevuto tutto in fila */
+    function start(){
+      fetch('video/hero-phone-v1.mp4').then(function(r){
+        if(!r.ok) throw new Error(r.status);
+        return r.blob();
+      }).then(function(b){
+        vid.addEventListener('loadedmetadata', activate);
+        vid.addEventListener('canplaythrough', activate);
+        vid.poster = 'video/hero-phone-v1-poster.webp';
+        vid.src = URL.createObjectURL(b);
+        vid.preload = 'auto';
+        vid.load();
+        if(vid.readyState >= 1) activate();
+      }).catch(function(){ /* resta la hero con la fotografia */ });
+    }
+    if(document.readyState === 'complete') start();
+    else window.addEventListener('load', start);
+
+    ['loadeddata','canplay','seeked'].forEach(function(e){
+      vid.addEventListener(e, function(){ onScroll(); });
+    });
+
+    function draw(){
+      if(!ready) return;
+      var vh = document.documentElement.clientHeight || window.innerHeight;
+      var span = track.offsetHeight - vh;
+      var p = clamp(span > 0 ? (-track.getBoundingClientRect().top) / span : 0);
+
+      /* interruttore a scatto singolo: readyState cala sotto 2 per un attimo
+         a ogni salto, e controllarlo a ogni giro fa lampeggiare la hero */
+      if(!shown){
+        if(vid.readyState >= 2) shown = true; else p = 0;
+      }
+
+      var fi = Math.round(p * (FRAMES - 1));
+      if(fi !== lastFrame){
+        lastFrame = fi;
+        wantT = Math.min(dur - 0.001, fi / FPS);
+      }
+      if(wantT >= 0 && !vid.seeking){
+        var t = wantT; wantT = -1;
+        try { vid.currentTime = t; } catch(e){}
+      }
+
+      /* il testo se ne va con calma, poi la carrellata resta sola */
+      copy.style.opacity = String(1 - ramp(p, .16, .40));
+      if(veil)  veil.style.opacity  = String(1 - ramp(p, .10, .46));
+      /* e all'ultimo tratto lo schermo azzurro diventa il fondo della pagina */
+      if(endEl) endEl.style.opacity = String(ramp(p, .80, 1));
+    }
+
+    function onScroll(){ cancelAnimationFrame(pend); pend = requestAnimationFrame(draw); }
+    window.addEventListener('scroll', onScroll, { passive:true });
+    window.addEventListener('resize', onScroll);
+    document.addEventListener('visibilitychange', function(){ if(!document.hidden) onScroll(); });
+    window.addEventListener('pageshow', onScroll);
+    onScroll();
+  })();
+
   /* ---------- Il ponte, fra il posto vero e il lavoro ----------
      Stessa meccanica della hero e stesse cicatrici: il filmato si prende
      intero come blob (Cloudflare Pages non serve gli intervalli), un
@@ -2504,9 +2632,18 @@
     /* la fascia c'e' comunque: come fotografia non costa quasi niente
        ed e' la pausa che serve dopo una sezione fitta di testo */
     document.documentElement.classList.add('has-bridge');
-    if(reduce || window.innerWidth <= 880) return;
+    if(reduce) return;
 
-    var FRAMES = 61, FPS = 12;
+    /* Su telefono il filmato c'e', ma e' un'altra copia: ritagliata in
+       verticale, 608x1080, 8 fotogrammi al secondo, 478 KB invece di 4,8 MB.
+       Su una linea lenta o con il risparmio dati acceso non parte proprio e
+       resta la fotografia, che da sola regge la fascia. */
+    var phone = window.innerWidth <= 880;
+    var link = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if(phone && link && (link.saveData || /^(slow-)?2g$/.test(link.effectiveType || ''))) return;
+
+    var SRC    = phone ? 'video/bridge-phone-v1.mp4' : 'video/bridge-hq.mp4';
+    var FRAMES = phone ? 40 : 61, FPS = phone ? 8 : 12;
     var dur = 0, ready = false, shown = false, lastFrame = -1, wantT = -1, pend = 0;
 
     function clamp(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
@@ -2519,18 +2656,21 @@
       if(!dur || !isFinite(dur)) return;
       ready = true;
       vid.pause();
+      document.documentElement.classList.add('has-br-film');
       onScroll();
     }
 
     function start(){
-      fetch('video/bridge-hq.mp4').then(function(r){
+      fetch(SRC).then(function(r){
         if(!r.ok) throw new Error(r.status);
         return r.blob();
       }).then(function(b){
         vid.addEventListener('loadedmetadata', activate);
         vid.addEventListener('canplaythrough', activate);
-        vid.preload = 'auto';
+        /* prima la sorgente, poi preload: al contrario si fa partire il
+           caricamento di quello che c'era prima */
         vid.src = URL.createObjectURL(b);
+        vid.preload = 'auto';
         vid.load();
         if(vid.readyState >= 1) activate();
       }).catch(function(){ /* resta la fotografia */ });
