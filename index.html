@@ -208,6 +208,24 @@
      Off by default — activated only when the video is ready on a wide screen. */
   .vhero-track{display:none}
   .has-vhero .vhero-track{display:block;height:320vh;position:relative}
+  /* ---------- Hero scorrevole del telefono ----------
+     Non e' la hero grande rimpicciolita. Li' c'e' una pagina vera agganciata
+     allo schermo del laptop: misure, una replica del DOM, un secondo livello
+     di composizione. Su 390 px quella pagina e' illeggibile e quelle tre cose
+     si pagano a scatti, e infatti la prima versione andava a scatti.
+     Qui c'e' un'altra ripresa, verticale e senza niente da agganciare: sale
+     nel buio di una stanza in pietra e si apre su una finestra sull'Adriatico
+     all'ora blu. Il filmato, il testo sopra, e alla fine l'immagine si scioglie
+     nel fondo della pagina. Nient'altro.
+     svh e non vh: con vh la scena si ridimensiona ogni volta che la barra del
+     browser si nasconde, e il pin sobbalza. */
+  .has-vlite .vhero-track{display:block;height:180svh;position:relative}
+  .has-vlite .mhero{display:none}
+  .has-vlite .vhero-pin{height:100svh}
+  .has-vlite .vhero-screen{display:none}
+  .has-vlite .vhero-hint{display:none}
+  .vhero-end{position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:var(--ink);opacity:0;will-change:opacity}
   .has-vhero .hero{display:none}
   /* delivered through the laptop screen instead, so it must not repeat below.
      Scoped to the page's own strip — the clone inside the overlay shares the
@@ -1046,6 +1064,7 @@
            della sua. -->
       <video id="heroVideo" muted playsinline preload="none" poster="video/hero-12fps-poster.webp" aria-hidden="true"></video>
       <span class="vhero-veil" id="vheroVeil" aria-hidden="true"></span>
+      <span class="vhero-end" id="vheroEnd" aria-hidden="true"></span>
       <div class="vhero-screen" id="vheroScreen" aria-hidden="true"><div class="vh-inner"></div></div>
       <div class="vhero-copy" id="vheroCopy">
         <div class="wrap">
@@ -2600,6 +2619,103 @@
 
     frame.style.setProperty('--b-grid','1');
     ['--b-word','--b-voice','--b-pic','--b-live'].forEach(function(k){ frame.style.setProperty(k,'0'); });
+    onScroll();
+  })();
+
+  /* ---------- Hero scorrevole del telefono ----------
+     Vedi il commento nel CSS per il perche' non e' la hero grande ridotta.
+     Qui sotto c'e' solo la carrellata, e tutte le cicatrici gia' pagate in
+     questa pagina: il filmato intero come blob (Cloudflare Pages serve questi
+     file senza Accept-Ranges, e senza intervalli il decoder non salta da
+     nessuna parte), un salto per volta controllando vid.seeking, e l'attesa
+     del primo fotogramma come interruttore a scatto singolo -- controllarla a
+     ogni giro fa lampeggiare la hero, perche' readyState cala sotto 2 per un
+     attimo a ogni salto. */
+  (function(){
+    var track = document.getElementById('vheroTrack');
+    var vid   = document.getElementById('heroVideo');
+    var copy  = document.getElementById('vheroCopy');
+    var veil  = document.getElementById('vheroVeil');
+    var endEl = document.getElementById('vheroEnd');
+    if(!track || !vid || !copy) return;
+
+    /* la hero grande si prende gli schermi larghi; qui sotto questa */
+    if(reduce || window.innerWidth > 880) return;
+    var link = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if(link && (link.saveData || /^(slow-)?2g$/.test(link.effectiveType || ''))) return;
+
+    var FRAMES = 40, FPS = 8;
+    var dur = 0, ready = false, shown = false, lastFrame = -1, wantT = -1, pend = 0;
+
+    function clamp(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
+    function ramp(v,a,b){ return clamp((v - a) / (b - a)); }
+
+    function activate(){
+      if(ready) return;
+      dur = vid.duration;
+      if(!dur || !isFinite(dur)) return;
+      ready = true;
+      vid.pause();
+      document.documentElement.classList.add('has-vlite');
+      onScroll();
+    }
+
+    function start(){
+      fetch('video/hero-finestra-v1.mp4').then(function(r){
+        if(!r.ok) throw new Error(r.status);
+        return r.blob();
+      }).then(function(b){
+        vid.addEventListener('loadedmetadata', activate);
+        vid.addEventListener('canplaythrough', activate);
+        vid.poster = 'video/hero-finestra-v1-poster.webp';
+        /* prima la sorgente, poi preload: al contrario si fa partire il
+           caricamento di quello che c'era prima */
+        vid.src = URL.createObjectURL(b);
+        vid.preload = 'auto';
+        vid.load();
+        if(vid.readyState >= 1) activate();
+      }).catch(function(){ /* resta la hero con la fotografia ferma */ });
+    }
+    /* a pagina caricata: 566 KB non devono mettersi in coda davanti al resto */
+    if(document.readyState === 'complete') start();
+    else window.addEventListener('load', start);
+
+    ['loadeddata','canplay','seeked'].forEach(function(e){
+      vid.addEventListener(e, function(){ onScroll(); });
+    });
+
+    function draw(){
+      if(!ready) return;
+      var vh = document.documentElement.clientHeight || window.innerHeight;
+      var span = track.offsetHeight - vh;
+      var p = clamp(span > 0 ? (-track.getBoundingClientRect().top) / span : 0);
+
+      if(!shown){
+        if(vid.readyState >= 2) shown = true; else p = 0;
+      }
+
+      var fi = Math.round(p * (FRAMES - 1));
+      if(fi !== lastFrame){
+        lastFrame = fi;
+        wantT = Math.min(dur - 0.001, fi / FPS);
+      }
+      if(wantT >= 0 && !vid.seeking){
+        var t = wantT; wantT = -1;
+        try { vid.currentTime = t; } catch(e){}
+      }
+
+      /* il testo se ne va con calma, poi la salita resta sola */
+      copy.style.opacity = String(1 - ramp(p, .18, .44));
+      if(veil)  veil.style.opacity  = String(1 - ramp(p, .12, .50));
+      /* e all'ultimo tratto il vetro diventa il fondo della pagina */
+      if(endEl) endEl.style.opacity = String(ramp(p, .74, .96));
+    }
+
+    function onScroll(){ cancelAnimationFrame(pend); pend = requestAnimationFrame(draw); }
+    window.addEventListener('scroll', onScroll, { passive:true });
+    window.addEventListener('resize', onScroll);
+    document.addEventListener('visibilitychange', function(){ if(!document.hidden) onScroll(); });
+    window.addEventListener('pageshow', onScroll);
     onScroll();
   })();
 
