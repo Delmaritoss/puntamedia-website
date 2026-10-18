@@ -208,32 +208,6 @@
      Off by default — activated only when the video is ready on a wide screen. */
   .vhero-track{display:none}
   .has-vhero .vhero-track{display:block;height:320vh;position:relative}
-  /* ---------- Hero ridotta, solo telefono ----------
-     Stessa carrellata guidata dallo scroll, senza il pannello agganciato
-     allo schermo del laptop: li' dentro, su 390 px, la pagina sarebbe
-     illeggibile e costerebbe misure, repliche e un secondo livello di
-     composizione. Qui c'e' il filmato, il testo sopra, e alla fine lo
-     schermo azzurro si scioglie nel fondo della pagina.
-     svh e non vh: con vh la scena si ridimensiona ogni volta che la
-     barra del browser si nasconde, e il pin sobbalza. */
-  .has-vlite .vhero-track{display:block;height:165svh;position:relative}
-  .has-vlite .mhero{display:none}
-  .has-vlite .vhero-pin{height:100svh}
-  /* La pagina dentro lo schermo c'e' anche qui, ma non e' la stessa cosa
-     del desktop: li' viene rimpicciolita finche' non ci sta in altezza e
-     alla fine atterra a grandezza naturale. Qui resta una miniatura, cioe'
-     quello che si vede davvero guardando un laptop dall'altra parte del
-     tavolo, e non deve diventare leggibile: ci pensa il velo finale.
-     Quindi niente bisezione, niente fitK, larghezza fissa e una scala.
-     flex-start e non center: una pagina si guarda dall'alto.
-     will-change sulla pagina: a questa misura la nitidezza non serve, e
-     lasciare che sia il compositore a scalare una sola rasterizzazione e'
-     esattamente cio' che non fa scattare un telefono. */
-  .has-vlite .vhero-screen .vh-inner{justify-content:flex-start;will-change:transform}
-  .has-vlite .vhero-hint{display:none}
-  /* il fondo che assorbe lo schermo azzurro all'ultimo tratto */
-  .vhero-end{position:absolute;inset:0;z-index:2;pointer-events:none;
-    background:var(--ink);opacity:0;will-change:opacity}
   .has-vhero .hero{display:none}
   /* delivered through the laptop screen instead, so it must not repeat below.
      Scoped to the page's own strip — the clone inside the overlay shares the
@@ -293,10 +267,11 @@
     padding:0 0 calc(34px + env(safe-area-inset-bottom,0px));
   }
   .mhero .bg{position:absolute;inset:0;z-index:0;background:var(--ink)}
-  /* Alzo la foto: cosi il telefono sta sopra al titolo invece che dietro.
-     Quello che resta scoperto in basso e tavolo quasi nero, coperto dal velo. */
-  .mhero .bg img{width:100%;height:112%;object-fit:cover;object-position:50% 0;
-    transform:translateY(-19%)}
+  /* L'immagine e' gia' composta col rapporto della cornice: il laptop in
+     alto e sotto il tavolo che si spegne nel fondo del sito. Quindi niente
+     trucchi di altezza e traslazione, che servivano alla vecchia foto del
+     telefono e qui tagliavano i fianchi al laptop. */
+  .mhero .bg img{width:100%;height:100%;object-fit:cover;object-position:50% 0}
   .mhero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
     background:linear-gradient(180deg,
       rgba(8,24,43,.55) 0%,
@@ -1042,7 +1017,6 @@
            della sua. -->
       <video id="heroVideo" muted playsinline preload="none" poster="video/hero-12fps-poster.webp" aria-hidden="true"></video>
       <span class="vhero-veil" id="vheroVeil" aria-hidden="true"></span>
-      <span class="vhero-end" id="vheroEnd" aria-hidden="true"></span>
       <div class="vhero-screen" id="vheroScreen" aria-hidden="true"><div class="vh-inner"></div></div>
       <div class="vhero-copy" id="vheroCopy">
         <div class="wrap">
@@ -1062,7 +1036,7 @@
   <!-- HERO PER TELEFONO (solo sotto gli 880px) -->
   <section class="mhero">
     <div class="bg ph" aria-hidden="true">
-      <img src="img/hero-phone.webp" alt="" fetchpriority="high" decoding="async">
+      <img src="img/hero-laptop-phone.webp" width="810" height="1520" alt="" fetchpriority="high" decoding="async">
     </div>
     <div class="wrap">
       <span class="eyebrow">Web Design Studio</span>
@@ -2521,170 +2495,6 @@
 
     frame.style.setProperty('--b-grid','1');
     ['--b-word','--b-voice','--b-pic','--b-live'].forEach(function(k){ frame.style.setProperty(k,'0'); });
-    onScroll();
-  })();
-
-  /* ---------- Hero ridotta per telefono ----------
-     Su schermo grande la hero aggancia una pagina vera allo schermo del
-     laptop. Su 390 px quella pagina sarebbe illeggibile, e costerebbe
-     misure, una replica del DOM e un secondo livello di composizione: le
-     tre cose che su un telefono si pagano a scatti.
-     Qui resta la cosa che conta, la carrellata guidata dalla rotella, e
-     niente altro. Filmato ritagliato in verticale, 720x1080, 8 fotogrammi
-     al secondo, 479 KB. Alla fine lo schermo azzurro si scioglie nel fondo
-     della pagina invece di restare li' come un rettangolo. */
-  (function(){
-    var track = document.getElementById('vheroTrack');
-    var vid   = document.getElementById('heroVideo');
-    var copy  = document.getElementById('vheroCopy');
-    var veil  = document.getElementById('vheroVeil');
-    var endEl = document.getElementById('vheroEnd');
-    if(!track || !vid || !copy) return;
-
-    /* la hero grande si prende gli schermi larghi; qui sotto l'altra */
-    if(reduce || window.innerWidth > 880) return;
-    var link = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    if(link && (link.saveData || /^(slow-)?2g$/.test(link.effectiveType || ''))) return;
-
-    var ov    = document.getElementById('vheroScreen');
-    var page  = ov ? ov.querySelector('.vh-inner') : null;
-
-    var FRAMES = 23, FPS = 8;
-    var dur = 0, ready = false, shown = false, lastFrame = -1, wantT = -1, pend = 0;
-
-    /* Tracciamento per la clip del TELEFONO, che e' ritagliata in verticale:
-       720 px di larghezza presi al centro dei 1920 originali. Le frazioni
-       del desktop non valgono piu', e si ricavano cosi':
-         larghezza  x 1920/720      (il ritaglio stringe il riferimento)
-         centro X   (0.4995 - 600/1920) x 1920/720
-         H_PER_W    diviso 1920/720  (l'altezza non e' stata toccata)
-       Il filmato va a 8 fotogrammi al secondo da una sorgente a 24, quindi
-       il fotogramma j corrisponde all'originale 3j. Verificato disegnando
-       il rettangolo sui fotogrammi veri: cade sullo schermo a tutti. */
-    var TW = [0.766667,0.766667,0.772267,0.777867,0.783467,0.7888,0.8,0.8056,0.822133,0.833333,0.844533,0.866667,0.8832,0.9,0.922133,0.944533,0.972267,0.9944,1.01653,1.04453,1.07227,1.1056,1.13893];
-    var TY = [0.5481,0.5481,0.5463,0.55,0.5481,0.55,0.55,0.55,0.5519,0.5537,0.5537,0.5574,0.5574,0.5611,0.5611,0.563,0.5667,0.5648,0.5667,0.5722,0.5704,0.5741,0.5759];
-    var CX = 0.498667, H_PER_W = 0.398775;
-    var BLEED = 1.010, VIDEO_A = 720/1080;
-    /* La pagina si impagina alla larghezza del TELEFONO, non a una misura
-       da desktop poi rimpicciolita: cosi' sullo schermo del laptop si vede
-       il sito nella sua versione mobile, a grandezza quasi naturale e
-       leggibile, invece di un impaginato largo schiacciato a un terzo. */
-    var pageW = 0;
-
-    function clamp(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
-    function ramp(v,a,b){ return clamp((v - a) / (b - a)); }
-
-    /* la stessa sezione che si vede piu' sotto: qui dentro e' una miniatura,
-       non un duplicato da leggere */
-    function replica(){
-      var src = document.querySelector('#services');
-      if(!src) return null;
-      var c = src.cloneNode(true);
-      c.removeAttribute('id');
-      c.querySelectorAll('[id]').forEach(function(n){ n.removeAttribute('id'); });
-      c.querySelectorAll('.reveal').forEach(function(n){ n.classList.add('in'); });
-      c.querySelectorAll('a,button,input,textarea').forEach(function(n){ n.setAttribute('tabindex','-1'); });
-      return c;
-    }
-
-    function activate(){
-      if(ready) return;
-      dur = vid.duration;
-      if(!dur || !isFinite(dur)) return;
-      ready = true;
-      vid.pause();
-      if(page && !page.firstElementChild){
-        var rep = replica();
-        if(rep) page.appendChild(rep);
-      }
-      document.documentElement.classList.add('has-vlite');
-      onScroll();
-    }
-
-    /* intero come blob, come la hero grande: Cloudflare Pages serve questi
-       file senza Accept-Ranges, e senza intervalli il decoder non salta da
-       nessuna parte finche' non ha ricevuto tutto in fila */
-    function start(){
-      fetch('video/hero-phone-v2.mp4').then(function(r){
-        if(!r.ok) throw new Error(r.status);
-        return r.blob();
-      }).then(function(b){
-        vid.addEventListener('loadedmetadata', activate);
-        vid.addEventListener('canplaythrough', activate);
-        vid.poster = 'video/hero-phone-v2-poster.webp';
-        vid.src = URL.createObjectURL(b);
-        vid.preload = 'auto';
-        vid.load();
-        if(vid.readyState >= 1) activate();
-      }).catch(function(){ /* resta la hero con la fotografia */ });
-    }
-    if(document.readyState === 'complete') start();
-    else window.addEventListener('load', start);
-
-    ['loadeddata','canplay','seeked'].forEach(function(e){
-      vid.addEventListener(e, function(){ onScroll(); });
-    });
-
-    function draw(){
-      if(!ready) return;
-      var de = document.documentElement;
-      var vw = de.clientWidth  || window.innerWidth;
-      var vh = de.clientHeight || window.innerHeight;
-      var span = track.offsetHeight - vh;
-      var p = clamp(span > 0 ? (-track.getBoundingClientRect().top) / span : 0);
-
-      /* interruttore a scatto singolo: readyState cala sotto 2 per un attimo
-         a ogni salto, e controllarlo a ogni giro fa lampeggiare la hero */
-      if(!shown){
-        if(vid.readyState >= 2) shown = true; else p = 0;
-      }
-
-      var fi = Math.round(p * (FRAMES - 1));
-      if(fi !== lastFrame){
-        lastFrame = fi;
-        wantT = Math.min(dur - 0.001, fi / FPS);
-      }
-      if(wantT >= 0 && !vid.seeking){
-        var t = wantT; wantT = -1;
-        try { vid.currentTime = t; } catch(e){}
-      }
-
-      /* il testo se ne va con calma, poi la carrellata resta sola */
-      copy.style.opacity = String(1 - ramp(p, .16, .40));
-      if(veil)  veil.style.opacity  = String(1 - ramp(p, .10, .46));
-
-      /* il pannello sullo schermo del laptop. object-fit:cover ritaglia,
-         quindi le coordinate del filmato non sono quelle della finestra:
-         prima il rettangolo che il filmato occupa davvero. */
-      if(ov && page && page.firstElementChild){
-        var A = vw / vh, dW, dH;
-        if(A > VIDEO_A){ dW = vw; dH = vw / VIDEO_A; }
-        else           { dH = vh; dW = vh * VIDEO_A; }
-        var oX = (vw - dW) / 2, oY = (vh - dH) / 2;
-        var wN = TW[fi] * BLEED;
-        var w  = wN * dW;
-        var h  = wN * H_PER_W * dH;
-        var x  = oX + CX * dW - w / 2;
-        var y  = oY + TY[fi] * dH - h / 2;
-        ov.style.width  = w + 'px';
-        ov.style.height = h + 'px';
-        ov.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
-        ov.style.borderRadius = (w * 0.013) + 'px';
-        ov.style.opacity = String(ramp(p, .22, .56));
-        if(pageW !== vw){ pageW = vw; page.style.width = vw + 'px'; }
-        page.style.transform = 'scale(' + (w / vw) + ')';
-      }
-
-      /* e all'ultimo tratto tutto si scioglie nel fondo della pagina, prima
-         che la miniatura diventi grande abbastanza da sembrare sfocata */
-      if(endEl) endEl.style.opacity = String(ramp(p, .62, .88));
-    }
-
-    function onScroll(){ cancelAnimationFrame(pend); pend = requestAnimationFrame(draw); }
-    window.addEventListener('scroll', onScroll, { passive:true });
-    window.addEventListener('resize', onScroll);
-    document.addEventListener('visibilitychange', function(){ if(!document.hidden) onScroll(); });
-    window.addEventListener('pageshow', onScroll);
     onScroll();
   })();
 
