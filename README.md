@@ -13,6 +13,7 @@ video/              il filmato della hero + il suo poster
 showcase/           le pagine dei progetti inventati, da cui escono gli screenshot
 fonts/              i font del sito, serviti da qui e non da Google (GDPR)
 worker/             il Worker di Cloudflare del modulo contatti (vedi worker/README.md)
+listino/            listino extra e automazioni in PDF (HR · EN · IT), rifatto da listino.py
 404.html            la pagina per gli indirizzi che non esistono
 robots.txt          cosa possono leggere i motori di ricerca (showcase/ escluso)
 sitemap.xml         la mappa del sito per Google
@@ -35,6 +36,15 @@ Librerie esterne: nessuna. Anche i font (Cormorant Garamond, Jost, e per
 `showcase/` Alfa Slab One e DM Sans) sono nel repo, in `fonts/`: nessuna
 richiesta a Google, quindi niente dati dei visitatori a terzi. Licenza OFL,
 testo in `fonts/OFL.txt`.
+
+I prezzi stanno in due posti: la sezione `#pricing` di `index.html` (pacchetti
+ed extra, con la traduzione croata nel dizionario `HR`) e `listino/listino.py`,
+che scrive i tre PDF. Si cambiano insieme, poi si rifanno i PDF:
+
+```bash
+pip install playwright && playwright install chromium
+python listino/listino.py
+```
 
 ## Cosa contiene
 

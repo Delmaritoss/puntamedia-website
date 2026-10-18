@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="hr"><head><meta charset="utf-8"><title>Puntamedia — Dodaci i automatizacije</title>
+<link rel="stylesheet" href="../fonts/fonts.css"><style>
+:root{--ink:#08182B;--navy:#1C3A64;--acc:#2F6E9E;--acc-soft:#5A93BC;--tint:#F2F6FA;
+  --line:#D4E0EA;--text:#152B40;--muted:#5A7489;
+  --serif:"Cormorant Garamond",Georgia,serif;--sans:"Jost",system-ui,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+@page{size:A4;margin:0}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:var(--sans);color:var(--text);background:#fff;font-weight:300}
+.page{width:210mm;height:297mm;display:flex;flex-direction:column;position:relative;overflow:hidden}
+header{background:var(--ink);color:#EDF3F9;padding:10mm 18mm 8mm}
+.mark{display:flex;align-items:center;gap:9px}
+.mark svg{width:20px;height:20px}
+.mark span{font-family:var(--serif);font-size:19pt;font-weight:600;letter-spacing:.01em}
+.kick{margin-top:6mm;font-size:8pt;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:#7E9BB5}
+h1{font-family:var(--serif);font-size:30pt;font-weight:600;line-height:1.05;margin-top:2mm}
+.intro{margin-top:3mm;font-size:9.6pt;line-height:1.6;color:#A9C0D6;max-width:150mm}
+main{padding:6.5mm 18mm 0;flex:1;display:flex;flex-direction:column}
+table{width:100%;border-collapse:collapse}
+th{font-size:7.5pt;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);
+  text-align:right;padding:0 0 2mm;border-bottom:1.5px solid var(--ink)}
+th:first-child{text-align:left}
+tr.group td{padding:3.4mm 0 1.2mm;font-size:8pt;font-weight:600;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--acc);border-bottom:1px solid var(--line)}
+td{padding:2.1mm 0;border-bottom:1px solid var(--line);vertical-align:top}
+td.n b{display:block;font-family:var(--serif);font-size:12.5pt;font-weight:700;color:var(--ink);line-height:1.2}
+td.n span{display:block;font-size:8.4pt;line-height:1.45;color:var(--muted);margin-top:.4mm;max-width:118mm}
+td.p{text-align:right;white-space:nowrap;font-size:11pt;font-weight:500;color:var(--ink);width:27mm;padding-top:2.4mm}
+td.p small{font-size:7.5pt;font-weight:400;color:var(--muted)}
+td.p .none{color:#A8BACB;font-weight:300}
+.low{display:grid;grid-template-columns:1.05fr .95fr;gap:9mm;margin-top:5.5mm}
+h2{font-family:var(--serif);font-size:14pt;font-weight:700;color:var(--ink);margin-bottom:3mm}
+.pk{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5mm}
+.pk div{background:var(--tint);border-radius:2px;padding:3mm 3mm 3.2mm;border-top:2px solid var(--acc-soft)}
+.pk div.f{border-top-color:var(--acc)}
+.pk b{display:block;font-family:var(--serif);font-size:13pt;font-weight:700;color:var(--ink)}
+.pk span{display:block;font-size:10pt;font-weight:500;color:var(--ink);margin-top:1mm}
+.pk em{display:block;font-style:normal;font-size:8.3pt;color:var(--muted)}
+.pknote{font-size:8.3pt;line-height:1.55;color:var(--muted);margin-top:3mm}
+ul{list-style:none}
+li{position:relative;font-size:8.6pt;line-height:1.5;padding-left:4.2mm;margin-bottom:1.3mm}
+li::before{content:"";position:absolute;left:0;top:1.6mm;width:1.5mm;height:1.5mm;border-radius:50%;background:var(--acc-soft)}
+footer{margin:auto 18mm 0;padding:3.5mm 0 7mm;border-top:1px solid var(--line);display:flex;
+  justify-content:space-between;align-items:baseline;font-size:8.5pt;color:var(--muted)}
+footer b{font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);font-size:8pt}
+</style></head>
+<body><section class="page">
+<header>
+  <div class="mark"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 4.5 L21 12 L3 19.5 L7.5 12 Z" fill="#5A93BC"/></svg><span>Puntamedia</span></div>
+  <div class="kick">Cjenik 2026</div>
+  <h1>Dodaci i automatizacije</h1>
+  <p class="intro">Mali alati koji svakodnevno rade za vaš posao: više recenzija, više rezervacija, manje poruka na koje treba odgovarati. Dodaju se bilo kojoj Puntamedia stranici ili se uzimaju zasebno.</p>
+</header>
+<main>
+  <table><thead><tr><th>Usluga</th><th>Postavljanje</th><th>Mjesečno</th></tr></thead>
+  <tbody><tr class="group"><td colspan="3">Automatizacije</td></tr><tr><td class="n"><b>Digitalni jelovnik s QR kodom</b><span>Jelovnik online na više jezika, koji sami mijenjate kad god želite. QR kod ide na stolove.</span></td><td class="p">120 €</td><td class="p">20 €</td></tr><tr><td class="n"><b>Zahtjev za Google recenziju</b><span>Nakon posjeta gost dobiva poruku s poveznicom za recenziju.</span></td><td class="p">100 €</td><td class="p">25 €</td></tr><tr><td class="n"><b>Online rezervacije s podsjetnicima</b><span>Rezervacije sa stranice, trenutna potvrda i podsjetnik e-mailom ili WhatsAppom prije termina.</span></td><td class="p">200 €</td><td class="p">40 €</td></tr><tr><td class="n"><b>Automatski odgovori na Instagramu i WhatsAppu</b><span>Radno vrijeme, cijene, lokacija i dostupnost: česta pitanja dobivaju odgovor odmah, i noću.</span></td><td class="p">150 €</td><td class="p">30 €</td></tr><tr><td class="n"><b>Upiti sa stranice u tablici</b><span>Svaki upit sa stranice sprema se u preglednu tablicu, uz sažetak svakog ponedjeljka.</span></td><td class="p">80 €</td><td class="p">10 €</td></tr><tr><td class="n"><b>Automatizacija po mjeri</b><span>Računi, narudžbe, skladište ili nešto drugo: izrađujemo je prema vašem načinu rada.</span></td><td class="p"><small>od</small> 300 €</td><td class="p"><small>od</small> 30 €</td></tr><tr class="group"><td colspan="3">Ostali dodaci</td></tr><tr><td class="n"><b>Objave na Instagramu</b><span>4 objave mjesečno s vašim fotografijama, tekst na dva jezika.</span></td><td class="p"><span class="none">—</span></td><td class="p">60 €</td></tr><tr><td class="n"><b>Dodatni jezik stranice</b><span>Još jedan jezik, preveden i provjeren.</span></td><td class="p">80 €</td><td class="p"><span class="none">—</span></td></tr></tbody></table>
+  <div class="low">
+    <div><h2>Paketi web stranica</h2><div class="pk"><div><b>Base</b><span>450 €</span><em>+ 15 €/mj.</em></div><div class=f><b>Plus</b><span>810 €</span><em>+ 35 €/mj.</em></div><div><b>Pro</b><span>1.200 €</span><em>+ 69 €/mj.</em></div></div><p class="pknote">Plus i Pro već uključuju QR jelovnik i zahtjeve za recenzije; Pro i rezervacije te automatske odgovore.</p></div>
+    <div><h2>Kako funkcionira</h2><ul><li>Postavljanje se plaća jednom; mjesečna naknada kreće od mjeseca objave.</li><li>Naknada uključuje poslužitelj, održavanje, ažuriranja i podršku u roku od 48 radnih sati.</li><li>Minimalno trajanje 12 mjeseci, zatim otkaz uz 30 dana najave.</li><li>Uz godišnje plaćanje unaprijed, 2 mjeseca su besplatna.</li></ul></div>
+  </div>
+</main>
+<footer><b>puntamedia.net · hello@puntamedia.net</b><span>Cijene vrijede od listopada 2026.</span></footer>
+</section></body></html>
