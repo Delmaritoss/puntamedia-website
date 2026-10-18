@@ -27,7 +27,7 @@
      Il media ripete ESATTAMENTE la condizione che nello script decide se la
      hero video parte. Senza, un telefono si scaricherebbe 2,4 MB in 4G per
      una hero che su quello schermo non va in onda mai. -->
-<link rel="preload" href="video/hero-12fps.mp4" as="fetch" type="video/mp4"
+<link rel="preload" href="video/hero-bar-v1.mp4" as="fetch" type="video/mp4"
       media="(min-width: 881px) and (prefers-reduced-motion: no-preference)">
 <link rel="preload" href="fonts/jost-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/cormorant-garamond-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -235,7 +235,10 @@
   .vhero-pin video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
     will-change:opacity}
   .vhero-veil{position:absolute;inset:0;pointer-events:none;
-    background:linear-gradient(100deg,rgba(8,24,43,.9) 0%,rgba(8,24,43,.66) 32%,rgba(8,24,43,.2) 62%,rgba(8,24,43,0) 100%);
+    /* Piu' forte di prima: la clip del bar e' luminosa, mentre quella vecchia
+       era una stanza di notte e un velo leggero bastava. Si spegne comunque
+       entro il primo terzo della corsa, quando il titolo se n'e' andato. */
+    background:linear-gradient(100deg,rgba(8,24,43,.95) 0%,rgba(8,24,43,.88) 26%,rgba(8,24,43,.6) 52%,rgba(8,24,43,.18) 78%,rgba(8,24,43,0) 100%);
     will-change:opacity}
   /* the page, painted onto the laptop screen */
   .vhero-screen{position:absolute;left:0;top:0;overflow:hidden;opacity:0;
@@ -1062,7 +1065,7 @@
            il suo scaricamento prima che src venisse riassegnata, e sul
            telefono arrivavano i 2,8 MB della clip da desktop oltre ai 479 KB
            della sua. -->
-      <video id="heroVideo" muted playsinline preload="none" poster="video/hero-12fps-poster.webp" aria-hidden="true"></video>
+      <video id="heroVideo" muted playsinline preload="none" poster="video/hero-bar-v1-poster.webp" aria-hidden="true"></video>
       <span class="vhero-veil" id="vheroVeil" aria-hidden="true"></span>
       <span class="vhero-end" id="vheroEnd" aria-hidden="true"></span>
       <div class="vhero-screen" id="vheroScreen" aria-hidden="true"><div class="vh-inner"></div></div>
@@ -1978,11 +1981,24 @@
     // after the bottom edge is lost in the blue spill on the desk.
     // Measured on every one of the 121 frames. TX came out constant at .4995
     // across the whole clip, so it is a number rather than a table.
-    var TW = [.2875,.2875,.2875,.2896,.2917,.2917,.2938,.2938,.2979,.3,.3021,.3063,.3083,.3104,.3146,.3167,.3229,.325,.3312,.3354,.3396,.3458,.3521,.3563,.3646,.3688,.375,.3812,.3875,.3937,.4021,.4104,.4188,.4271,.4375,.4479,.4583,.4729,.4833,.5,.5167,.5333,.55,.5708,.5917,.6167,.6396,.6667,.6979,.7271,.7604,.8,.8375,.875,.9229,.9678,1.0198,1.0777,1.1427,1.2159,1.2992];
-    var TY = [.5481,.5481,.5463,.5463,.5481,.5481,.5481,.5481,.55,.55,.5519,.55,.5519,.5537,.5537,.5537,.5556,.5574,.5574,.5593,.5611,.5611,.5611,.563,.5667,.5667,.5667,.5667,.5704,.5704,.5704,.5741,.5759,.5759,.5778,.5796,.5833,.5852,.5852,.587,.5907,.5926,.5944,.5944,.6019,.6037,.6037,.6074,.613,.6093,.6059,.6066,.6072,.6078,.6085,.6091,.6097,.6104,.611,.6116,.6123];
-    var CX = 0.4995;
-    var H_PER_W = 1.0634;             // aspect 1.67, measured column by column
-    var FRAMES = 61, FPS = 12, BLEED = 1.010;
+    // Misurate sulla clip del bar, fotogramma per fotogramma, con un
+    // rilevatore che isola lo schermo per il suo verde: muro, finestra e
+    // tavolo del bar sono chiari e poco saturi quanto il monitor, ma caldi
+    // (g-r negativo), mentre lo schermo ha g-r +11 e g-b +14 costanti. Un
+    // primo rilevatore basato solo su luminosita' e saturazione misurava la
+    // stanza e dava un keystone del 69%, impossibile per un monitor.
+    // Corsa verticale per colonna, mai per riga. Poi mediana a tre e
+    // larghezza resa monotona: sono dieci fotogrammi di rumore, non dati
+    // inventati. Inclinazione mediana 3,8%: un rettangolo basta.
+    // Verificate disegnandole sui fotogrammi veri prima di scrivere il resto.
+    var TW = [0.3833,0.3854,0.3875,0.3917,0.3937,0.3958,0.3979,0.4,0.4042,0.4083,0.4104,0.4208,0.4271,0.6896,0.6937,0.6937,0.6958,0.6958,0.6979,0.6958,0.4792,0.4771,0.4771,0.4792,0.4813,0.4896,0.4938,0.4979,0.5042,0.5062,0.5146,0.5188,0.525,0.5312,0.5375,0.5458,0.55,0.5542,0.5604,0.5667,0.5708,0.5813,0.5875,0.5938,0.6021,0.6104,0.6188,0.6271,0.6333,0.6396,0.6479,0.6542,0.6625,0.6708,0.6771,0.6833,0.6896,0.6937,0.7021,0.7083,0.7104];
+    // Il centro orizzontale qui NON e' costante: la vecchia clip stava
+    // ferma a 0.4995, questa deriva da 0.5687 a 0.5042 mentre la camera
+    // avanza. Serve una tabella.
+    var TX = [0.5687,0.5677,0.5667,0.5667,0.5656,0.5646,0.5646,0.5635,0.5625,0.5615,0.5604,0.5583,0.5542,0.425,0.424,0.425,0.426,0.426,0.4271,0.4281,0.5406,0.5417,0.5417,0.5417,0.5417,0.5406,0.5385,0.5406,0.5396,0.5385,0.5375,0.5365,0.5354,0.5344,0.5333,0.5312,0.5302,0.5292,0.5281,0.5271,0.5271,0.526,0.525,0.524,0.5219,0.5198,0.5198,0.5177,0.5167,0.5156,0.5135,0.5125,0.5125,0.5104,0.5094,0.5083,0.5073,0.5052,0.5052,0.5052,0.5042];
+    var TY = [0.4259,0.4278,0.4278,0.4296,0.4315,0.4315,0.4333,0.4333,0.4333,0.4352,0.4352,0.437,0.4389,0.437,0.437,0.4389,0.4407,0.4426,0.4444,0.4463,0.4481,0.4481,0.45,0.45,0.4519,0.4519,0.4537,0.4574,0.4593,0.4611,0.4611,0.463,0.4667,0.4667,0.4685,0.4685,0.4704,0.4722,0.4741,0.4778,0.4796,0.4796,0.4815,0.4833,0.487,0.487,0.487,0.4889,0.4907,0.4917,0.4917,0.4926,0.4963,0.4963,0.4981,0.4981,0.5019,0.5037,0.5037,0.5037,0.5056];
+    var H_PER_W = 1.1522;    // schermo 16:10, aspetto 1,54:1
+    var FRAMES = 61, FPS = 12, BLEED = 1.018;   /* un filo piu' largo: sul bordo della clip del bar restava una striscia */
     var VIDEO_A = 16/9;
 
     // No interpolation: the video snaps to a whole frame, so the overlay uses
@@ -2059,7 +2075,7 @@
     // contrario, un video gia' pronto fa scattare l'evento senza nessuno in
     // ascolto e resta su la hero di ripiego.
     function viaBlob(){
-      return fetch('video/hero-12fps.mp4').then(function(r){
+      return fetch('video/hero-bar-v1.mp4').then(function(r){
         if(!r.ok) throw new Error(r.status);
         return r.blob();
       }).then(function(b){
@@ -2078,7 +2094,7 @@
       // dire di avere abbastanza dati. Mai su loadedmetadata, che e' il
       // difetto qui sopra.
       vid.addEventListener('canplaythrough', activate);
-      vid.src = 'video/hero-12fps.mp4';   /* non c'e' piu' un <source> */
+      vid.src = 'video/hero-bar-v1.mp4';   /* non c'e' piu' un <source> */
       vid.preload = 'auto';
       vid.load();
     });
@@ -2152,7 +2168,7 @@
       var wN = TW[fi] * BLEED;         // slight bleed over the bezel
       var w  = wN * dW;
       var h  = wN * H_PER_W * dH;
-      var x  = oX + CX * dW - w / 2;
+      var x  = oX + TX[fi] * dW - w / 2;
       var y  = oY + TY[fi] * dH - h / 2;
 
       // The screen only truly fills the frame on the very last frame, so tracking
