@@ -1971,42 +1971,59 @@
     // mai, e con preload="auto" il visitatore si sarebbe scaricato quasi 4 MB
     // in 4G per niente.
 
-    // LO SCHERMO NON E' UN RETTANGOLO.
+    // LO SCHERMO NON E' UN RETTANGOLO, E I SUOI BORDI NON SONO VERTICALI.
     //
-    // Nel filmato il portatile e' ripreso di tre quarti: il bordo basso dello
-    // schermo scende verso destra e il lato destro e' piu' alto del sinistro,
-    // dal 6% all'inizio al 14% sul finale. Un rettangolo dritto, per quanto
-    // ben centrato, sbaglia dall'1,6% al 3,8% dell'altezza agli angoli, e si
-    // vede: la pagina sborda sulla cornice da una parte e lascia scoperta una
-    // fetta di schermo dall'altra. Per questo qui ci sono QUATTRO ANGOLI e non
-    // larghezza-piu-centro, e draw() ci posa sopra la pagina con una matrice
-    // prospettica invece che con una semplice traslazione.
+    // Nel filmato il portatile e' ripreso di tre quarti, quindi lo schermo e'
+    // un quadrilatero qualsiasi: il bordo basso scende verso destra, e i
+    // bordi laterali sono INCLINATI (pendenza -0,038 a destra, da -0,057 a
+    // -0,071 a sinistra). Da qui OTTO tabelle, i quattro angoli con la loro x
+    // e la loro y, e draw() ci posa sopra la pagina con una matrice
+    // prospettica invece che con una traslazione.
     //
-    // Misurati su tutti e 61 i fotogrammi del filmato codificato. Lo schermo
-    // si isola per il suo verde: muro, finestra e tavolo del bar sono chiari
-    // quanto il monitor ma caldi (g-r negativo), mentre lo schermo tiene
-    // g-r +9 e g-b +13 costanti, cornice del browser compresa.
+    // Due versioni sbagliate prima di questa, e lo sbordo medio misurato
+    // sull'angolo alto-sinistra dice quanto:
+    //   rettangolo dritto, larghezza+centro ............ fino a +42 px, con
+    //     in piu' uno strappo di sette fotogrammi dove la tabella era rotta
+    //   quadrilatero ma con i bordi laterali verticali .. +31,7 px medi
+    //   quattro angoli indipendenti (questo) ............  0,0 medi, +2,4 max
     //
-    // DUE TRAPPOLE, pagate entrambe:
-    // 1. Corsa verticale per COLONNA, mai per riga: un riflesso produce righe
-    //    piene, mai colonne piene.
-    // 2. Le linguette scure del browser spezzano la colonna e fanno scivolare
-    //    il bordo alto SOTTO la barra degli indirizzi, con un falso keystone
-    //    di 48 px sul finale. Vanno chiusi i buchi verticali (chiusura
-    //    morfologica di 51 px) prima di misurare.
+    // COME SI MISURA, e perche' le scorciatoie non reggono:
+    // 1. Il confine si prende a META' RAMPA di luminosita' fra cornice e
+    //    schermo, sotto il pixel, camminando da dentro verso fuori. Non con
+    //    una soglia fissa: la soglia dipende da quanto e' illuminata la scena.
+    // 2. Le rette dei bordi con THEIL-SEN, non ai minimi quadrati. Lo sporco
+    //    c'e' davvero: la spalla dell'uomo copre il bordo sinistro in basso
+    //    nei primi fotogrammi, le linguette scure del browser lo rompono in
+    //    alto negli ultimi.
+    // 3. Sui fotogrammi 0-2 lo sporco supera il 43%, cioe' la tenuta di
+    //    Theil-Sen. Quindi DUE PASSATE: pendenza per fotogramma, poi
+    //    adattamento GLOBALE di grado 3 con reiezione sulla serie temporale
+    //    (una finestra locale non basta -- i fotogrammi sporchi stanno al
+    //    bordo della serie e non hanno dati puliti da un lato, quindi li
+    //    segue invece di scartarli), e infine l'intercetta per fotogramma
+    //    con la MEDIANA, che regge fino al 50% di sporco.
     //
-    // I bordi grezzi sono poi passati per una regressione locale quadratica
-    // su +-8 fotogrammi: toglie il tremolio senza spianare il movimento. Ha
-    // corretto 2 misure su 366, con scarto quadratico medio di 1-5 px.
-    // Verificate disegnando i quadrilateri sui fotogrammi veri, prima di
-    // scrivere una riga di questo codice.
-    var QX0 = [0.3684,0.3668,0.3649,0.3628,0.3606,0.3583,0.3558,0.3533,0.3507,0.3480,0.3452,0.3423,0.3394,0.3364,0.3333,0.3300,0.3265,0.3227,0.3188,0.3149,0.3110,0.3071,0.3033,0.2995,0.2956,0.2916,0.2874,0.2831,0.2788,0.2745,0.2700,0.2654,0.2608,0.2562,0.2517,0.2474,0.2432,0.2390,0.2348,0.2306,0.2262,0.2217,0.2170,0.2122,0.2072,0.2020,0.1967,0.1911,0.1855,0.1799,0.1743,0.1690,0.1639,0.1590,0.1544,0.1500,0.1458,0.1418,0.1380,0.1345,0.1312];   // bordo sinistro
-    var QX1 = [0.7676,0.7678,0.7684,0.7692,0.7700,0.7709,0.7719,0.7728,0.7737,0.7746,0.7756,0.7767,0.7779,0.7792,0.7804,0.7816,0.7828,0.7841,0.7854,0.7868,0.7883,0.7898,0.7913,0.7929,0.7945,0.7962,0.7980,0.7998,0.8016,0.8034,0.8052,0.8070,0.8089,0.8108,0.8127,0.8148,0.8169,0.8190,0.8212,0.8235,0.8261,0.8287,0.8315,0.8343,0.8372,0.8400,0.8428,0.8455,0.8481,0.8507,0.8532,0.8558,0.8583,0.8609,0.8635,0.8659,0.8682,0.8704,0.8723,0.8740,0.8756];   // bordo destro
-    var QYA = [0.2062,0.2057,0.2050,0.2049,0.2053,0.2061,0.2068,0.2070,0.2064,0.2047,0.2022,0.1996,0.1974,0.1958,0.1950,0.1949,0.1950,0.1949,0.1939,0.1920,0.1893,0.1860,0.1825,0.1791,0.1765,0.1749,0.1740,0.1734,0.1731,0.1728,0.1723,0.1708,0.1685,0.1655,0.1621,0.1584,0.1545,0.1509,0.1483,0.1466,0.1457,0.1451,0.1444,0.1433,0.1411,0.1376,0.1330,0.1276,0.1222,0.1175,0.1137,0.1108,0.1084,0.1060,0.1037,0.1018,0.1004,0.0998,0.1006,0.1032,0.1077];   // angolo alto a sinistra
-    var QYB = [0.2053,0.2069,0.2081,0.2085,0.2082,0.2070,0.2052,0.2033,0.2017,0.2008,0.2004,0.2002,0.2000,0.1994,0.1983,0.1966,0.1948,0.1933,0.1921,0.1910,0.1896,0.1880,0.1859,0.1835,0.1809,0.1785,0.1765,0.1748,0.1731,0.1713,0.1693,0.1674,0.1657,0.1642,0.1632,0.1624,0.1618,0.1611,0.1601,0.1586,0.1566,0.1542,0.1516,0.1488,0.1457,0.1420,0.1382,0.1343,0.1303,0.1263,0.1224,0.1190,0.1160,0.1134,0.1108,0.1081,0.1054,0.1026,0.0996,0.0962,0.0931];   // angolo alto a destra
-    var QYC = [0.6602,0.6626,0.6651,0.6679,0.6707,0.6734,0.6761,0.6789,0.6817,0.6847,0.6877,0.6909,0.6944,0.6982,0.7021,0.7061,0.7103,0.7147,0.7189,0.7227,0.7261,0.7293,0.7325,0.7360,0.7401,0.7451,0.7508,0.7569,0.7630,0.7689,0.7747,0.7803,0.7859,0.7914,0.7971,0.8028,0.8087,0.8146,0.8205,0.8265,0.8325,0.8386,0.8450,0.8514,0.8579,0.8646,0.8715,0.8784,0.8852,0.8919,0.8983,0.9047,0.9111,0.9176,0.9240,0.9302,0.9362,0.9418,0.9470,0.9514,0.9551];   // angolo basso a destra
-    var QYD = [0.6343,0.6361,0.6384,0.6408,0.6433,0.6459,0.6485,0.6510,0.6535,0.6560,0.6588,0.6617,0.6647,0.6679,0.6712,0.6747,0.6782,0.6816,0.6849,0.6881,0.6913,0.6945,0.6977,0.7010,0.7046,0.7085,0.7126,0.7170,0.7216,0.7261,0.7307,0.7352,0.7397,0.7443,0.7490,0.7537,0.7586,0.7636,0.7685,0.7733,0.7781,0.7831,0.7882,0.7935,0.7987,0.8040,0.8092,0.8142,0.8190,0.8238,0.8286,0.8335,0.8384,0.8432,0.8480,0.8525,0.8567,0.8607,0.8643,0.8677,0.8709];   // angolo basso a sinistra
-    var FRAMES = 61, FPS = 12, BLEED = 1.004;   /* un filo oltre il bordo misurato, se no resta un capello di schermo scoperto */
+    // Residuo mediano 0,15 px. Verificato ridisegnando i quadrilateri sui
+    // fotogrammi veri e misurando lo scarto di ogni bordo, prima di scrivere
+    // una riga di questo codice.
+    //
+    // Nota: sui fotogrammi 7-18 la spalla dell'uomo copre DAVVERO l'angolo
+    // basso-sinistra dello schermo. Li' il modello e' giusto e la misura no.
+    // Non importa: il pannello compare solo dal fotogramma 23 in poi.
+    var QAX = [0.3711,0.3702,0.3683,0.3664,0.3644,0.3621,0.3600,0.3579,0.3556,0.3531,0.3509,0.3486,0.3460,0.3434,0.3410,0.3384,0.3357,0.3327,0.3297,0.3266,0.3233,0.3199,0.3165,0.3128,0.3090,0.3052,0.3014,0.2972,0.2932,0.2891,0.2851,0.2806,0.2765,0.2725,0.2684,0.2643,0.2605,0.2566,0.2529,0.2487,0.2446,0.2402,0.2360,0.2314,0.2265,0.2214,0.2161,0.2109,0.2059,0.2009,0.1961,0.1911,0.1865,0.1819,0.1776,0.1731,0.1691,0.1651,0.1615,0.1578,0.1545];   // alto-sx, x
+    var QAY = [0.1996,0.1991,0.1984,0.1981,0.1986,0.1981,0.1966,0.1950,0.1957,0.1941,0.1924,0.1917,0.1915,0.1903,0.1892,0.1879,0.1883,0.1873,0.1851,0.1834,0.1830,0.1805,0.1771,0.1747,0.1735,0.1712,0.1683,0.1672,0.1667,0.1652,0.1619,0.1589,0.1579,0.1555,0.1531,0.1506,0.1506,0.1489,0.1460,0.1442,0.1431,0.1400,0.1365,0.1333,0.1322,0.1282,0.1238,0.1203,0.1180,0.1142,0.1101,0.1064,0.1048,0.1025,0.0992,0.0971,0.0960,0.0936,0.0907,0.0884,0.0875];   // alto-sx, y
+    var QBX = [0.7711,0.7715,0.7723,0.7731,0.7739,0.7748,0.7757,0.7768,0.7775,0.7784,0.7795,0.7806,0.7816,0.7828,0.7841,0.7854,0.7865,0.7877,0.7891,0.7906,0.7921,0.7935,0.7949,0.7966,0.7981,0.7998,0.8017,0.8035,0.8054,0.8074,0.8093,0.8112,0.8131,0.8150,0.8171,0.8193,0.8213,0.8236,0.8260,0.8286,0.8311,0.8338,0.8365,0.8394,0.8421,0.8449,0.8476,0.8504,0.8531,0.8560,0.8585,0.8612,0.8637,0.8660,0.8682,0.8706,0.8728,0.8750,0.8770,0.8790,0.8807];   // alto-dx, x
+    var QBY = [0.2026,0.2021,0.2015,0.2012,0.2018,0.2013,0.1999,0.1983,0.1990,0.1975,0.1958,0.1952,0.1950,0.1939,0.1928,0.1916,0.1920,0.1911,0.1889,0.1873,0.1869,0.1845,0.1811,0.1787,0.1776,0.1754,0.1726,0.1715,0.1711,0.1697,0.1663,0.1635,0.1625,0.1602,0.1578,0.1554,0.1554,0.1538,0.1509,0.1492,0.1482,0.1452,0.1417,0.1387,0.1376,0.1337,0.1294,0.1260,0.1238,0.1200,0.1161,0.1125,0.1109,0.1088,0.1055,0.1035,0.1025,0.1002,0.0974,0.0952,0.0944];   // alto-dx, y
+    var QCX = [0.7609,0.7613,0.7620,0.7628,0.7636,0.7644,0.7653,0.7663,0.7670,0.7678,0.7688,0.7699,0.7708,0.7719,0.7731,0.7743,0.7754,0.7765,0.7777,0.7791,0.7805,0.7819,0.7832,0.7847,0.7861,0.7876,0.7894,0.7910,0.7928,0.7946,0.7964,0.7981,0.7999,0.8016,0.8035,0.8055,0.8074,0.8095,0.8118,0.8142,0.8166,0.8190,0.8216,0.8243,0.8268,0.8294,0.8319,0.8344,0.8370,0.8396,0.8420,0.8444,0.8468,0.8489,0.8510,0.8531,0.8552,0.8572,0.8592,0.8610,0.8626];   // basso-dx, x
+    var QCY = [0.6610,0.6624,0.6647,0.6677,0.6718,0.6755,0.6774,0.6800,0.6843,0.6870,0.6893,0.6927,0.6969,0.7005,0.7037,0.7076,0.7128,0.7168,0.7201,0.7240,0.7295,0.7330,0.7357,0.7397,0.7452,0.7496,0.7537,0.7599,0.7670,0.7728,0.7769,0.7823,0.7891,0.7943,0.7991,0.8051,0.8128,0.8182,0.8230,0.8294,0.8366,0.8424,0.8473,0.8537,0.8626,0.8687,0.8736,0.8804,0.8881,0.8948,0.9002,0.9059,0.9137,0.9201,0.9250,0.9314,0.9384,0.9435,0.9477,0.9525,0.9577];   // basso-dx, y
+    var QDX = [0.3572,0.3561,0.3541,0.3519,0.3497,0.3472,0.3449,0.3425,0.3401,0.3373,0.3349,0.3323,0.3295,0.3266,0.3240,0.3211,0.3181,0.3149,0.3115,0.3081,0.3045,0.3008,0.2971,0.2931,0.2890,0.2849,0.2807,0.2762,0.2718,0.2674,0.2630,0.2582,0.2537,0.2494,0.2450,0.2405,0.2363,0.2321,0.2281,0.2237,0.2192,0.2145,0.2100,0.2050,0.1998,0.1943,0.1888,0.1832,0.1779,0.1726,0.1675,0.1623,0.1574,0.1526,0.1482,0.1436,0.1394,0.1354,0.1317,0.1279,0.1247];   // basso-sx, x
+    var QDY = [0.6340,0.6352,0.6372,0.6398,0.6436,0.6468,0.6484,0.6505,0.6543,0.6566,0.6585,0.6614,0.6651,0.6681,0.6708,0.6741,0.6787,0.6820,0.6846,0.6879,0.6927,0.6954,0.6974,0.7006,0.7052,0.7088,0.7120,0.7173,0.7234,0.7282,0.7312,0.7356,0.7415,0.7456,0.7493,0.7542,0.7608,0.7650,0.7687,0.7739,0.7799,0.7843,0.7880,0.7930,0.8005,0.8051,0.8086,0.8138,0.8200,0.8251,0.8290,0.8332,0.8395,0.8444,0.8477,0.8527,0.8581,0.8618,0.8645,0.8678,0.8717];   // basso-sx, y
+    var FRAMES = 61, FPS = 12, BLEED = 1.000;
+    /* BLEED era 1.004 e contribuiva allo sbordo. Ora i bordi sono presi a
+       META' RAMPA fra cornice e schermo, cioe' sul confine vero: allargare
+       non serve piu'. Mezza rampa (~1px) resta scoperta e si legge come il
+       filo scuro della cornice, che semmai aiuta l'illusione. Sbordare no:
+       pagina chiara sopra cornice scura si vede subito. */
     var VIDEO_A = 16/9;
 
     // No interpolation: the video snaps to a whole frame, so the overlay uses
@@ -2202,20 +2219,27 @@
 
       // I quattro angoli dello schermo in questo fotogramma, portati dalle
       // coordinate del filmato a quelle della finestra.
-      var qa = oX + QX0[fi] * dW, qb = oX + QX1[fi] * dW;
-      var c = [[qa, oY + QYA[fi] * dH],    // alto a sinistra
-               [qb, oY + QYB[fi] * dH],    // alto a destra
-               [qb, oY + QYC[fi] * dH],    // basso a destra
-               [qa, oY + QYD[fi] * dH]];   // basso a sinistra
+      // QUATTRO ANGOLI INDIPENDENTI, in senso orario da alto-sinistra.
+      //
+      // Prima i due angoli di sinistra condividevano una x e i due di destra
+      // un'altra, cioe' bordi verticali. Ma i bordi verticali dello schermo
+      // sono INCLINATI -- a meta' filmato il sinistro va da x=540,7 in alto a
+      // x=506,2 in basso -- e una verticale sola, presa sul punto piu'
+      // sporgente, mette un angolo sulla cornice e l'altro dentro lo schermo.
+      // Misurato sull'angolo alto-sinistra: 31,7 px di sbordo medio, 42,5 nel
+      // caso peggiore. Con gli angoli separati: 0,0 medi, 2,4 nel peggiore.
+      var c = [[oX + QAX[fi] * dW, oY + QAY[fi] * dH],    // alto a sinistra
+               [oX + QBX[fi] * dW, oY + QBY[fi] * dH],    // alto a destra
+               [oX + QCX[fi] * dW, oY + QCY[fi] * dH],    // basso a destra
+               [oX + QDX[fi] * dW, oY + QDY[fi] * dH]];   // basso a sinistra
 
-      // Un filo oltre il bordo misurato: la soglia del rilevatore cade dentro
-      // la sfumatura del bordo, e senza questo resta un capello di schermo
-      // scoperto lungo la cornice.
-      var gx = (c[0][0] + c[1][0] + c[2][0] + c[3][0]) / 4;
-      var gy = (c[0][1] + c[1][1] + c[2][1] + c[3][1]) / 4;
-      for(var ci = 0; ci < 4; ci++){
-        c[ci][0] = gx + (c[ci][0] - gx) * BLEED;
-        c[ci][1] = gy + (c[ci][1] - gy) * BLEED;
+      if(BLEED !== 1){
+        var gx = (c[0][0] + c[1][0] + c[2][0] + c[3][0]) / 4;
+        var gy = (c[0][1] + c[1][1] + c[2][1] + c[3][1]) / 4;
+        for(var ci = 0; ci < 4; ci++){
+          c[ci][0] = gx + (c[ci][0] - gx) * BLEED;
+          c[ci][1] = gy + (c[ci][1] - gy) * BLEED;
+        }
       }
 
       // Sul finale il pannello si posa esattamente sulla finestra: gli angoli
