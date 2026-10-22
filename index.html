@@ -19,16 +19,12 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-<meta name="theme-color" content="#08182B">
+<meta name="theme-color" content="#102A45">
 <!-- Font in casa, non da Google: nessun dato dei visitatori va a Google (GDPR) -->
-<!-- Il filmato della hero si prende per intero via fetch (vedi il commento
-     nello script): farlo partire di qui lo sovrappone al caricamento di CSS e
-     font, invece di aspettare la fine del documento.
-     Il media ripete ESATTAMENTE la condizione che nello script decide se la
-     hero video parte. Senza, un telefono si scaricherebbe 2,4 MB in 4G per
-     una hero che su quello schermo non va in onda mai. -->
-<link rel="preload" href="video/hero-bar-v1.mp4" as="fetch" type="video/mp4"
-      media="(min-width: 881px) and (prefers-reduced-motion: no-preference)">
+<!-- Il poster della hero e' il primo pixel grande della pagina, quindi vale
+     la pena anticiparlo. Il filmato invece NO: lo sceglie lo script, perche'
+     a movimento ridotto o col risparmio dati non va scaricato affatto. -->
+<link rel="preload" href="video/hero-adriatico-v1-poster.webp" as="image" fetchpriority="high">
 <link rel="preload" href="fonts/jost-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/cormorant-garamond-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="fonts/fonts.css">
@@ -49,16 +45,16 @@
 <style>
   :root{
     /* Drawn from the logo: deep navy headland over an Adriatic blue wave */
-    --ink:#08182B;          /* page ground */
-    --ink-2:#0C2038;        /* alternate section ground */
-    --surface:#112A46;      /* cards */
-    --surface-2:#173553;    /* raised */
+    --ink:#102A45;          /* page ground */
+    --ink-2:#15334F;        /* alternate section ground */
+    --surface:#1D3E5C;      /* cards */
+    --surface-2:#27496A;    /* raised */
     --navy:#1C3A64;         /* the logo's dark mass */
     --line:rgba(150,195,232,.14);
     --line-strong:rgba(150,195,232,.26);
     --text:#EDF3F9;
     --muted:#9FB6CE;
-    --dim:#6E8AA8;
+    --dim:#8EA9C4;      /* alzato col fondo: su #102A45 il vecchio #6E8AA8 scendeva a 4,07:1 */
     --acc:#5A93BC;          /* the logo's wave blue */
     --acc-deep:#3F7CA8;
     --acc-bright:#8CBCDE;
@@ -129,9 +125,11 @@
     transition:top .4s var(--ease),padding .4s var(--ease);
   }
   .nav-shell{
-    width:100%;max-width:100%;margin-inline:auto;
-    border:1px solid transparent;border-bottom-color:var(--line);
-    background:linear-gradient(180deg,rgba(8,24,43,.9),rgba(8,24,43,.55));
+    width:100%;max-width:calc(100% - 28px);margin-inline:auto;
+    /* appesa in alto come una barra di menu, non incollata ai bordi */
+    border:1px solid var(--line);border-top-color:transparent;
+    border-radius:0 0 14px 14px;
+    background:linear-gradient(180deg,rgba(16,42,69,.9),rgba(16,42,69,.55));
     backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
     transition:max-width .4s var(--ease),border-radius .4s var(--ease),
                border-color .4s var(--ease),box-shadow .4s var(--ease),
@@ -140,7 +138,7 @@
   header.nav.is-scrolled{top:calc(env(safe-area-inset-top,0px) + 12px);padding-inline:16px}
   header.nav.is-scrolled .nav-shell{
     max-width:1040px;border-radius:12px;border-color:var(--line-strong);
-    background:rgba(8,24,43,.76);
+    background:rgba(16,42,69,.76);
     box-shadow:0 20px 48px -26px rgba(0,0,0,.9);
   }
   .nav-in{display:flex;align-items:center;justify-content:space-between;height:76px;gap:20px;
@@ -149,9 +147,21 @@
   .brand{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-weight:600;font-size:25px;letter-spacing:.01em}
   .brand .mark{width:26px;height:26px;flex:none}
   .brand .mark svg{width:100%;height:100%;display:block}
-  .nav-links{display:flex;align-items:center;gap:36px}
-  .nav-links .lnk{font-size:12.5px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:color .25s}
-  .nav-links .lnk:hover{color:var(--acc)}
+  /* Le voci come i "trigger" di una barra di menu: icona piccola, etichetta, e
+     uno sfondo morbido che compare sotto il puntatore invece del solo cambio
+     di colore. Lo spazio fra le voci scende da 36px a 4px, perche' adesso a
+     separarle ci pensa la loro imbottitura. */
+  .nav-links{display:flex;align-items:center;gap:4px}
+  .nav-links .lnk{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:11.5px;font-weight:400;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--muted);padding:9px 13px;border-radius:8px;
+    transition:color .25s var(--ease),background .25s var(--ease)}
+  .nav-links .lnk svg{width:15px;height:15px;flex:none;opacity:.55;
+    transition:opacity .25s var(--ease),color .25s var(--ease)}
+  .nav-links .lnk:hover{color:var(--text);background:var(--acc-wash)}
+  .nav-links .lnk:hover svg{opacity:1;color:var(--acc-bright)}
+  .nav-sep{width:1px;height:18px;background:var(--line-strong);margin-inline:10px 4px;flex:none}
 
   /* hamburger that morphs into a cross */
   .burger{display:none;position:relative;width:42px;height:42px;flex:none;cursor:pointer;
@@ -172,7 +182,7 @@
   .mobile-menu{
     position:fixed;inset:0;z-index:49;display:flex;flex-direction:column;justify-content:space-between;
     gap:28px;padding:calc(104px + env(safe-area-inset-top,0px)) 24px calc(32px + env(safe-area-inset-bottom,0px));
-    background:rgba(8,24,43,.97);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    background:rgba(16,42,69,.97);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
     opacity:0;transform:scale(.98);
     transition:opacity .28s var(--ease),transform .28s var(--ease);
   }
@@ -200,138 +210,80 @@
   }
 
 
-  /* ---------- VIDEO HERO ----------
-     A real dolly shot, scrubbed by the scroll. The site itself is NOT in the
-     video: the screen is deliberately blank, and the real section is drawn in
-     HTML on top of it, tracked to the screen as it grows. That way the text you
-     land on is live DOM at full resolution, never magnified video pixels.
-     Off by default — activated only when the video is ready on a wide screen. */
-  .vhero-track{display:none}
-  .has-vhero .vhero-track{display:block;height:320vh;position:relative}
-  /* ---------- Hero scorrevole del telefono ----------
-     Non e' la hero grande rimpicciolita. Li' c'e' una pagina vera agganciata
-     allo schermo del laptop: misure, una replica del DOM, un secondo livello
-     di composizione. Su 390 px quella pagina e' illeggibile e quelle tre cose
-     si pagano a scatti, e infatti la prima versione andava a scatti.
-     Qui c'e' un'altra ripresa, verticale e senza niente da agganciare: sale
-     nel buio di una stanza in pietra e si apre su una finestra sull'Adriatico
-     all'ora blu. Il filmato, il testo sopra, e alla fine l'immagine si scioglie
-     nel fondo della pagina. Nient'altro.
-     svh e non vh: con vh la scena si ridimensiona ogni volta che la barra del
-     browser si nasconde, e il pin sobbalza. */
-  .has-vlite .vhero-track{display:block;height:180svh;position:relative}
-  .has-vlite .mhero{display:none}
-  .has-vlite .vhero-pin{height:100svh}
-  .has-vlite .vhero-screen{display:none}
-  .has-vlite .vhero-hint{display:none}
-  .vhero-end{position:absolute;inset:0;z-index:2;pointer-events:none;
-    background:var(--ink);opacity:0;will-change:opacity}
-  .has-vhero .hero{display:none}
-  /* delivered through the laptop screen instead, so it must not repeat below.
-     Scoped to the page's own strip — the clone inside the overlay shares the
-     class, and an unscoped rule blanks the overlay. */
-  .has-vhero main > #services{display:none}
-  .vhero-pin{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--ink)}
-  .vhero-pin video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-    will-change:opacity}
-  .vhero-veil{position:absolute;inset:0;pointer-events:none;
-    /* Piu' forte di prima: la clip del bar e' luminosa, mentre quella vecchia
-       era una stanza di notte e un velo leggero bastava. Si spegne comunque
-       entro il primo terzo della corsa, quando il titolo se n'e' andato. */
-    background:linear-gradient(100deg,rgba(8,24,43,.95) 0%,rgba(8,24,43,.88) 26%,rgba(8,24,43,.6) 52%,rgba(8,24,43,.18) 78%,rgba(8,24,43,0) 100%);
-    will-change:opacity}
-  /* the page, painted onto the laptop screen */
-  .vhero-screen{position:absolute;left:0;top:0;overflow:hidden;opacity:0;
-    transform-origin:top left;background:#F6F9FC;will-change:transform,opacity}
-  /* Laid out once at a fixed width and scaled, so the text never re-wraps as
-     the screen grows — a real screen does not re-flow as you walk towards it. */
-  /* Alta quanto il pannello e contenuto centrato. measureFit() sceglie
-     fitK in modo che la sezione ci stia SEMPRE, quindi centrare non puo'
-     mai tagliarla sopra o sotto.
-     Senza altezza propria la pagina era alta solo quanto il suo contenuto:
-     su una finestra larga e bassa la sezione e' naturalmente piu' corta del
-     viewport, e sotto restava una fascia scura dentro lo schermo del
-     laptop. #F6F9FC e' il --ink della classe .light, cioe' il fondo della
-     sezione li' dentro; qui il token vale il blu scuro e non si puo' usare. */
-  .vhero-screen .vh-inner{position:absolute;top:0;left:0;
-    transform-origin:top left;background:#F6F9FC;
-    display:flex;flex-direction:column;justify-content:center}
-  .vhero-screen .vh-inner > *{width:100%;flex:none}
-  .vhero-copy{position:absolute;inset:0;z-index:3;display:flex;align-items:center;
-    pointer-events:none;will-change:opacity}
-  .vhero-copy .wrap{width:100%;pointer-events:auto}
-  .vhero-copy .eyebrow,.vhero-copy h1,.vhero-copy .hero-sub,.vhero-copy .hero-cta{max-width:600px}
-  .vhero-copy h1{font-size:clamp(34px,4.4vw,58px);font-weight:600;line-height:1.08;margin-top:22px}
-  .vhero-copy h1 em{color:var(--acc);font-weight:600}
-  .vhero-copy .hero-sub{color:var(--muted);font-size:clamp(15.5px,1.7vw,17.5px);margin-top:20px;line-height:1.72}
-  .vhero-copy .hero-cta{margin-top:34px}
-  .vhero-hint{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);z-index:4;
-    font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);
-    display:flex;flex-direction:column;align-items:center;gap:9px;pointer-events:none}
-  .vhero-hint i{display:block;width:1px;height:26px;background:linear-gradient(180deg,var(--acc),transparent);
-    animation:hintdrop 1.9s var(--ease) infinite}
-  @keyframes hintdrop{0%{transform:scaleY(0);transform-origin:top}
-    55%{transform:scaleY(1);transform-origin:top}
-    56%{transform:scaleY(1);transform-origin:bottom}
-    100%{transform:scaleY(0);transform-origin:bottom}}
-  @media(prefers-reduced-motion:reduce){ .vhero-hint i{animation:none} }
-
-
   /* ---------- HERO ----------
-     Composizione verticale: una foto sola a tutta pagina, il testo in basso
-     dove arriva il pollice. E' anche il ripiego universale — se la hero video
-     non parte (telefono, reduced-motion, video non disponibile) resta questa. */
-  .has-vhero .mhero{display:none}
-  .mhero{
-    display:flex;flex-direction:column;justify-content:flex-end;
-    position:relative;min-height:86vh;min-height:86svh;overflow:hidden;
-    padding:0 0 calc(34px + env(safe-area-inset-bottom,0px));
+     Sfondo in riproduzione continua, testo centrato sopra, e sotto un sito
+     vero dentro una cornice da browser.
+     Il filmato NON e' guidato dallo scroll: parte, gira in tondo, e la pagina
+     gli scorre sopra normale. Quindi niente tabelle di tracciamento, niente
+     pannello inseguito, niente pista da 320vh -- una sezione sola, identica
+     su telefono e su schermo grande. */
+  .hv{
+    position:relative;isolation:isolate;overflow:hidden;background:var(--ink);
+    min-height:100svh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    padding:clamp(120px,16vh,180px) 0 clamp(72px,10vh,120px);
   }
-  .mhero .bg{position:absolute;inset:0;z-index:0;background:var(--ink)}
-  /* L'immagine e' gia' composta col rapporto della cornice: il laptop in
-     alto e sotto il tavolo che si spegne nel fondo del sito. Quindi niente
-     trucchi di altezza e traslazione, che servivano alla vecchia foto del
-     telefono e qui tagliavano i fianchi al laptop. */
-  .mhero .bg img{width:100%;height:100%;object-fit:cover;object-position:50% 0}
-  .mhero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-    background:linear-gradient(180deg,
-      rgba(8,24,43,.55) 0%,
-      rgba(8,24,43,.30) 26%,
-      rgba(8,24,43,.82) 62%,
-      var(--ink) 100%)}
-  .mhero .wrap{position:relative;z-index:2}
-  .mhero h1{font-size:clamp(31px,5.4vw,52px);line-height:1.08;margin-top:16px}
-  .mhero h1 em{color:var(--acc);font-weight:600}
-  .mhero p{color:var(--muted);font-size:clamp(15.5px,1.7vw,17.5px);line-height:1.7;margin-top:14px;max-width:44ch}
-  .mhero .cta{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap}
-  .mhero .meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:24px;
-    font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
-  .mhero .hint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:3;
-    width:1px;height:22px;background:linear-gradient(180deg,var(--acc),transparent);
-    animation:hintdrop 2s var(--ease) infinite}
-  @media(max-width:880px){
-    .mhero .cta{flex-direction:column}
-    .mhero .cta .btn{width:100%}
-    .mhero p{max-width:34ch}
-  }
+  .hv-bg{position:absolute;inset:0;z-index:0;background:var(--ink)}
+  .hv-bg video{width:100%;height:100%;object-fit:cover;object-position:50% 45%;display:block}
+  /* Due veli sovrapposti. Il radiale scurisce al centro perche' il titolo
+     regga su QUALSIASI fotogramma del loop, non solo su quello scelto per il
+     poster; il lineare chiude il fondo nel colore della pagina, cosi' la
+     sezione successiva non comincia con uno stacco netto. */
+  .hv-veil{position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:
+      radial-gradient(118% 78% at 50% 32%,rgba(16,42,69,.10) 0%,rgba(16,42,69,.46) 58%,rgba(16,42,69,.74) 100%),
+      linear-gradient(180deg,rgba(16,42,69,.60) 0%,rgba(16,42,69,.16) 24%,rgba(16,42,69,.38) 60%,var(--ink) 97%)}
 
-  /* ---------- HERO ---------- */
-  .hero{position:relative;padding-top:clamp(50px,7vw,88px);padding-bottom:clamp(64px,9vw,112px);overflow:hidden}
-  .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:200px;background:linear-gradient(180deg,transparent,var(--ink));z-index:1;pointer-events:none}
-  .hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(100deg,rgba(8,24,43,.92) 0%,rgba(8,24,43,.74) 34%,rgba(8,24,43,.3) 62%,rgba(8,24,43,.05) 100%)}
-  .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.02fr .98fr;gap:60px;align-items:center}
-  .hero-copy{min-width:0}
-  .hero h1{font-size:clamp(33px,4.9vw,56px);font-weight:600;margin-top:22px}
-  .hero h1 em{color:var(--acc);font-weight:600}
-  .hero-sub{color:var(--muted);font-size:clamp(15.5px,1.7vw,17.5px);max-width:42ch;margin-top:20px;line-height:1.72}
-  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:38px}
-  .hero-meta{display:flex;gap:0;flex-wrap:wrap;margin-top:44px;border-top:1px solid var(--line);padding-top:22px}
-  .hero-meta span{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);padding-right:26px;margin-right:26px;border-right:1px solid var(--line)}
-  .hero-meta span:last-child{border-right:none;margin-right:0;padding-right:0}
-  .hero-meta b{color:var(--text);font-weight:400}
-  @media(max-width:900px){
-    .hero-grid{grid-template-columns:1fr;gap:48px}
-    .hero-visual{order:-1}
+  .hv-copy{position:relative;z-index:2;text-align:center;
+    display:flex;flex-direction:column;align-items:center}
+
+  /* Il velo generale e' stato alleggerito perche' si vedesse il filmato, ma
+     sottotitolo e diciture sono testo piccolo e su un fotogramma chiaro
+     perdevano contrasto. Invece di riscurire tutta l'inquadratura, una
+     macchia morbida SOLO dietro al testo: i bordi restano aperti e la scena
+     si vede. z-index -1 sta nel contesto creato da .hv-copy, quindi passa
+     sopra il velo e resta sotto le parole. */
+  .hv-copy::before{content:"";position:absolute;z-index:-1;pointer-events:none;
+    left:50%;top:50%;transform:translate(-50%,-50%);width:152%;height:138%;
+    background:radial-gradient(54% 52% at 50% 50%,
+      rgba(16,42,69,.60) 0%,rgba(16,42,69,.34) 54%,rgba(16,42,69,0) 80%)}
+  .hv-sub,.hv-meta{text-shadow:0 1px 14px rgba(16,42,69,.55)}
+
+  .hv-pill{display:inline-flex;align-items:center;gap:10px;
+    font-family:var(--sans);font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--acc-bright);padding:9px 20px;border-radius:999px;
+    border:1px solid var(--line-strong);background:rgba(12,32,56,.42);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+  .hv-pill i{width:5px;height:5px;border-radius:50%;background:var(--acc);
+    box-shadow:0 0 0 3px rgba(90,147,188,.22)}
+
+  /* Il titolo sfuma verso il basso: e' il movimento preso dalla hero di
+     riferimento, ma li' sta su un bastone e qui su un graziato. Con
+     Cormorant la sfumatura legge come luce su una lastra, non come
+     l'ennesima pagina di un prodotto software. */
+  .hv-title{font-size:clamp(38px,6.4vw,76px);font-weight:600;line-height:1.04;
+    letter-spacing:-.018em;margin-top:26px;max-width:16ch;
+    background:linear-gradient(180deg,#FFFFFF 0%,#EDF3F9 44%,rgba(237,243,249,.56) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .hv-title em{font-style:italic;font-weight:600;
+    background:linear-gradient(180deg,var(--acc-bright) 0%,var(--acc) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .hv-sub{color:var(--muted);font-size:clamp(15.5px,1.7vw,18px);line-height:1.7;
+    max-width:52ch;margin-top:22px}
+  .hv-cta{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:36px}
+  .hv-meta{display:flex;flex-wrap:wrap;gap:10px 26px;justify-content:center;margin-top:34px;
+    font-size:10.5px;letter-spacing:.17em;text-transform:uppercase;color:var(--dim)}
+
+
+  @media(max-width:880px){
+    .hv{padding:clamp(104px,18vh,140px) 0 clamp(64px,9vh,96px)}
+    /* 13ch mandava il trattino lungo a capo da solo. Non si puo' incollare
+       con un &nbsp;: il traduttore confronta i nodi di testo INTERI e una
+       spazio unificatore non combacia con la chiave del dizionario. */
+    .hv-title{max-width:17ch}
+    .hv-sub{max-width:38ch}
+    .hv-cta{flex-direction:column;width:100%;max-width:340px}
+    .hv-cta .btn{width:100%}
   }
 
   /* ---------- 3D DEVICE MOCKUPS ---------- */
@@ -422,9 +374,9 @@
 
   /* "Open" control sitting on the screen */
   .screen-scrim{position:absolute;inset:0;pointer-events:none;
-    background:linear-gradient(180deg,rgba(8,24,43,.34),rgba(8,24,43,.66));
+    background:linear-gradient(180deg,rgba(16,42,69,.34),rgba(16,42,69,.66));
     transition:background .4s var(--ease)}
-  .laptop-screen:hover .screen-scrim{background:linear-gradient(180deg,rgba(8,24,43,.18),rgba(8,24,43,.5))}
+  .laptop-screen:hover .screen-scrim{background:linear-gradient(180deg,rgba(16,42,69,.18),rgba(16,42,69,.5))}
   .screen-open{
     position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
     display:inline-flex;align-items:center;gap:.8em;
@@ -615,7 +567,7 @@
     background:linear-gradient(180deg,#F6F9FC 0%,rgba(246,249,252,.42) 30%,rgba(246,249,252,0) 100%);
     will-change:opacity}
   .br-bot{position:absolute;left:0;right:0;bottom:0;height:34vh;pointer-events:none;
-    background:linear-gradient(0deg,var(--ink) 0%,rgba(8,24,43,.72) 34%,rgba(8,24,43,0) 100%)}
+    background:linear-gradient(0deg,var(--ink) 0%,rgba(16,42,69,.72) 34%,rgba(16,42,69,0) 100%)}
   /* velo SOLO dove sta il testo, non su tutto il fotogramma */
   .br-scrim{position:absolute;right:0;top:0;bottom:0;width:62%;pointer-events:none;
     background:linear-gradient(270deg,rgba(6,18,34,.82) 0%,rgba(6,18,34,.5) 42%,rgba(6,18,34,0) 100%)}
@@ -790,7 +742,7 @@
     display:flex;align-items:flex-end;transition:transform .5s var(--ease)}
   .who-card img{position:absolute;inset:0;transition:transform .9s var(--ease)}
   .who-card::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
-    background:linear-gradient(180deg,rgba(8,24,43,.12) 0%,rgba(8,24,43,.55) 48%,rgba(8,24,43,.93) 100%)}
+    background:linear-gradient(180deg,rgba(16,42,69,.12) 0%,rgba(16,42,69,.55) 48%,rgba(16,42,69,.93) 100%)}
   .who-card:hover{transform:translateY(-4px)}
   .who-card:hover img{transform:scale(1.06)}
   .who-card .txt{position:relative;z-index:3;padding:26px 24px;color:#EDF3F9}
@@ -811,7 +763,7 @@
      and a lighter grade keeps the harbour lights warm against the navy */
   .contact .sec-bg{--grade:.3}
   .contact .sec-bg img{opacity:.7}
-  .contact .sec-bg::after{background:linear-gradient(180deg,var(--ink) 0%,rgba(8,24,43,.5) 30%,rgba(8,24,43,.66) 74%,var(--ink) 100%)}
+  .contact .sec-bg::after{background:linear-gradient(180deg,var(--ink) 0%,rgba(16,42,69,.5) 30%,rgba(16,42,69,.66) 74%,var(--ink) 100%)}
   /* on a light section the photo becomes a faint surface texture, not a picture */
   .light .sec-bg{--grade:.16;--veil-edge:var(--ink)}
   .light .sec-bg img{opacity:.68;filter:saturate(.6) brightness(1) contrast(.98)}
@@ -831,11 +783,11 @@
      in our own deep blues. The two soft radials stand in for the softness and
      wave parameters, which the flat CSS version can't reproduce. */
   .grad-bg{
-    background-color:#08182B;
+    background-color:#102A45;
     background-image:
       radial-gradient(1300px 640px at 10% -10%, rgba(28,58,100,.5), transparent 62%),
       radial-gradient(1100px 560px at 92% 108%, rgba(23,53,83,.55), transparent 60%),
-      linear-gradient(90deg,#08182B 0%,#0F2843 33%,#16355A 67%,#1C3A64 100%);
+      linear-gradient(90deg,#102A45 0%,#16355A 33%,#1D3F6B 67%,#26518A 100%);
   }
 
   /* ---------- LIGHT SECTIONS ----------
@@ -918,7 +870,7 @@
   .ba-range:focus-visible + .ba-line{outline:2px solid var(--acc-bright);outline-offset:4px}
   .ba-tag{position:absolute;bottom:12px;z-index:5;pointer-events:none;font-size:10px;
     letter-spacing:.2em;text-transform:uppercase;padding:6px 12px;border-radius:2px;
-    background:rgba(8,24,43,.82);color:var(--text)}
+    background:rgba(16,42,69,.82);color:var(--text)}
   .ba-tag.l{left:12px}
   .ba-tag.r{right:12px}
 
@@ -1019,11 +971,12 @@
         Puntamedia
       </a>
       <nav class="nav-links" aria-label="Primary">
-      <a class="lnk" href="#work">Work</a>
-      <a class="lnk" href="#services">Services</a>
-      <a class="lnk" href="#pricing">Pricing</a>
-      <a class="lnk" href="#faq">FAQ</a>
-      <a class="lnk" href="#about">About</a>
+      <a class="lnk" href="#work"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h3.9l2 2H19a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Work</a>
+      <a class="lnk" href="#services"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 14 9 5 9-5"/></svg>Services</a>
+      <a class="lnk" href="#pricing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4 12 22l-9-9V4a1 1 0 0 1 1-1h9l7.6 7.6a2 2 0 0 1 0 2.8z"/><path d="M7.6 7.6h.01"/></svg>Pricing</a>
+      <a class="lnk" href="#faq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.2 9.2a3 3 0 0 1 5.8 1c0 2-2.9 3-2.9 3"/><path d="M12 17h.01"/></svg>FAQ</a>
+      <a class="lnk" href="#about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>About</a>
+      <span class="nav-sep" aria-hidden="true"></span>
       <span class="lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="hr" aria-pressed="false">HR</button>
@@ -1057,51 +1010,31 @@
 <main id="top">
 
   <!-- VIDEO HERO (activated by JS only when the clip is ready on a wide screen) -->
-  <div class="vhero-track" id="vheroTrack">
-    <div class="vhero-pin" id="vheroPin">
-      <!-- Niente <source> qui dentro, di proposito: la sorgente la sceglie lo
-           script, perche' schermo grande e telefono prendono due file diversi.
-           Con un <source> presente, la riga vid.preload='auto' faceva partire
-           il suo scaricamento prima che src venisse riassegnata, e sul
-           telefono arrivavano i 2,8 MB della clip da desktop oltre ai 479 KB
-           della sua. -->
-      <video id="heroVideo" muted playsinline preload="none" poster="video/hero-bar-v1-poster.webp" aria-hidden="true"></video>
-      <span class="vhero-veil" id="vheroVeil" aria-hidden="true"></span>
-      <span class="vhero-end" id="vheroEnd" aria-hidden="true"></span>
-      <div class="vhero-screen" id="vheroScreen" aria-hidden="true"><div class="vh-inner"></div></div>
-      <div class="vhero-copy" id="vheroCopy">
-        <div class="wrap">
-          <span class="eyebrow">Web Design Studio</span>
-          <h1>Websites your business deserves &mdash; <em>designed around you, built to perform.</em></h1>
-          <p class="hero-sub">Puntamedia designs and builds custom, multilingual websites for restaurants, shops and small businesses &mdash; in whatever style suits your brand, and built to bring you customers.</p>
-          <div class="hero-cta">
-            <a class="btn btn-primary" href="#work">See the work</a>
-            <a class="btn btn-ghost" href="#contact">Start your project</a>
-          </div>
-        </div>
-      </div>
-      <span class="vhero-hint" aria-hidden="true">Scroll<i></i></span>
+  <!-- HERO -->
+  <section class="hv">
+    <div class="hv-bg" aria-hidden="true">
+      <!-- La sorgente la mette lo script, non un <source>: a movimento
+           ridotto o con il risparmio dati il filmato non si scarica affatto
+           e resta il poster. Senza src, il <video> mostra gia' il poster. -->
+      <video id="heroLoop" muted loop playsinline preload="none"
+             poster="video/hero-adriatico-v1-poster.webp"
+             data-src="video/hero-adriatico-v1.mp4"></video>
     </div>
-  </div>
+    <span class="hv-veil" aria-hidden="true"></span>
 
-  <!-- HERO PER TELEFONO (solo sotto gli 880px) -->
-  <section class="mhero">
-    <div class="bg ph" aria-hidden="true">
-      <img src="img/hero-laptop-phone.webp" width="810" height="1520" alt="" fetchpriority="high" decoding="async">
-    </div>
-    <div class="wrap">
-      <span class="eyebrow">Web Design Studio</span>
-      <h1>Websites your business deserves &mdash; <em>designed around you.</em></h1>
-      <p>Custom, multilingual websites for restaurants, shops and small businesses on the Adriatic.</p>
-      <div class="cta">
+    <div class="wrap hv-copy">
+      <span class="hv-pill"><i aria-hidden="true"></i>Web Design Studio</span>
+      <h1 class="hv-title">Websites your business deserves &mdash; <em>designed around you.</em></h1>
+      <p class="hv-sub">Custom, multilingual websites for restaurants, shops and small businesses on the Adriatic.</p>
+      <div class="hv-cta">
         <a class="btn btn-primary" href="#work">See the work</a>
         <a class="btn btn-ghost" href="#contact">Start your project</a>
       </div>
-      <div class="meta">
+      <div class="hv-meta">
         <span>Four languages</span><span>Never templated</span><span>Live in days</span>
       </div>
     </div>
-    <span class="hint" aria-hidden="true"></span>
+
   </section>
 
 
@@ -1377,27 +1310,6 @@
           </a>
         </div>
       </article>
-
-      <article class="work-item" data-wk>
-        <div class="work-visual stage reveal">
-          <div class="device">
-            <div class="browser">
-              <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url" data-wk-type="apartmani-kalelarga.hr">apartmani-kalelarga.hr</span></div>
-              <div class="screen wk-screen"><div class="mk mk-soon"><div class="plus">+</div><div class="t">Project in progress</div><span class="wk-build" aria-hidden="true"><i></i></span></div></div>
-            </div>
-          </div>
-        </div>
-        <div class="work-copy reveal">
-          <span class="work-tag">Apartments &middot; Stays</span>
-          <h3>Apartmani Kalelarga</h3>
-          <div class="loc">Zadar &middot; Croatia</div>
-          <p>In the studio right now: a calm, bright site for two apartments a minute from Zadar's old town. Photography first, availability and house rules in four languages, and a booking enquiry that reaches the owner's phone.</p>
-          <div class="chips"><span class="chip">In build</span><span class="chip">Four languages</span><span class="chip">Booking enquiries</span></div>
-          <a class="work-link" href="#contact">Want yours next? Let's talk
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M9 7h8v8"/></svg>
-          </a>
-        </div>
-      </article>
     </div>
   </section>
 
@@ -1654,9 +1566,9 @@
             <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/></svg></span>
             <span class="tx"><span class="t">WhatsApp</span><span class="d">Quick questions welcome</span></span>
           </a>
-          <a href="https://instagram.com/puntamedia" target="_blank" rel="noopener">
+          <a href="https://instagram.com/puntamedia.hr" target="_blank" rel="noopener">
             <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></span>
-            <span class="tx"><span class="t">@puntamedia</span><span class="d">Work in progress</span></span>
+            <span class="tx"><span class="t">@puntamedia.hr</span><span class="d">Work in progress</span></span>
           </a>
         </div>
       </div>
@@ -1687,7 +1599,7 @@
       <div class="muted" style="margin-top:12px">Custom multilingual websites &middot; Half Croatian, half Italian</div>
     </div>
     <div class="socials">
-      <a href="https://instagram.com/puntamedia" target="_blank" rel="noopener" aria-label="Instagram"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+      <a href="https://instagram.com/puntamedia.hr" target="_blank" rel="noopener" aria-label="Instagram"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
       <a href="https://linkedin.com/in/puntamedia" target="_blank" rel="noopener" aria-label="LinkedIn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 10v7M7 7v.01M11 17v-4a2 2 0 0 1 4 0v4M11 17v-7" stroke-linecap="round"/></svg></a>
       <a href="mailto:hello@puntamedia.net" aria-label="Email"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m4 7 8 6 8-6"/></svg></a>
     </div>
@@ -1900,410 +1812,51 @@
   })();
 
 
-  /* ---------- Video hero: scroll scrubs the dolly, HTML tracks the screen ---------- */
+
+  /* ---------- Hero: lo sfondo che gira ----------
+     Non e' guidato dallo scroll, quindi niente blob, niente salti coalizzati,
+     niente tabelle di tracciamento: parte e gira in tondo. Tutte le cicatrici
+     della vecchia hero scrubbata non servono piu'.
+     Tre cautele restano, e sono proprie di un loop di sfondo:
+     - la sorgente si assegna QUI e non con un <source>, perche' a movimento
+       ridotto o col risparmio dati il filmato non va scaricato affatto e
+       deve restare il poster;
+     - src PRIMA di preload: al contrario il browser comincia a tirare giu'
+       la cosa sbagliata, ed e' un conto gia' pagato su questa pagina;
+     - in pausa quando la hero esce dallo schermo o la scheda passa in
+       secondo piano, se no un telefono macina batteria per decodificare
+       qualcosa che nessuno sta guardando. */
   (function(){
-    var track  = document.getElementById('vheroTrack');
-    var vid    = document.getElementById('heroVideo');
-    var ov     = document.getElementById('vheroScreen');
-    var copy   = document.getElementById('vheroCopy');
-    var veil   = document.getElementById('vheroVeil');
-    var page   = ov.querySelector('.vh-inner');
-    var navEl  = document.getElementById('siteNav');
-    var fitK   = 1;                  // quanto rimpicciolire perche entri tutto
+    var v = document.getElementById('heroLoop');
+    if(!v) return;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var link = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if(reduce || (link && (link.saveData || /^(slow-)?2g$/.test(link.effectiveType || '')))) return;
 
-    function measureFit(){
-      var el = page.firstElementChild;
-      /* niente contenuto, o pista ancora nascosta: misurare darebbe 0 e
-         fisserebbe fitK a 1. fonts.ready e load possono scattare prima che
-         la hero si attivi, quindi la guardia serve davvero. */
-      if(!el || !track.offsetHeight) return;
-      // La pagina non ci sta in altezza, quindi va rimpicciolita. Il punto e
-      // che va impaginata piu larga del viewport nella stessa misura: cosi,
-      // una volta ridotta, copre lo schermo da bordo a bordo invece di
-      // lasciare una striscia vuota a destra.
-      //
-      // L'altezza dipende dalla larghezza e la larghezza dal fattore, quindi
-      // non basta calcolarlo: l'iterazione semplice oscilla. Cerco per
-      // bisezione il fattore piu grande che ci sta ancora, che e monotono.
-      page.style.transform = 'none';
-      page.style.height = 'auto';      /* durante la misura l'altezza non deve vincolare */
-      var limit = vh - 8;
-      /* offsetHeight, NON getBoundingClientRect.
-         Il rettangolo torna in coordinate gia' trasformate, e da quando il
-         pannello si ingrandisce con uno scale() quella misura e' l'altezza
-         moltiplicata per la scala del momento: un numero piccolo, quindi
-         "ci sta" sempre vero, quindi fitK inchiodato a 1 e la pagina piu'
-         corta dello schermo. offsetHeight e' l'altezza di impaginazione e
-         le trasformazioni degli antenati non la toccano. */
-      function heightAt(k){
-        page.style.width = (vw / k) + 'px';
-        return el.offsetHeight * k;
-      }
-      if(heightAt(1) <= limit){
-        fitK = 1;
-      } else {
-        var lo = 0.45, hi = 1;
-        for(var i = 0; i < 7; i++){
-          var mid = (lo + hi) / 2;
-          if(heightAt(mid) <= limit) lo = mid; else hi = mid;
-        }
-        fitK = lo;
-      }
-      // Le misure fisse si scrivono SEMPRE, anche quando la pagina ci stava
-      // gia' a fattore 1: prima il ritorno anticipato le saltava e il
-      // pannello restava largo zero.
-      //
-      // Da qui in poi niente di tutto questo lo tocca piu' lo scroll: il
-      // pannello e' grande quanto la finestra, la pagina dentro e' impaginata
-      // a vw/fitK e ridotta di fitK, cioe' larga esattamente vw. Il resto lo
-      // fa una sola trasformazione, in draw().
-      /* Le misure vere le scrive draw() a ogni fotogramma. Qui si lascia
-         solo la larghezza di impaginazione, che serve a misurare. */
-      page.style.width = (vw / fitK) + 'px';
+    var src = v.getAttribute('data-src');
+    if(!src) return;
+    v.src = src;
+    v.preload = 'auto';
+    v.load();
+
+    function riparti(){
+      var p = v.play();
+      /* se l'autoplay viene negato non si insiste: resta il poster, che e'
+         una fotografia buona e non un buco nero */
+      if(p && p.catch) p.catch(function(){});
     }
-    if(!track || !vid || !ov) return;
+    riparti();
 
-    // Stay on the existing hero for reduced motion, narrow screens, or if the
-    // clip never becomes seekable. Scrubbing is the fragile part on phones.
-    if(reduce || window.innerWidth <= 880) return;
-
-    // Solo ora vale la pena scaricarlo: su telefono la hero video non parte
-    // mai, e con preload="auto" il visitatore si sarebbe scaricato quasi 4 MB
-    // in 4G per niente.
-
-    // LO SCHERMO NON E' UN RETTANGOLO, E I SUOI BORDI NON SONO VERTICALI.
-    //
-    // Nel filmato il portatile e' ripreso di tre quarti, quindi lo schermo e'
-    // un quadrilatero qualsiasi: il bordo basso scende verso destra, e i
-    // bordi laterali sono INCLINATI (pendenza -0,038 a destra, da -0,057 a
-    // -0,071 a sinistra). Da qui OTTO tabelle, i quattro angoli con la loro x
-    // e la loro y, e draw() ci posa sopra la pagina con una matrice
-    // prospettica invece che con una traslazione.
-    //
-    // Due versioni sbagliate prima di questa, e lo sbordo medio misurato
-    // sull'angolo alto-sinistra dice quanto:
-    //   rettangolo dritto, larghezza+centro ............ fino a +42 px, con
-    //     in piu' uno strappo di sette fotogrammi dove la tabella era rotta
-    //   quadrilatero ma con i bordi laterali verticali .. +31,7 px medi
-    //   quattro angoli indipendenti (questo) ............  0,0 medi, +2,4 max
-    //
-    // COME SI MISURA, e perche' le scorciatoie non reggono:
-    // 1. Il confine si prende a META' RAMPA di luminosita' fra cornice e
-    //    schermo, sotto il pixel, camminando da dentro verso fuori. Non con
-    //    una soglia fissa: la soglia dipende da quanto e' illuminata la scena.
-    // 2. Le rette dei bordi con THEIL-SEN, non ai minimi quadrati. Lo sporco
-    //    c'e' davvero: la spalla dell'uomo copre il bordo sinistro in basso
-    //    nei primi fotogrammi, le linguette scure del browser lo rompono in
-    //    alto negli ultimi.
-    // 3. Sui fotogrammi 0-2 lo sporco supera il 43%, cioe' la tenuta di
-    //    Theil-Sen. Quindi DUE PASSATE: pendenza per fotogramma, poi
-    //    adattamento GLOBALE di grado 3 con reiezione sulla serie temporale
-    //    (una finestra locale non basta -- i fotogrammi sporchi stanno al
-    //    bordo della serie e non hanno dati puliti da un lato, quindi li
-    //    segue invece di scartarli), e infine l'intercetta per fotogramma
-    //    con la MEDIANA, che regge fino al 50% di sporco.
-    //
-    // Residuo mediano 0,15 px. Verificato ridisegnando i quadrilateri sui
-    // fotogrammi veri e misurando lo scarto di ogni bordo, prima di scrivere
-    // una riga di questo codice.
-    //
-    // Nota: sui fotogrammi 7-18 la spalla dell'uomo copre DAVVERO l'angolo
-    // basso-sinistra dello schermo. Li' il modello e' giusto e la misura no.
-    // Non importa: il pannello compare solo dal fotogramma 23 in poi.
-    var QAX = [0.3711,0.3702,0.3683,0.3664,0.3644,0.3621,0.3600,0.3579,0.3556,0.3531,0.3509,0.3486,0.3460,0.3434,0.3410,0.3384,0.3357,0.3327,0.3297,0.3266,0.3233,0.3199,0.3165,0.3128,0.3090,0.3052,0.3014,0.2972,0.2932,0.2891,0.2851,0.2806,0.2765,0.2725,0.2684,0.2643,0.2605,0.2566,0.2529,0.2487,0.2446,0.2402,0.2360,0.2314,0.2265,0.2214,0.2161,0.2109,0.2059,0.2009,0.1961,0.1911,0.1865,0.1819,0.1776,0.1731,0.1691,0.1651,0.1615,0.1578,0.1545];   // alto-sx, x
-    var QAY = [0.1996,0.1991,0.1984,0.1981,0.1986,0.1981,0.1966,0.1950,0.1957,0.1941,0.1924,0.1917,0.1915,0.1903,0.1892,0.1879,0.1883,0.1873,0.1851,0.1834,0.1830,0.1805,0.1771,0.1747,0.1735,0.1712,0.1683,0.1672,0.1667,0.1652,0.1619,0.1589,0.1579,0.1555,0.1531,0.1506,0.1506,0.1489,0.1460,0.1442,0.1431,0.1400,0.1365,0.1333,0.1322,0.1282,0.1238,0.1203,0.1180,0.1142,0.1101,0.1064,0.1048,0.1025,0.0992,0.0971,0.0960,0.0936,0.0907,0.0884,0.0875];   // alto-sx, y
-    var QBX = [0.7711,0.7715,0.7723,0.7731,0.7739,0.7748,0.7757,0.7768,0.7775,0.7784,0.7795,0.7806,0.7816,0.7828,0.7841,0.7854,0.7865,0.7877,0.7891,0.7906,0.7921,0.7935,0.7949,0.7966,0.7981,0.7998,0.8017,0.8035,0.8054,0.8074,0.8093,0.8112,0.8131,0.8150,0.8171,0.8193,0.8213,0.8236,0.8260,0.8286,0.8311,0.8338,0.8365,0.8394,0.8421,0.8449,0.8476,0.8504,0.8531,0.8560,0.8585,0.8612,0.8637,0.8660,0.8682,0.8706,0.8728,0.8750,0.8770,0.8790,0.8807];   // alto-dx, x
-    var QBY = [0.2026,0.2021,0.2015,0.2012,0.2018,0.2013,0.1999,0.1983,0.1990,0.1975,0.1958,0.1952,0.1950,0.1939,0.1928,0.1916,0.1920,0.1911,0.1889,0.1873,0.1869,0.1845,0.1811,0.1787,0.1776,0.1754,0.1726,0.1715,0.1711,0.1697,0.1663,0.1635,0.1625,0.1602,0.1578,0.1554,0.1554,0.1538,0.1509,0.1492,0.1482,0.1452,0.1417,0.1387,0.1376,0.1337,0.1294,0.1260,0.1238,0.1200,0.1161,0.1125,0.1109,0.1088,0.1055,0.1035,0.1025,0.1002,0.0974,0.0952,0.0944];   // alto-dx, y
-    var QCX = [0.7609,0.7613,0.7620,0.7628,0.7636,0.7644,0.7653,0.7663,0.7670,0.7678,0.7688,0.7699,0.7708,0.7719,0.7731,0.7743,0.7754,0.7765,0.7777,0.7791,0.7805,0.7819,0.7832,0.7847,0.7861,0.7876,0.7894,0.7910,0.7928,0.7946,0.7964,0.7981,0.7999,0.8016,0.8035,0.8055,0.8074,0.8095,0.8118,0.8142,0.8166,0.8190,0.8216,0.8243,0.8268,0.8294,0.8319,0.8344,0.8370,0.8396,0.8420,0.8444,0.8468,0.8489,0.8510,0.8531,0.8552,0.8572,0.8592,0.8610,0.8626];   // basso-dx, x
-    var QCY = [0.6610,0.6624,0.6647,0.6677,0.6718,0.6755,0.6774,0.6800,0.6843,0.6870,0.6893,0.6927,0.6969,0.7005,0.7037,0.7076,0.7128,0.7168,0.7201,0.7240,0.7295,0.7330,0.7357,0.7397,0.7452,0.7496,0.7537,0.7599,0.7670,0.7728,0.7769,0.7823,0.7891,0.7943,0.7991,0.8051,0.8128,0.8182,0.8230,0.8294,0.8366,0.8424,0.8473,0.8537,0.8626,0.8687,0.8736,0.8804,0.8881,0.8948,0.9002,0.9059,0.9137,0.9201,0.9250,0.9314,0.9384,0.9435,0.9477,0.9525,0.9577];   // basso-dx, y
-    var QDX = [0.3572,0.3561,0.3541,0.3519,0.3497,0.3472,0.3449,0.3425,0.3401,0.3373,0.3349,0.3323,0.3295,0.3266,0.3240,0.3211,0.3181,0.3149,0.3115,0.3081,0.3045,0.3008,0.2971,0.2931,0.2890,0.2849,0.2807,0.2762,0.2718,0.2674,0.2630,0.2582,0.2537,0.2494,0.2450,0.2405,0.2363,0.2321,0.2281,0.2237,0.2192,0.2145,0.2100,0.2050,0.1998,0.1943,0.1888,0.1832,0.1779,0.1726,0.1675,0.1623,0.1574,0.1526,0.1482,0.1436,0.1394,0.1354,0.1317,0.1279,0.1247];   // basso-sx, x
-    var QDY = [0.6340,0.6352,0.6372,0.6398,0.6436,0.6468,0.6484,0.6505,0.6543,0.6566,0.6585,0.6614,0.6651,0.6681,0.6708,0.6741,0.6787,0.6820,0.6846,0.6879,0.6927,0.6954,0.6974,0.7006,0.7052,0.7088,0.7120,0.7173,0.7234,0.7282,0.7312,0.7356,0.7415,0.7456,0.7493,0.7542,0.7608,0.7650,0.7687,0.7739,0.7799,0.7843,0.7880,0.7930,0.8005,0.8051,0.8086,0.8138,0.8200,0.8251,0.8290,0.8332,0.8395,0.8444,0.8477,0.8527,0.8581,0.8618,0.8645,0.8678,0.8717];   // basso-sx, y
-    var FRAMES = 61, FPS = 12, BLEED = 1.000;
-    /* BLEED era 1.004 e contribuiva allo sbordo. Ora i bordi sono presi a
-       META' RAMPA fra cornice e schermo, cioe' sul confine vero: allargare
-       non serve piu'. Mezza rampa (~1px) resta scoperta e si legge come il
-       filo scuro della cornice, che semmai aiuta l'illusione. Sbordare no:
-       pagina chiara sopra cornice scura si vede subito. */
-    var VIDEO_A = 16/9;
-
-    // No interpolation: the video snaps to a whole frame, so the overlay uses
-    // that same frame's geometry. Interpolating between samples put the panel
-    // half a frame ahead of the picture during the fast final stretch.
-    var lastFrame = -1, wantT = -1, shown = false;
-    function lerp(a,b,t){ return a + (b - a) * t; }
-    function clamp(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
-    function ramp(v,a,b){ return clamp((v - a) / (b - a)); }
-
-    /* Porta il rettangolo W0 x H0 sui quattro angoli misurati: l'omografia
-       classica dal quadrato unitario a un quadrilatero, poi riscalata sulla
-       misura del pannello e scritta come matrix3d.
-       matrix3d si scrive PER COLONNE, e la terza riga/colonna (la z) resta
-       l'identita': qui si deforma un piano, non un solido.
-       Gli angoli arrivano in ordine orario da alto-sinistra. */
-    function quadMatrix(c, W0, H0){
-      var x0 = c[0][0], y0 = c[0][1], x1 = c[1][0], y1 = c[1][1],
-          x2 = c[2][0], y2 = c[2][1], x3 = c[3][0], y3 = c[3][1];
-      var dx1 = x1 - x2, dx2 = x3 - x2, sx = x0 - x1 + x2 - x3;
-      var dy1 = y1 - y2, dy2 = y3 - y2, sy = y0 - y1 + y2 - y3;
-      var den = dx1 * dy2 - dx2 * dy1, g = 0, h = 0;
-      /* den si annulla solo su un quadrilatero degenere; su un rettangolo
-         vale -W*H, e g e h vengono zero da soli: la matrice si riduce a una
-         scala pura, che e' esattamente quello che serve a fine corsa. */
-      if(Math.abs(den) > 1e-9){
-        g = (sx * dy2 - dx2 * sy) / den;
-        h = (dx1 * sy - sx * dy1) / den;
-      }
-      var a = x1 - x0 + g * x1, b = x3 - x0 + h * x3;
-      var d = y1 - y0 + g * y1, e = y3 - y0 + h * y3;
-      return 'matrix3d(' + [a / W0, d / W0, 0, g / W0,
-                            b / H0, e / H0, 0, h / H0,
-                            0, 0, 1, 0,
-                            x0, y0, 0, 1].join(',') + ')';
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(e){
+        if(e[0].isIntersecting) riparti(); else v.pause();
+      }, { threshold: 0 }).observe(v);
     }
-
-    // A page, not a single band floating in white. The strip plus the top of
-    // the next section, so the screen shows something that reads as a website.
-    function replica(){
-      var frag = document.createDocumentFragment();
-      ['#services'].forEach(function(sel){
-        var src = document.querySelector(sel);
-        if(!src) return;
-        var c = src.cloneNode(true);
-        c.removeAttribute('id');
-        c.querySelectorAll('[id]').forEach(function(n){ n.removeAttribute('id'); });
-        c.querySelectorAll('.reveal').forEach(function(n){ n.classList.add('in'); });
-        c.querySelectorAll('a,button,input,textarea').forEach(function(n){ n.setAttribute('tabindex','-1'); });
-        frag.appendChild(c);
-      });
-      return frag;
-    }
-
-    var ready = false, dur = 0;
-    function activate(){
-      if(ready) return;
-      dur = vid.duration;
-      if(!dur || !isFinite(dur)) return;
-      ready = true;
-      vid.pause();
-      page.appendChild(replica());
-      /* La classe PRIMA della misura. Al contrario, .vhero-track e' ancora
-         display:none mentre measureFit() misura: l'altezza torna 0, "ci
-         sta" e' sempre vero, e fitK resta 1 per sempre. Su una finestra
-         larga e bassa la sezione risultava cosi' piu' corta dello schermo
-         del laptop, con una fascia vuota sotto. */
-      document.documentElement.classList.add('has-vhero');
-      measure(); measureFit();
-      onScroll();
-
-      /* E poi la si rifa'.
-         La prima misura puo' cadere prima che i font siano applicati al
-         clone, e tutti i ganci che dovrebbero correggerla -- fonts.ready,
-         window.load -- sono promesse ed eventi che scattano UNA volta
-         sola. Col filmato in cache l'attivazione e' quasi istantanea,
-         quindi e' una gara: se quei ganci arrivano prima, la guardia li
-         annulla e fitK resta sbagliato per sempre. E' cosi' che la pagina
-         restava piu' corta dello schermo del laptop.
-         Qui invece la pagina dentro c'e' di sicuro, perche' siamo dopo
-         l'appendChild e dopo has-vhero. */
-      function refit(){ measure(); measureFit(); onScroll(); }
-      requestAnimationFrame(refit);
-      [300, 1200, 3000].forEach(function(ms){ setTimeout(refit, ms); });
-      if(document.fonts && document.fonts.ready) document.fonts.ready.then(refit);
-    }
-    // Il filmato si scarica INTERO, e solo allora lo si da' al <video>.
-    //
-    // Non e' prudenza. Cloudflare Pages serve questo file SENZA
-    // Accept-Ranges: a una richiesta con Range risponde 200 con tutto il
-    // corpo invece di 206. Senza intervalli il decoder non puo' saltare da
-    // nessuna parte finche' non ha ricevuto tutto in fila. I metadati pero'
-    // arrivano subito, quindi la durata si sapeva e activate() partiva lo
-    // stesso: il pannello cominciava a zoomare e il filmato restava sul
-    // primo fotogramma. Ricaricando andava, perche' il file era gia' nella
-    // cache del browser -- ed e' per questo che il difetto sembrava
-    // capriccioso. Preso in memoria, ogni salto e' immediato e di intervalli
-    // non ne serve nessuno.
-    //
-    // Gli ascoltatori si registrano PRIMA di assegnare la sorgente: al
-    // contrario, un video gia' pronto fa scattare l'evento senza nessuno in
-    // ascolto e resta su la hero di ripiego.
-    function viaBlob(){
-      return fetch('video/hero-bar-v1.mp4').then(function(r){
-        if(!r.ok) throw new Error(r.status);
-        return r.blob();
-      }).then(function(b){
-        vid.addEventListener('loadedmetadata', activate);
-        vid.addEventListener('canplaythrough', activate);
-        /* prima la sorgente, poi preload: al contrario si fa partire il
-           caricamento di quello che c'era prima */
-        vid.src = URL.createObjectURL(b);
-        vid.preload = 'auto';
-        vid.load();
-        if(vid.readyState >= 1) activate();
-      });
-    }
-    viaBlob().catch(function(){
-      // Ripiego, se il recupero non riesce: si aspetta che sia il browser a
-      // dire di avere abbastanza dati. Mai su loadedmetadata, che e' il
-      // difetto qui sopra.
-      vid.addEventListener('canplaythrough', activate);
-      vid.src = 'video/hero-bar-v1.mp4';   /* non c'e' piu' un <source> */
-      vid.preload = 'auto';
-      vid.load();
-    });
-    vid.addEventListener('error', function(){ /* leave the CSS hero in place */ });
-    // quando il filmato guadagna dati o finisce un salto, ridisegno
-    ['loadeddata','canplay','seeked'].forEach(function(e){
-      vid.addEventListener(e, function(){ onScroll(); });
-    });
-
-    var vw = 0, vh = 0, raf = 0;
-    function measure(){
-      var de = document.documentElement;
-      vw = de.clientWidth  || window.innerWidth;
-      vh = de.clientHeight || window.innerHeight;
-    }
-    measure();
-
-    function draw(){
-      var r = track.getBoundingClientRect();
-      var span = track.offsetHeight - vh;
-      var praw = span > 0 ? (-r.top) / span : 0;
-      var p = clamp(praw);
-
-      // fuori dalla pista praw supera 1: la barra rientra da sola
-      if(navEl){
-        var hide = ramp(praw, .80, .96) * (1 - ramp(praw, 1.0, 1.08));
-        navEl.style.opacity = String(1 - hide);
-        navEl.style.pointerEvents = hide > .6 ? 'none' : '';
-      }
-
-      // Finche' non c'e' MAI stato un fotogramma da mostrare, il pannello
-      // resta al palo invece di salire per conto suo sopra un'immagine ferma.
-      // Riparte da solo: loadeddata e canplay ridisegnano.
-      //
-      // E' un interruttore che scatta una volta sola, non un controllo a ogni
-      // fotogramma. readyState cala sotto 2 per un attimo mentre il decoder
-      // risolve un salto, e siccome durante lo zoom di salti ce n'e' uno per
-      // fotogramma, controllarlo ogni volta rimandava la hero al fotogramma
-      // zero a intermittenza: era quello a far sbattere il testo.
-      if(!shown){
-        if(vid.readyState >= 2) shown = true; else p = 0;
-      }
-
-      var fi = Math.round(p * (FRAMES - 1));
-      if(fi !== lastFrame){
-        lastFrame = fi;
-        wantT = Math.min(dur - 0.001, fi / FPS);
-      }
-      // Un salto per volta. Scrivere currentTime mentre il decoder sta
-      // ancora risolvendo il precedente li accoda, e una scorsa veloce
-      // basta a inchiodare il filmato.
-      if(wantT >= 0 && !vid.seeking){
-        var t = wantT; wantT = -1;
-        try { vid.currentTime = t; } catch(e){}
-      }
-
-      // the headline clears out early, before the move gets fast
-      copy.style.opacity = String(1 - ramp(p, 0, .20));
-
-      // the page resolves on the screen only once we are close, where the
-      // tracking error is smallest and it reads as the screen coming into view
-      ov.style.opacity = String(ramp(p, .38, .72));
-
-      // object-fit:cover crops the clip, so video coordinates are NOT viewport
-      // coordinates. Work out the displayed rect before placing anything on it.
-      var A = vw / vh, dW, dH;
-      if(A > VIDEO_A){ dW = vw; dH = vw / VIDEO_A; }
-      else           { dH = vh; dW = vh * VIDEO_A; }
-      var oX = (vw - dW) / 2, oY = (vh - dH) / 2;
-
-      // I quattro angoli dello schermo in questo fotogramma, portati dalle
-      // coordinate del filmato a quelle della finestra.
-      // QUATTRO ANGOLI INDIPENDENTI, in senso orario da alto-sinistra.
-      //
-      // Prima i due angoli di sinistra condividevano una x e i due di destra
-      // un'altra, cioe' bordi verticali. Ma i bordi verticali dello schermo
-      // sono INCLINATI -- a meta' filmato il sinistro va da x=540,7 in alto a
-      // x=506,2 in basso -- e una verticale sola, presa sul punto piu'
-      // sporgente, mette un angolo sulla cornice e l'altro dentro lo schermo.
-      // Misurato sull'angolo alto-sinistra: 31,7 px di sbordo medio, 42,5 nel
-      // caso peggiore. Con gli angoli separati: 0,0 medi, 2,4 nel peggiore.
-      var c = [[oX + QAX[fi] * dW, oY + QAY[fi] * dH],    // alto a sinistra
-               [oX + QBX[fi] * dW, oY + QBY[fi] * dH],    // alto a destra
-               [oX + QCX[fi] * dW, oY + QCY[fi] * dH],    // basso a destra
-               [oX + QDX[fi] * dW, oY + QDY[fi] * dH]];   // basso a sinistra
-
-      if(BLEED !== 1){
-        var gx = (c[0][0] + c[1][0] + c[2][0] + c[3][0]) / 4;
-        var gy = (c[0][1] + c[1][1] + c[2][1] + c[3][1]) / 4;
-        for(var ci = 0; ci < 4; ci++){
-          c[ci][0] = gx + (c[ci][0] - gx) * BLEED;
-          c[ci][1] = gy + (c[ci][1] - gy) * BLEED;
-        }
-      }
-
-      // Sul finale il pannello si posa esattamente sulla finestra: gli angoli
-      // scivolano sui quattro spigoli del viewport e la prospettiva si annulla
-      // da sola, senza bisogno di un caso particolare. La pagina dentro resta
-      // impaginata a vw/fitK, quindi atterra alla scala vera del sito, 1:1 con
-      // tutto quello che le scorre sotto.
-      var full = ramp(p, .90, 1);
-      if(full > 0){
-        var vq = [[0,0],[vw,0],[vw,vh],[0,vh]];
-        for(var vi = 0; vi < 4; vi++){
-          c[vi][0] = lerp(c[vi][0], vq[vi][0], full);
-          c[vi][1] = lerp(c[vi][1], vq[vi][1], full);
-        }
-      }
-
-      // Il pannello e' un rettangolo di misura FISSA -- quella naturale del
-      // sito -- e a posarlo sul trapezio ci pensa una sola matrice. Niente
-      // piu' larghezza e altezza riscritte a ogni fotogramma, e soprattutto
-      // niente piu' scale() sulla pagina dentro: la matrice fa tutte e due le
-      // cose, e le fa in prospettiva.
-      //
-      // (Un vecchio tentativo teneva il pannello fisso e lo ingrandiva con
-      // scale(), tagliando l'eccedenza col clip-path. Non puo' funzionare: un
-      // elemento alto quanto la finestra, scalato di sx, non puo' dipingere
-      // piu' di vh*sx. Qui il problema non si pone: il pannello e' alto
-      // vh/fitK e la matrice lo RIMPICCIOLISCE, non lo ingrandisce.)
-      var W0 = vw / fitK, H0 = vh / fitK;
-      ov.style.width  = W0 + 'px';
-      ov.style.height = H0 + 'px';
-      ov.style.transform = quadMatrix(c, W0, H0);
-      // Lo schermo ha i bordi tondi. Il raggio si scrive nello spazio del
-      // pannello, dove la matrice lo riduce insieme a tutto il resto: per
-      // vederne sempre l'1,3% della larghezza a schermo basta l'1,3% di W0.
-      ov.style.borderRadius = (W0 * 0.013 * (1 - full)) + 'px';
-
-      page.style.width  = W0 + 'px';
-      page.style.height = H0 + 'px';
-
-      veil.style.opacity = String(1 - ramp(p, 0, .35));
-    }
-    function onScroll(){
-      if(!ready) return;
-      // Replace any queued frame instead of gating on a boolean. A flag sticks
-      // on forever if the frame never fires — exactly what happens when the page
-      // loads in a hidden or background tab, leaving the hero frozen at frame 0
-      // even after the tab is brought to the front.
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(draw);
-    }
-    window.addEventListener('scroll', onScroll, {passive:true});
-    window.addEventListener('resize', function(){ measure(); measureFit(); onScroll(); });
-    // I font arrivano dopo: finche non ci sono, il testo occupa meno e
-    // l'altezza misurata e piu bassa del vero. Rimisuro quando sono pronti.
-    if(document.fonts && document.fonts.ready){
-      document.fonts.ready.then(function(){ measure(); measureFit(); onScroll(); });
-    }
-    window.addEventListener('load', function(){ measure(); measureFit(); onScroll(); });
-    // catch up the moment the tab becomes visible again
     document.addEventListener('visibilitychange', function(){
-      if(!document.hidden){ measure(); onScroll(); }
+      if(document.hidden) v.pause(); else riparti();
     });
-    window.addEventListener('pageshow', function(){ measure(); onScroll(); });
   })();
+
 
   /* ---------- Prima / dopo, guidato dallo scroll ----------------------
      La lama la muove lo scroll. Prima tiene fermo sul sito vecchio il
@@ -2709,102 +2262,6 @@
     onScroll();
   })();
 
-  /* ---------- Hero scorrevole del telefono ----------
-     Vedi il commento nel CSS per il perche' non e' la hero grande ridotta.
-     Qui sotto c'e' solo la carrellata, e tutte le cicatrici gia' pagate in
-     questa pagina: il filmato intero come blob (Cloudflare Pages serve questi
-     file senza Accept-Ranges, e senza intervalli il decoder non salta da
-     nessuna parte), un salto per volta controllando vid.seeking, e l'attesa
-     del primo fotogramma come interruttore a scatto singolo -- controllarla a
-     ogni giro fa lampeggiare la hero, perche' readyState cala sotto 2 per un
-     attimo a ogni salto. */
-  (function(){
-    var track = document.getElementById('vheroTrack');
-    var vid   = document.getElementById('heroVideo');
-    var copy  = document.getElementById('vheroCopy');
-    var veil  = document.getElementById('vheroVeil');
-    var endEl = document.getElementById('vheroEnd');
-    if(!track || !vid || !copy) return;
-
-    /* la hero grande si prende gli schermi larghi; qui sotto questa */
-    if(reduce || window.innerWidth > 880) return;
-    var link = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    if(link && (link.saveData || /^(slow-)?2g$/.test(link.effectiveType || ''))) return;
-
-    var FRAMES = 40, FPS = 8;
-    var dur = 0, ready = false, shown = false, lastFrame = -1, wantT = -1, pend = 0;
-
-    function clamp(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
-    function ramp(v,a,b){ return clamp((v - a) / (b - a)); }
-
-    function activate(){
-      if(ready) return;
-      dur = vid.duration;
-      if(!dur || !isFinite(dur)) return;
-      ready = true;
-      vid.pause();
-      document.documentElement.classList.add('has-vlite');
-      onScroll();
-    }
-
-    function start(){
-      fetch('video/hero-finestra-v1.mp4').then(function(r){
-        if(!r.ok) throw new Error(r.status);
-        return r.blob();
-      }).then(function(b){
-        vid.addEventListener('loadedmetadata', activate);
-        vid.addEventListener('canplaythrough', activate);
-        vid.poster = 'video/hero-finestra-v1-poster.webp';
-        /* prima la sorgente, poi preload: al contrario si fa partire il
-           caricamento di quello che c'era prima */
-        vid.src = URL.createObjectURL(b);
-        vid.preload = 'auto';
-        vid.load();
-        if(vid.readyState >= 1) activate();
-      }).catch(function(){ /* resta la hero con la fotografia ferma */ });
-    }
-    /* a pagina caricata: 566 KB non devono mettersi in coda davanti al resto */
-    if(document.readyState === 'complete') start();
-    else window.addEventListener('load', start);
-
-    ['loadeddata','canplay','seeked'].forEach(function(e){
-      vid.addEventListener(e, function(){ onScroll(); });
-    });
-
-    function draw(){
-      if(!ready) return;
-      var vh = document.documentElement.clientHeight || window.innerHeight;
-      var span = track.offsetHeight - vh;
-      var p = clamp(span > 0 ? (-track.getBoundingClientRect().top) / span : 0);
-
-      if(!shown){
-        if(vid.readyState >= 2) shown = true; else p = 0;
-      }
-
-      var fi = Math.round(p * (FRAMES - 1));
-      if(fi !== lastFrame){
-        lastFrame = fi;
-        wantT = Math.min(dur - 0.001, fi / FPS);
-      }
-      if(wantT >= 0 && !vid.seeking){
-        var t = wantT; wantT = -1;
-        try { vid.currentTime = t; } catch(e){}
-      }
-
-      /* il testo se ne va con calma, poi la salita resta sola */
-      copy.style.opacity = String(1 - ramp(p, .18, .44));
-      if(veil)  veil.style.opacity  = String(1 - ramp(p, .12, .50));
-      /* e all'ultimo tratto il vetro diventa il fondo della pagina */
-      if(endEl) endEl.style.opacity = String(ramp(p, .74, .96));
-    }
-
-    function onScroll(){ cancelAnimationFrame(pend); pend = requestAnimationFrame(draw); }
-    window.addEventListener('scroll', onScroll, { passive:true });
-    window.addEventListener('resize', onScroll);
-    document.addEventListener('visibilitychange', function(){ if(!document.hidden) onScroll(); });
-    window.addEventListener('pageshow', onScroll);
-    onScroll();
-  })();
 
   /* ---------- Il ponte, fra il posto vero e il lavoro ----------
      Stessa meccanica della hero e stesse cicatrici: il filmato si prende
