@@ -19,7 +19,7 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-<meta name="theme-color" content="#08182B">
+<meta name="theme-color" content="#102A45">
 <!-- Font in casa, non da Google: nessun dato dei visitatori va a Google (GDPR) -->
 <!-- Il poster della hero e' il primo pixel grande della pagina, quindi vale
      la pena anticiparlo. Il filmato invece NO: lo sceglie lo script, perche'
@@ -45,16 +45,16 @@
 <style>
   :root{
     /* Drawn from the logo: deep navy headland over an Adriatic blue wave */
-    --ink:#08182B;          /* page ground */
-    --ink-2:#0C2038;        /* alternate section ground */
-    --surface:#112A46;      /* cards */
-    --surface-2:#173553;    /* raised */
+    --ink:#102A45;          /* page ground */
+    --ink-2:#15334F;        /* alternate section ground */
+    --surface:#1D3E5C;      /* cards */
+    --surface-2:#27496A;    /* raised */
     --navy:#1C3A64;         /* the logo's dark mass */
     --line:rgba(150,195,232,.14);
     --line-strong:rgba(150,195,232,.26);
     --text:#EDF3F9;
     --muted:#9FB6CE;
-    --dim:#6E8AA8;
+    --dim:#8EA9C4;      /* alzato col fondo: su #102A45 il vecchio #6E8AA8 scendeva a 4,07:1 */
     --acc:#5A93BC;          /* the logo's wave blue */
     --acc-deep:#3F7CA8;
     --acc-bright:#8CBCDE;
@@ -125,9 +125,11 @@
     transition:top .4s var(--ease),padding .4s var(--ease);
   }
   .nav-shell{
-    width:100%;max-width:100%;margin-inline:auto;
-    border:1px solid transparent;border-bottom-color:var(--line);
-    background:linear-gradient(180deg,rgba(8,24,43,.9),rgba(8,24,43,.55));
+    width:100%;max-width:calc(100% - 28px);margin-inline:auto;
+    /* appesa in alto come una barra di menu, non incollata ai bordi */
+    border:1px solid var(--line);border-top-color:transparent;
+    border-radius:0 0 14px 14px;
+    background:linear-gradient(180deg,rgba(16,42,69,.9),rgba(16,42,69,.55));
     backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
     transition:max-width .4s var(--ease),border-radius .4s var(--ease),
                border-color .4s var(--ease),box-shadow .4s var(--ease),
@@ -136,7 +138,7 @@
   header.nav.is-scrolled{top:calc(env(safe-area-inset-top,0px) + 12px);padding-inline:16px}
   header.nav.is-scrolled .nav-shell{
     max-width:1040px;border-radius:12px;border-color:var(--line-strong);
-    background:rgba(8,24,43,.76);
+    background:rgba(16,42,69,.76);
     box-shadow:0 20px 48px -26px rgba(0,0,0,.9);
   }
   .nav-in{display:flex;align-items:center;justify-content:space-between;height:76px;gap:20px;
@@ -145,9 +147,21 @@
   .brand{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-weight:600;font-size:25px;letter-spacing:.01em}
   .brand .mark{width:26px;height:26px;flex:none}
   .brand .mark svg{width:100%;height:100%;display:block}
-  .nav-links{display:flex;align-items:center;gap:36px}
-  .nav-links .lnk{font-size:12.5px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:color .25s}
-  .nav-links .lnk:hover{color:var(--acc)}
+  /* Le voci come i "trigger" di una barra di menu: icona piccola, etichetta, e
+     uno sfondo morbido che compare sotto il puntatore invece del solo cambio
+     di colore. Lo spazio fra le voci scende da 36px a 4px, perche' adesso a
+     separarle ci pensa la loro imbottitura. */
+  .nav-links{display:flex;align-items:center;gap:4px}
+  .nav-links .lnk{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:11.5px;font-weight:400;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--muted);padding:9px 13px;border-radius:8px;
+    transition:color .25s var(--ease),background .25s var(--ease)}
+  .nav-links .lnk svg{width:15px;height:15px;flex:none;opacity:.55;
+    transition:opacity .25s var(--ease),color .25s var(--ease)}
+  .nav-links .lnk:hover{color:var(--text);background:var(--acc-wash)}
+  .nav-links .lnk:hover svg{opacity:1;color:var(--acc-bright)}
+  .nav-sep{width:1px;height:18px;background:var(--line-strong);margin-inline:10px 4px;flex:none}
 
   /* hamburger that morphs into a cross */
   .burger{display:none;position:relative;width:42px;height:42px;flex:none;cursor:pointer;
@@ -168,7 +182,7 @@
   .mobile-menu{
     position:fixed;inset:0;z-index:49;display:flex;flex-direction:column;justify-content:space-between;
     gap:28px;padding:calc(104px + env(safe-area-inset-top,0px)) 24px calc(32px + env(safe-area-inset-bottom,0px));
-    background:rgba(8,24,43,.97);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    background:rgba(16,42,69,.97);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
     opacity:0;transform:scale(.98);
     transition:opacity .28s var(--ease),transform .28s var(--ease);
   }
@@ -217,11 +231,23 @@
      sezione successiva non comincia con uno stacco netto. */
   .hv-veil{position:absolute;inset:0;z-index:1;pointer-events:none;
     background:
-      radial-gradient(118% 76% at 50% 30%,rgba(8,24,43,.26) 0%,rgba(8,24,43,.70) 58%,rgba(8,24,43,.90) 100%),
-      linear-gradient(180deg,rgba(8,24,43,.84) 0%,rgba(8,24,43,.40) 24%,rgba(8,24,43,.62) 60%,var(--ink) 97%)}
+      radial-gradient(118% 78% at 50% 32%,rgba(16,42,69,.10) 0%,rgba(16,42,69,.46) 58%,rgba(16,42,69,.74) 100%),
+      linear-gradient(180deg,rgba(16,42,69,.60) 0%,rgba(16,42,69,.16) 24%,rgba(16,42,69,.38) 60%,var(--ink) 97%)}
 
   .hv-copy{position:relative;z-index:2;text-align:center;
     display:flex;flex-direction:column;align-items:center}
+
+  /* Il velo generale e' stato alleggerito perche' si vedesse il filmato, ma
+     sottotitolo e diciture sono testo piccolo e su un fotogramma chiaro
+     perdevano contrasto. Invece di riscurire tutta l'inquadratura, una
+     macchia morbida SOLO dietro al testo: i bordi restano aperti e la scena
+     si vede. z-index -1 sta nel contesto creato da .hv-copy, quindi passa
+     sopra il velo e resta sotto le parole. */
+  .hv-copy::before{content:"";position:absolute;z-index:-1;pointer-events:none;
+    left:50%;top:50%;transform:translate(-50%,-50%);width:152%;height:138%;
+    background:radial-gradient(54% 52% at 50% 50%,
+      rgba(16,42,69,.60) 0%,rgba(16,42,69,.34) 54%,rgba(16,42,69,0) 80%)}
+  .hv-sub,.hv-meta{text-shadow:0 1px 14px rgba(16,42,69,.55)}
 
   .hv-pill{display:inline-flex;align-items:center;gap:10px;
     font-family:var(--sans);font-size:11px;letter-spacing:.24em;text-transform:uppercase;
@@ -348,9 +374,9 @@
 
   /* "Open" control sitting on the screen */
   .screen-scrim{position:absolute;inset:0;pointer-events:none;
-    background:linear-gradient(180deg,rgba(8,24,43,.34),rgba(8,24,43,.66));
+    background:linear-gradient(180deg,rgba(16,42,69,.34),rgba(16,42,69,.66));
     transition:background .4s var(--ease)}
-  .laptop-screen:hover .screen-scrim{background:linear-gradient(180deg,rgba(8,24,43,.18),rgba(8,24,43,.5))}
+  .laptop-screen:hover .screen-scrim{background:linear-gradient(180deg,rgba(16,42,69,.18),rgba(16,42,69,.5))}
   .screen-open{
     position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
     display:inline-flex;align-items:center;gap:.8em;
@@ -541,7 +567,7 @@
     background:linear-gradient(180deg,#F6F9FC 0%,rgba(246,249,252,.42) 30%,rgba(246,249,252,0) 100%);
     will-change:opacity}
   .br-bot{position:absolute;left:0;right:0;bottom:0;height:34vh;pointer-events:none;
-    background:linear-gradient(0deg,var(--ink) 0%,rgba(8,24,43,.72) 34%,rgba(8,24,43,0) 100%)}
+    background:linear-gradient(0deg,var(--ink) 0%,rgba(16,42,69,.72) 34%,rgba(16,42,69,0) 100%)}
   /* velo SOLO dove sta il testo, non su tutto il fotogramma */
   .br-scrim{position:absolute;right:0;top:0;bottom:0;width:62%;pointer-events:none;
     background:linear-gradient(270deg,rgba(6,18,34,.82) 0%,rgba(6,18,34,.5) 42%,rgba(6,18,34,0) 100%)}
@@ -716,7 +742,7 @@
     display:flex;align-items:flex-end;transition:transform .5s var(--ease)}
   .who-card img{position:absolute;inset:0;transition:transform .9s var(--ease)}
   .who-card::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
-    background:linear-gradient(180deg,rgba(8,24,43,.12) 0%,rgba(8,24,43,.55) 48%,rgba(8,24,43,.93) 100%)}
+    background:linear-gradient(180deg,rgba(16,42,69,.12) 0%,rgba(16,42,69,.55) 48%,rgba(16,42,69,.93) 100%)}
   .who-card:hover{transform:translateY(-4px)}
   .who-card:hover img{transform:scale(1.06)}
   .who-card .txt{position:relative;z-index:3;padding:26px 24px;color:#EDF3F9}
@@ -737,7 +763,7 @@
      and a lighter grade keeps the harbour lights warm against the navy */
   .contact .sec-bg{--grade:.3}
   .contact .sec-bg img{opacity:.7}
-  .contact .sec-bg::after{background:linear-gradient(180deg,var(--ink) 0%,rgba(8,24,43,.5) 30%,rgba(8,24,43,.66) 74%,var(--ink) 100%)}
+  .contact .sec-bg::after{background:linear-gradient(180deg,var(--ink) 0%,rgba(16,42,69,.5) 30%,rgba(16,42,69,.66) 74%,var(--ink) 100%)}
   /* on a light section the photo becomes a faint surface texture, not a picture */
   .light .sec-bg{--grade:.16;--veil-edge:var(--ink)}
   .light .sec-bg img{opacity:.68;filter:saturate(.6) brightness(1) contrast(.98)}
@@ -757,11 +783,11 @@
      in our own deep blues. The two soft radials stand in for the softness and
      wave parameters, which the flat CSS version can't reproduce. */
   .grad-bg{
-    background-color:#08182B;
+    background-color:#102A45;
     background-image:
       radial-gradient(1300px 640px at 10% -10%, rgba(28,58,100,.5), transparent 62%),
       radial-gradient(1100px 560px at 92% 108%, rgba(23,53,83,.55), transparent 60%),
-      linear-gradient(90deg,#08182B 0%,#0F2843 33%,#16355A 67%,#1C3A64 100%);
+      linear-gradient(90deg,#102A45 0%,#16355A 33%,#1D3F6B 67%,#26518A 100%);
   }
 
   /* ---------- LIGHT SECTIONS ----------
@@ -844,7 +870,7 @@
   .ba-range:focus-visible + .ba-line{outline:2px solid var(--acc-bright);outline-offset:4px}
   .ba-tag{position:absolute;bottom:12px;z-index:5;pointer-events:none;font-size:10px;
     letter-spacing:.2em;text-transform:uppercase;padding:6px 12px;border-radius:2px;
-    background:rgba(8,24,43,.82);color:var(--text)}
+    background:rgba(16,42,69,.82);color:var(--text)}
   .ba-tag.l{left:12px}
   .ba-tag.r{right:12px}
 
@@ -945,11 +971,12 @@
         Puntamedia
       </a>
       <nav class="nav-links" aria-label="Primary">
-      <a class="lnk" href="#work">Work</a>
-      <a class="lnk" href="#services">Services</a>
-      <a class="lnk" href="#pricing">Pricing</a>
-      <a class="lnk" href="#faq">FAQ</a>
-      <a class="lnk" href="#about">About</a>
+      <a class="lnk" href="#work"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h3.9l2 2H19a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Work</a>
+      <a class="lnk" href="#services"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 14 9 5 9-5"/></svg>Services</a>
+      <a class="lnk" href="#pricing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4 12 22l-9-9V4a1 1 0 0 1 1-1h9l7.6 7.6a2 2 0 0 1 0 2.8z"/><path d="M7.6 7.6h.01"/></svg>Pricing</a>
+      <a class="lnk" href="#faq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.2 9.2a3 3 0 0 1 5.8 1c0 2-2.9 3-2.9 3"/><path d="M12 17h.01"/></svg>FAQ</a>
+      <a class="lnk" href="#about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>About</a>
+      <span class="nav-sep" aria-hidden="true"></span>
       <span class="lang">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="hr" aria-pressed="false">HR</button>
@@ -1283,27 +1310,6 @@
           </a>
         </div>
       </article>
-
-      <article class="work-item" data-wk>
-        <div class="work-visual stage reveal">
-          <div class="device">
-            <div class="browser">
-              <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url" data-wk-type="apartmani-kalelarga.hr">apartmani-kalelarga.hr</span></div>
-              <div class="screen wk-screen"><div class="mk mk-soon"><div class="plus">+</div><div class="t">Project in progress</div><span class="wk-build" aria-hidden="true"><i></i></span></div></div>
-            </div>
-          </div>
-        </div>
-        <div class="work-copy reveal">
-          <span class="work-tag">Apartments &middot; Stays</span>
-          <h3>Apartmani Kalelarga</h3>
-          <div class="loc">Zadar &middot; Croatia</div>
-          <p>In the studio right now: a calm, bright site for two apartments a minute from Zadar's old town. Photography first, availability and house rules in four languages, and a booking enquiry that reaches the owner's phone.</p>
-          <div class="chips"><span class="chip">In build</span><span class="chip">Four languages</span><span class="chip">Booking enquiries</span></div>
-          <a class="work-link" href="#contact">Want yours next? Let's talk
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M9 7h8v8"/></svg>
-          </a>
-        </div>
-      </article>
     </div>
   </section>
 
@@ -1560,9 +1566,9 @@
             <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/></svg></span>
             <span class="tx"><span class="t">WhatsApp</span><span class="d">Quick questions welcome</span></span>
           </a>
-          <a href="https://instagram.com/puntamedia" target="_blank" rel="noopener">
+          <a href="https://instagram.com/puntamedia.hr" target="_blank" rel="noopener">
             <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></span>
-            <span class="tx"><span class="t">@puntamedia</span><span class="d">Work in progress</span></span>
+            <span class="tx"><span class="t">@puntamedia.hr</span><span class="d">Work in progress</span></span>
           </a>
         </div>
       </div>
@@ -1593,7 +1599,7 @@
       <div class="muted" style="margin-top:12px">Custom multilingual websites &middot; Half Croatian, half Italian</div>
     </div>
     <div class="socials">
-      <a href="https://instagram.com/puntamedia" target="_blank" rel="noopener" aria-label="Instagram"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+      <a href="https://instagram.com/puntamedia.hr" target="_blank" rel="noopener" aria-label="Instagram"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
       <a href="https://linkedin.com/in/puntamedia" target="_blank" rel="noopener" aria-label="LinkedIn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 10v7M7 7v.01M11 17v-4a2 2 0 0 1 4 0v4M11 17v-7" stroke-linecap="round"/></svg></a>
       <a href="mailto:hello@puntamedia.net" aria-label="Email"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m4 7 8 6 8-6"/></svg></a>
     </div>
