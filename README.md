@@ -9,7 +9,7 @@ Un unico file HTML autonomo. Nessuna build, nessuna dipendenza da installare, ne
 ```
 index.html          tutto il sito: markup, CSS e JavaScript
 img/                fotografie di sfondo e delle sezioni (WebP)
-video/              il filmato della hero + il suo poster
+video/              i filmati della hero e il film "The Wave" (the-wave-1080p/720p + poster)
 showcase/           le pagine dei progetti inventati, da cui escono gli screenshot
 fonts/              i font del sito, serviti da qui e non da Google (GDPR)
 worker/             il Worker di Cloudflare del modulo contatti (vedi worker/README.md)
@@ -50,6 +50,7 @@ python listino/listino.py
 
 - **Hero video** che si scorre con lo scroll: un carrello verso un laptop, con la pagina reale disegnata in HTML sopra lo schermo e agganciata fotogramma per fotogramma. È l'unica hero del sito.
 - **Hero di ripiego** con la foto dello smartphone: compare ogni volta che quella video non parte — schermo stretto, *reduced motion*, video che non arriva — qualunque sia il motivo.
+- **Il film "The Wave"** (30 secondi, con la voce) subito dopo *What I do*. Parte solo al clic e con l'audio; fino ad allora si scarica solo il poster. 1080p a 60 fps sugli schermi larghi, 720p su telefono o col risparmio dati. Il sorgente originale (26 MB) non è nel repo: queste sono le versioni compresse per il web.
 - **Bilingue HR / EN** con selettore nella navigazione, che ricorda la scelta e parte in croato per i browser croati.
 - **Confronto prima/dopo** trascinabile, navigazione che si raccoglie in pillola allo scroll, menu a tutto schermo su mobile.
 - Fotografie graduate in CSS tramite la variabile `--grade` (0 = naturale, 1 = duotone navy). Nessun ritocco esterno necessario.

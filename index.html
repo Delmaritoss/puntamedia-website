@@ -72,6 +72,10 @@
   }
 
   *{box-sizing:border-box}
+  /* hidden deve vincere sempre. Senza questa riga .mobile-menu{display:flex}
+     batteva l'attributo, e su telefono il menu chiuso restava steso su tutta
+     la pagina, invisibile, e si prendeva ogni tocco. */
+  [hidden]{display:none!important}
   html{scroll-behavior:smooth}
   body{
     margin:0;
@@ -542,6 +546,47 @@
   .card .ic svg{width:26px;height:26px}
   .card h3{font-size:23px;font-weight:600}
   .card p{color:var(--muted);font-size:14.5px;margin-top:10px;line-height:1.7}
+
+  /* ---------- IL FILM ----------
+     Una fascia scura fra due chiare: e' la pausa cinematografica fra
+     "cosa faccio" e "per chi lo faccio". Il pulsante sta nell'angolo e non
+     al centro perche' il poster e' il logo col nome sotto, ed e' quello che
+     deve vedersi. */
+  .film{background:
+      radial-gradient(900px 480px at 50% 110%, rgba(90,147,188,.16), transparent 65%),
+      var(--ink);
+    border-block:1px solid var(--line)}
+  .film .head{margin-inline:auto;text-align:center}
+  .film .head p{margin-inline:auto}
+  .film-frame{position:relative;margin-top:clamp(36px,5vw,58px);aspect-ratio:16/9;max-width:100%;
+    border-radius:10px;overflow:hidden;background:#050D18;border:1px solid var(--line-strong);
+    box-shadow:0 44px 96px -48px rgba(0,0,0,.9)}
+  .film-frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#050D18}
+  .film-play{position:absolute;inset:0;width:100%;height:100%;display:flex;align-items:flex-end;justify-content:flex-start;
+    padding:clamp(14px,2.6vw,30px);margin:0;border:0;cursor:pointer;color:var(--text);font:inherit;text-align:left;
+    background:linear-gradient(180deg,transparent 58%,rgba(5,13,24,.5))}
+  .film-play[hidden]{display:none}
+  .film-pill{display:inline-flex;align-items:center;gap:14px;padding:8px 20px 8px 8px;border-radius:999px;
+    background:rgba(16,42,69,.78);border:1px solid var(--line-strong);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    transition:transform .3s var(--ease),border-color .3s var(--ease)}
+  .film-ico{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+    background:var(--acc);color:#06172A;transition:background .3s var(--ease)}
+  .film-ico svg{margin-left:2px}
+  .film-lbl{display:flex;flex-direction:column;gap:2px;line-height:1.2}
+  .film-lbl b{font-size:12.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase}
+  .film-lbl small{font-size:11px;letter-spacing:.08em;color:var(--muted)}
+  .film-play:hover .film-pill{transform:translateY(-1px);border-color:var(--acc)}
+  .film-play:hover .film-ico{background:var(--acc-bright)}
+  .film-play:focus-visible{outline:none}
+  .film-play:focus-visible .film-pill{outline:2px solid var(--acc-bright);outline-offset:3px}
+  /* su telefono il nome del logo sta proprio dove andrebbe l'etichetta:
+     resta solo il tondo, il resto lo dice il cerchio col triangolo */
+  @media(max-width:560px){
+    .film-pill{padding:6px}
+    .film-lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  }
+  @media(prefers-reduced-motion:reduce){.film-pill,.film-ico{transition:none}}
 
   /* ---------- WORK ---------- */
 
@@ -1091,6 +1136,33 @@
           <h3>Care &amp; updates</h3>
           <p>Menus change, prices change, seasons change. I keep your site current so it never feels forgotten.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IL FILM ----------------------------------------------------------
+       Trenta secondi con la voce. Parte solo quando lo chiede chi guarda,
+       e con l'audio: un filmato con la voce che si avvia da solo e muto
+       non racconta niente. Fino al clic non si scarica nulla, solo il poster. -->
+  <section class="section film" id="film">
+    <div class="wrap">
+      <div class="head reveal">
+        <h2>Everything I do, in thirty seconds.</h2>
+        <p>Four languages, found on Google, bookings that arrive while you sleep, and the real sites behind it all. Turn the sound on.</p>
+      </div>
+      <div class="film-frame reveal">
+        <video id="filmVideo" playsinline preload="none" poster="video/the-wave-poster.webp"
+               data-src-hd="video/the-wave-1080p.mp4" data-src-sd="video/the-wave-720p.mp4"
+               aria-label="Puntamedia film, 30 seconds, with voiceover"></video>
+        <button type="button" class="film-play" id="filmPlay">
+          <span class="film-pill">
+            <span class="film-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></span>
+            <span class="film-lbl">
+              <b class="film-first">Play the film</b><b class="film-again" hidden>Watch again</b>
+              <small>0:30 &middot; sound on</small>
+            </span>
+          </span>
+        </button>
       </div>
     </div>
   </section>
@@ -1858,6 +1930,46 @@
   })();
 
 
+  /* ---------- Il film ----------
+     Si scarica e parte solo al clic, con l'audio. Due versioni: 1080p a 60
+     fotogrammi per gli schermi grandi, 720p per telefoni e connessioni
+     col risparmio dati. Se esce dallo schermo si mette in pausa, ma non
+     riparte da solo: con la voce, deve deciderlo chi guarda. */
+  (function(){
+    var v = document.getElementById('filmVideo');
+    var btn = document.getElementById('filmPlay');
+    if(!v || !btn) return;
+    var first = btn.querySelector('.film-first'), again = btn.querySelector('.film-again');
+
+    function pick(){
+      var link = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      var slow = !!link && (link.saveData || /^(slow-2g|2g|3g)$/.test(link.effectiveType || ''));
+      var wide = window.innerWidth > 900;
+      return v.getAttribute(wide && !slow ? 'data-src-hd' : 'data-src-sd');
+    }
+
+    btn.addEventListener('click', function(){
+      if(!v.currentSrc){ v.src = pick(); }
+      v.controls = true;
+      btn.hidden = true;
+      var p = v.play();
+      if(p && p.catch) p.catch(function(){ btn.hidden = false; v.controls = false; });
+    });
+
+    v.addEventListener('ended', function(){
+      first.hidden = true; again.hidden = false;
+      v.controls = false; btn.hidden = false;
+      try{ v.currentTime = 0; }catch(e){}
+    });
+
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(e){
+        if(!e[0].isIntersecting && !v.paused) v.pause();
+      }, { threshold: 0.15 }).observe(v);
+    }
+    document.addEventListener('visibilitychange', function(){ if(document.hidden && !v.paused) v.pause(); });
+  })();
+
   /* ---------- Prima / dopo, guidato dallo scroll ----------------------
      La lama la muove lo scroll. Prima tiene fermo sul sito vecchio il
      tempo di leggerlo, poi attraversa, poi tiene fermo sul nuovo. Finito
@@ -1945,6 +2057,9 @@
       "Days, not months":"Dani, ne mjeseci",
       "A considered process that still gets you online quickly.":"Promišljen proces koji vas brzo dovodi online.",
       "What I do":"Čime se bavim",
+      "Everything I do, in thirty seconds.":"Sve što radim, u trideset sekundi.",
+      "Four languages, found on Google, bookings that arrive while you sleep, and the real sites behind it all. Turn the sound on.":"Četiri jezika, vidljivost na Googleu, rezervacije koje stižu dok spavate i prave stranice iza svega toga. Uključite zvuk.",
+      "Play the film":"Pogledajte film","Watch again":"Pogledajte ponovno","0:30 · sound on":"0:30 · uz zvuk",
       "Everything your business needs to look its best online.":"Sve što vaš posao treba da izgleda najbolje na internetu.",
       "One partner, from the first conversation to a living site that keeps working for you — in every language your customers speak.":"Jedan partner, od prvog razgovora do žive stranice koja radi za vas — na svakom jeziku kojim govore vaši gosti.",
       "Custom website design":"Prilagođeni web dizajn",
